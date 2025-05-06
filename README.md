@@ -1,7 +1,12 @@
 ## Presidio Training
 
-11) https://www.hackerrank.com/challenges/the-birthday-bar/problem?isFullScreen=true
-12) https://www.hackerrank.com/challenges/divisible-sum-pairs/problem?isFullScreen=true
-13) https://www.hackerrank.com/challenges/migratory-birds/problem?isFullScreen=true
-14) https://www.hackerrank.com/challenges/day-of-the-programmer/problem?isFullScreen=true
-15) https://www.hackerrank.com/challenges/bon-appetit/problem?isFullScreen=true
+Day 1 - 05/05/2025: 
+1) Downloaded and Installed SQL Server & Management Studio  
+2) Solved 10 hackerrank solutions using C#
+
+Day 2 - 06/05/2025: 
+1) Learnt about SQL DDL and DML
+2) Designed a database schema for a shop
+3) Solved 15 queries on a pubs table in SQL Server Management Studio
+4) Completed DDL commands for a Shop DB
+5) Completed DDL + DML commands for Employee DB
