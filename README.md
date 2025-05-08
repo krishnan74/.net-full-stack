@@ -10,3 +10,15 @@
 3) Solved 15 queries on a pubs table in SQL Server Management Studio
 4) Completed DDL commands for a Shop DB
 5) Completed DDL + DML commands for Employee DB
+
+# Day 3 - 07/05/2025:
+1) Learnt about JOINS
+2) Learnt about Stored Procedure
+3) Completed PostgresSQL basic exercises
+
+# Day 4 - 08/05/2025:
+1) Learnt about complex StoredProcedures ( Bulk Insert from CSV, Filtering with JSON, Exception Handling )
+2) Learnt about two different types of Common Table Expressions 
+3) Learnt about Pagination
+4) Learnt about Scalar Functions and Table return functions
+5) Completed 15 problems involving AGGREGATE, JOINS, CTE, SP
