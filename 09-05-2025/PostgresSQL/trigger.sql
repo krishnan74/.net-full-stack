@@ -128,3 +128,4 @@ CREATE TRIGGER trg_check_customer_debt
 BEFORE INSERT ON rental
 FOR EACH ROW
 EXECUTE FUNCTION prevent_rental_if_customer_owes();
+ 

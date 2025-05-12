@@ -22,3 +22,9 @@
 3) Learnt about Pagination
 4) Learnt about Scalar Functions and Table return functions
 5) Completed 15 problems involving AGGREGATE, JOINS, CTE, SP
+
+# Day 5 - 09/05/2025:
+1) Learnt about CURSOR
+2) Learnt about TRANSACTIONS
+3) Learnt about TRIGGERS
+4) Completed 15 problems involving the above

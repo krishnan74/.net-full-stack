@@ -81,4 +81,4 @@ WHERE customer_id = 599;
 DELETE FROM customer
 WHERE customer_id = 599;
 
-COMMIT;
+COMMIT; 

@@ -109,3 +109,4 @@ BEGIN
 	CLOSE store_cursor;
 END;
 $$
+ 

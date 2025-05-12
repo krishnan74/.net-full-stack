@@ -107,4 +107,4 @@ BEGIN
 END;
 $$;
 
-CALL proc_Get_OverDue_Rentals();
+CALL proc_Get_OverDue_Rentals(); 
