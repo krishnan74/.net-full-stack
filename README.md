@@ -28,3 +28,10 @@
 2) Learnt about TRANSACTIONS
 3) Learnt about TRIGGERS
 4) Completed 15 problems involving the above
+
+# Day 6 - 12/05/2025:
+1) Learnt about ACID properties of Transactions
+2) Learnt about best practices for Transactions along with Autocommits, Concurrency
+3) Learnt about four different levels of Isolation
+4) Discussed about solution to avoid lost updates, dirty read, phantom read.
+5) Completed 8 questions about Transactions and Concurrency

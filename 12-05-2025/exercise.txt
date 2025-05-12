@@ -1,0 +1,131 @@
+Transactions and Concurrency
+
+1️⃣ Question:
+In a transaction, if I perform multiple updates and an error happens in the third statement, but I have not used SAVEPOINT, what will happen if I issue a ROLLBACK?
+Will my first two updates persist?
+
+Answer:
+No the first two updates will not persist. PostgreSQL transactions are atomicn which means that all changes within a transaction are committed together or not at all. 
+If an error occurs and you roll back without using a SAVEPOINT, the entire transaction is will be undone.
+
+Example:
+BEGIN;
+    UPDATE film SET title = 'Test 1' WHERE film_id = 1;
+    UPDATE film SET title = 'Test 2' WHERE film_id = 2;
+    -- This will fail because of invalid column
+    UPDATE film SET wrong_column = 'Demo' WHERE film_id = 3;
+ROLLBACK;
+-- None of the changes will be saved.
+
+
+2️⃣ Question:
+Suppose Transaction A updates Alice’s balance but does not commit. Can Transaction B read the new balance if the isolation level is set to READ COMMITTED?
+
+Answer:
+No Transaction B cannot see the new balance. 
+In the READ COMMITTED isolation level, a transaction can only read data that has already been committed by other transactions.
+
+Example:
+-- Transaction A
+BEGIN;
+UPDATE accounts SET balance = balance + 100 WHERE account_name = 'Alice';
+-- No COMMIT yet
+
+-- Transaction B 
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+SELECT balance FROM accounts WHERE account_name = 'Alice';
+-- The SELECT query will show the old balance, not the uncommitted one.
+
+
+3️⃣ Question:
+What will happen if two concurrent transactions both execute:
+UPDATE tbl_bank_accounts SET balance = balance - 100 WHERE account_name = 'Alice';
+at the same time? Will one overwrite the other?
+
+Answer:
+No they won’t overwrite each other. In PostgreSQL, one of the transactions will wait until the other completes before proceeding which is called row-level locking.
+
+
+4️⃣ Question:
+If I issue ROLLBACK TO SAVEPOINT after_alice;, will it only undo changes made after the savepoint or everything?
+
+Answer:
+It will only undo changes made after the savepoint. Changes made before the SAVEPOINT remain intact, and the transaction continues to be active.
+
+Example:
+BEGIN;
+    UPDATE accounts SET balance = balance + 50 WHERE id = 1;
+    SAVEPOINT after_alice;
+    UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+    -- rollback to savepoint
+    ROLLBACK TO SAVEPOINT after_alice;
+    -- Now only the second update is undone, first update remains the latest update
+COMMIT;
+
+
+5️⃣ Question:
+Which isolation level in PostgreSQL prevents phantom reads?
+
+Answer:
+The SERIALIZABLE isolation level prevents phantom reads. It ensures that transactions behave as though they are executed one at a time, maintaining strict consistency.
+
+Example:
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+BEGIN;
+SELECT * FROM accounts WHERE balance > 1000;
+
+-- Another transaction tries to insert a matching row
+-- This second transaction will be blocked or aborted to prevent a phantom read
+INSERT INTO accounts (id, account_name, balance) VALUES (999, 'Temp', 2000);
+-- First transaction commits
+COMMIT;
+
+
+6️⃣ Question:
+Can Postgres perform a dirty read (reading uncommitted data from another transaction)?
+
+Answer:
+No PostgreSQL does not allow dirty reads. Even at its lowest isolation level (READ COMMITTED), uncommitted changes from other transactions are not visible.
+
+Example:
+-- Transaction A
+BEGIN;
+    UPDATE accounts SET balance = 100 WHERE id = 1;
+    -- No commit yet
+
+    -- Transaction B 
+    SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+    SELECT balance FROM accounts WHERE id = 1;
+
+-- The result will not include the uncommitted change ( balance is not equal to 100 )
+
+
+7️⃣ Question:
+If autocommit is ON (default in Postgres), and I execute an UPDATE, is it safe to assume the change is immediately committed?
+
+Answer:
+Yes In PostgreSQL every SQL statement is considered as its own transaction, Therefore it is automatically committed if it runs without any errors.
+
+
+8️⃣ Question:
+If I do this:
+BEGIN;
+UPDATE accounts SET balance = balance - 500 WHERE id = 1;
+-- (No COMMIT yet)
+And from another session, I run:
+SELECT balance FROM accounts WHERE id = 1;
+Will the second session see the deducted balance?
+
+Answer:
+No the second session will not see the updated balance, because the first transaction hasn’t been committed, the second session will only see the last committed value.
+
+Example:
+
+-- Session 1
+BEGIN;
+UPDATE accounts SET balance = balance - 500 WHERE id = 1;
+-- No COMMIT yet
+
+-- Session 2
+SELECT balance FROM accounts WHERE id = 1;
+-- Output will show the previous committed balance
