@@ -43,3 +43,13 @@
     - Table-Level Locking
 3) Learnt about deadlocks and Advisory / Custom Locks
 4) Completed problems involving Locks, Cursor, Trigger, Transaction
+
+# Day 8 - 14/05/2025
+1) Learnt about replication
+2) Learnt about Backup and Restore
+3) Implemented streaming replication as a exercise using postgres
+
+# Day 9 - 15/05/2025
+1) Learnt about DB security
+2) Learnt about Access Control in postgres
+3) Completed 5 problems involving Encryption, Masking and Decryption
