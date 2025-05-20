@@ -1,54 +1,43 @@
-﻿using System;
+﻿using Day_12;
+using System;
 
-namespace CsharpFundamentals
+namespace Day_12
 {
-    class Program
+    public class Program
     {
-        public class Post
+        public static void Main(string[] args)
         {
-            public string Caption { get; set; }
-            public int Likes { get; set; }
-        }
-
-        static void Main(string[] args)
-        {
-            Console.Write("Enter number of users: ");
-            int userCount = int.Parse(Console.ReadLine());
-
-            Post[][] userPosts = new Post[userCount][];
-
-            for (int i = 0; i < userCount; i++)
+            bool running = true;
+            while (running)
             {
-                Console.Write($"User {i + 1}: How many posts? ");
-                int postCount = int.Parse(Console.ReadLine());
-                userPosts[i] = new Post[postCount];
+                Console.WriteLine("\n====== Employee Management Tasks ======");
+                Console.WriteLine("1. Easy Task");
+                Console.WriteLine("2. Medium Task");
+                Console.WriteLine("3. Hard Task");
+                Console.WriteLine("4. Exit");
+                Console.Write("Choose an option (1-3): ");
 
-                for (int j = 0; j < postCount; j++)
+                string choice = Console.ReadLine();
+
+                switch (choice)
                 {
-                    Console.Write($"Enter caption for post {j + 1}: ");
-                    string caption = Console.ReadLine();
-
-                    Console.Write("Enter likes: ");
-                    int likes = int.Parse(Console.ReadLine());
-
-                    userPosts[i][j] = new Post { Caption = caption, Likes = likes };
+                    case "1":
+                        Easy_Program.Run();
+                        break;
+                    case "2":
+                        Medium_Program.Run();
+                        break;
+                    case "3":
+                        Hard_Program.Run();
+                        break;
+                    case "4":
+                        running = false;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice. Please select between 1 and 4.");
+                        break;
                 }
             }
-
-            Console.WriteLine("\n--- Displaying Instagram Posts ---");
-            for (int i = 0; i < userPosts.Length; i++)
-            {
-                Console.WriteLine($"User {i + 1}:");
-                for (int j = 0; j < userPosts[i].Length; j++)
-                {
-                    var post = userPosts[i][j];
-                    Console.WriteLine($"Post {j + 1} - Caption: {post.Caption} | Likes: {post.Likes}");
-                }
-                Console.WriteLine();
-            }
-
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
         }
     }
 }
