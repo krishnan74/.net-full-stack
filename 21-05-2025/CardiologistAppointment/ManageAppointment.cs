@@ -24,7 +24,7 @@ namespace CardiologistAppointment
             {
                 PrintMenu();
                 int option = 0;
-                while (!int.TryParse(Console.ReadLine(), out option) || (option < 1 && option > 2))
+                while (!int.TryParse(Console.ReadLine(), out option) || (option < 1 && option > 3))
                 {
                     Console.WriteLine("Invalid entry. Please enter a valid option");
                 }
@@ -36,8 +36,10 @@ namespace CardiologistAppointment
                     case 2:
                         SearchAppointment();
                         break;
-                    default:
+                    case 3:
                         exit = true;
+                        break;
+                    default:
                         break;
                 }
             }
@@ -47,6 +49,7 @@ namespace CardiologistAppointment
             Console.WriteLine("Choose what you wanted");
             Console.WriteLine("1. Add Appointment");
             Console.WriteLine("2. Search Appointment");
+            Console.WriteLine("3. Exit");
         }
         public void AddAppointment()
         {
@@ -106,13 +109,13 @@ namespace CardiologistAppointment
                 searchModel.AgeRange = new Range<int>();
                 int age;
                 Console.WriteLine("Please enter the min Patient Age");
-                while (!int.TryParse(Console.ReadLine(), out age) || age <= 0)
+                while (!int.TryParse(Console.ReadLine(), out age) || age < 0)
                 {
                     Console.WriteLine("Invalid entry for min age. Please enter a valid patient age");
                 }
                 searchModel.AgeRange.MinAge = age;
                 Console.WriteLine("Please enter the max Patient Age");
-                while (!int.TryParse(Console.ReadLine(), out age) || age <= 0)
+                while (!int.TryParse(Console.ReadLine(), out age) || age < 0)
                 {
                     Console.WriteLine("Invalid entry for max age. Please enter a valid patient age");
                 }
@@ -132,7 +135,7 @@ namespace CardiologistAppointment
             if (selectOption == 1)
 
             {
-                Console.WriteLine("Please enter the Appointment Date in the format of MM/DD/YYYY");
+                Console.WriteLine("Please enter the Appointment Date in the format of DD/MM/YYYY HR: Min");
                 while (!DateTime.TryParse(Console.ReadLine(), out date))
                 {
                     Console.WriteLine("Invalid entry for date. Please enter a valid Appointment date");
