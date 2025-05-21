@@ -1,6 +1,5 @@
 ﻿using CardiologistAppointment.Interfaces;
 using CardiologistAppointment.Exceptions;
-using CardiologistAppointment.Interfaces;
 
 namespace CardiologistAppointment.Repositories
 {
@@ -19,7 +18,6 @@ namespace CardiologistAppointment.Repositories
             {
                 property.SetValue(item, id);
             }
-            // Check if the item already exists in the list
             if (_items.Contains(item))
             {
                 throw new DuplicateEntityException("Appointment already exists");
@@ -28,28 +26,6 @@ namespace CardiologistAppointment.Repositories
             return item;
         }
 
-        public T Delete(K id)
-        {
-            var item = GetById(id);
-            if (item == null)
-            {
-                throw new KeyNotFoundException("Appointment not found");
-            }
-            _items.Remove(item);
-            return item;
-        }
-
-        public T Update(T item)
-        {
-            var myItem = GetById((K)item.GetType().GetProperty("Id").GetValue(item));
-            if (myItem == null)
-            {
-                throw new KeyNotFoundException("Appointment not found");
-            }
-            var index = _items.IndexOf(myItem);
-            _items[index] = item;
-            return item;
-        }
     }
 
 }

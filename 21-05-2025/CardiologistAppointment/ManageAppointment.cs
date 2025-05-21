@@ -53,7 +53,7 @@ namespace CardiologistAppointment
             Appointment appointment = new Appointment();
             appointment.TakeAppointmentDetailsFromUser();
             int id = _appointmentService.AddAppointment(appointment);
-            Console.WriteLine($"Appointment created with ID: {id}");
+            Console.WriteLine($"Appointment created with ID: {id} \n");
         }
         public void SearchAppointment()
         {
@@ -66,6 +66,7 @@ namespace CardiologistAppointment
                 Console.WriteLine("No Appointments for the search");
             }
             PrintAppointments(appointments);
+            Console.WriteLine("\n");
 
         }
 

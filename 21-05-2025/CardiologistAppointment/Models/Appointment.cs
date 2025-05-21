@@ -42,9 +42,9 @@ namespace CardiologistAppointment.Models
             Console.WriteLine("Please enter the Appointment Date ( Format: dd/mm/yyyy )");
             
             DateTime date;
-            while (!DateTime.TryParse(Console.ReadLine(), out date))
+            while (!DateTime.TryParse(Console.ReadLine(), out date) || date < DateTime.Now )
             {
-                Console.WriteLine("Invalid entry for date. Please enter a valid Appointment date");
+                Console.WriteLine("Invalid entry for date. Please enter a valid future Appointment date");
             }
             AppointmentDate = date;
             Console.WriteLine("Please enter the reason for the appointment");
@@ -61,11 +61,11 @@ namespace CardiologistAppointment.Models
             string? confirmation = Console.ReadLine();
             if (confirmation?.ToUpper() == "Y")
             {
-                Console.WriteLine("Appointment confirmed");
+                Console.WriteLine("Appointment confirmed \n");
             }
             else
             {
-                Console.WriteLine("Appointment cancelled");
+                Console.WriteLine("Appointment cancelled \n");
             }
                 
         }
