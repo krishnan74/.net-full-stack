@@ -34,8 +34,11 @@ namespace Delegates.SOLID
 
             // DIP
             IMessageSender sender = new EmailSender();
+            IMessageSender sender2 = new SmsSender();
             var notification = new Notification(sender);
+            var smsNotification = new Notification(sender2);
             notification.Send("SOLID principles followed!");
+            smsNotification.Send("SMS Notification sent!");
         }
     }
 }
