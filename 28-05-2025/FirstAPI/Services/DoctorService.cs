@@ -21,44 +21,39 @@ namespace FirstAPI.Services
             _doctorSpecialityRepository = doctorSpecialityRepository;
         }
 
-        public async Task<Doctor> AddDoctor(DoctorAddRequestDTO doctor)
+       public async Task<Doctor> AddDoctor(DoctorAddRequestDTO doctor)
         {
             try
             {
-                if (doctor == null)
-                    throw new ArgumentNullException(nameof(doctor), "Doctor cannot be null");
-
-                Doctor newDoctor = new Doctor()
+                Doctor newDoc = new Doctor
                 {
                     Name = doctor.Name,
                     YearsOfExperience = doctor.YearsOfExperience,
-                    Status = "Active",
+                    Status = "Active"
                 };
-
-                doctor.Specialities.ForEach(
-                    spec =>
+                Doctor addedDoc = await _doctorRepository.Add(newDoc);
+                if (doctor.Specialities != null && doctor.Specialities.Count() > 0)
+                {
+                    IEnumerable<Speciality> specialities = await _specialityRepository.GetAll();
+                    foreach (var speciality in doctor.Specialities)
                     {
-                        var spec = new Speciality()
+                        var v_spec = specialities.FirstOrDefault(s => s.Name == speciality.Name);
+                        if (v_spec == null)
                         {
-                            Name = spec.Name,
-                            Status = "Active"
-                        };
-                        newDoctor.Specialities.Add(spec);
+                            v_spec = await _specialityRepository.Add(new Speciality { Name = speciality.Name, Status = "Active" });
+                        }
+                        await _doctorSpecialityRepository.Add(new DoctorSpeciality { DoctorId = doc.Id, SpecialityId = v_spec.Id });
                     }
-                );
-
-                var addedDoctor = await _doctorRepository.Add(newDoctor);
-                return addedDoctor;
-
+                }
+                return addedDoc;
             }
+            
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
                 return null;
             }
-
         }
-
         public async Task<Doctor> GetDoctorByName(string name)
         {
             try
