@@ -24,7 +24,7 @@ namespace BankApplication.Services
             try
             {
                 var accounts = _bankContext.accounts;
-                var account = accounts.FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
+                var account = await accounts.FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
 
                 if (account == null)
                 {
@@ -51,7 +51,7 @@ namespace BankApplication.Services
                 await _bankContext.AddAsync(createdTransaction);
 
                 await transaction.CommitAsync();
-                return createdTransaction; // Assuming you have a way to save this transaction
+                return createdTransaction; 
             }
             catch (Exception ex)
             {
@@ -68,7 +68,7 @@ namespace BankApplication.Services
             try
             {
                 var accounts = _bankContext.accounts;
-                var account = accounts.FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
+                var account = await accounts.FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
 
                 if (account == null)
                 {
@@ -100,7 +100,7 @@ namespace BankApplication.Services
                 await _bankContext.AddAsync(createdTransaction);
 
                 await transaction.CommitAsync();
-                return createdTransaction; // Assuming you have a way to save this transaction
+                return createdTransaction; 
             }
             catch (Exception ex)
             {
@@ -170,7 +170,7 @@ namespace BankApplication.Services
                 await _bankContext.SaveChangesAsync();
 
                 await transaction.CommitAsync();
-                return createdTransaction; // Assuming you have a way to save this transaction
+                return createdTransaction; 
             }
             catch (Exception ex)
             {
