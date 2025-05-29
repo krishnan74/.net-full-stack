@@ -12,5 +12,6 @@ namespace BankApplication.Interfaces
         Task<bool> ChangeAccountType(string accountNumber, string newAccountType);
         Task<bool> ChangeMinimumBalance(string accountNumber, decimal newMinimumBalance);
 
+   
     }
 }

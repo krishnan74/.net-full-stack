@@ -13,5 +13,7 @@ namespace BankApplication.Misc
             bank.Email = addRequestDto.Email;
             return bank;
         }
+
+        
     }
 }

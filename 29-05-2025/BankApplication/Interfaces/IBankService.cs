@@ -7,7 +7,7 @@ namespace BankApplication.Interfaces
     {
         Task<Bank> CreateBank(BankAddRequestDTO bank);
         Task<IEnumerable<Bank>> GetAllBanks();
-        Task<bool> UpdateBankDetails(BankUpdateRequestDTO bankUpdateRequest);
-        Task<bool> DeleteBank(int bankId);
+        Task<Bank> UpdateBankDetails(BankUpdateRequestDTO bankUpdateRequest);
+        Task<Bank> DeleteBank(int bankId);
     }
 }
