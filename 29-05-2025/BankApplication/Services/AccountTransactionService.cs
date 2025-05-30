@@ -17,9 +17,13 @@ namespace BankApplication.Services
             _bankContext = bankContext;
         }
 
-        public async Task<Transaction> Deposit(string accountNumber, decimal amount, string description)
+        public async Task<Transaction> Deposit(TransactionRequestDTO transactionRequestDTO)
         {
             using var transaction = await _bankContext.Database.BeginTransactionAsync();
+            
+            var accountNumber = transactionRequestDTO.AccountNumber;
+            var amount = transactionRequestDTO.Amount;
+            var description = transactionRequestDTO.Description;
 
             try
             {
@@ -49,9 +53,10 @@ namespace BankApplication.Services
                 };
 
                 await _bankContext.AddAsync(createdTransaction);
+                await _bankContext.SaveChangesAsync();
 
                 await transaction.CommitAsync();
-                return createdTransaction; 
+                return createdTransaction;
             }
             catch (Exception ex)
             {
@@ -61,9 +66,13 @@ namespace BankApplication.Services
             }
         }
 
-        public async Task<Transaction> Withdraw(string accountNumber, decimal amount, string description)
+        public async Task<Transaction> Withdraw(TransactionRequestDTO transactionRequestDTO)
         {
             using var transaction = await _bankContext.Database.BeginTransactionAsync();
+
+            var accountNumber = transactionRequestDTO.AccountNumber;
+            var amount = transactionRequestDTO.Amount;
+            var description = transactionRequestDTO.Description;
 
             try
             {
@@ -85,6 +94,11 @@ namespace BankApplication.Services
                     throw new Exception("Insufficient funds for withdrawal.");
                 }
 
+                if( account.MinimumBalance > (account.Balance - amount))
+                {
+                    throw new Exception("Withdrawal amount must be lower minimum balance.");
+                }
+
                 account.Balance -= amount;
                 await _bankContext.SaveChangesAsync();
 
@@ -98,9 +112,10 @@ namespace BankApplication.Services
                 };
 
                 await _bankContext.AddAsync(createdTransaction);
+                await _bankContext.SaveChangesAsync();
 
                 await transaction.CommitAsync();
-                return createdTransaction; 
+                return createdTransaction;
             }
             catch (Exception ex)
             {
@@ -126,9 +141,14 @@ namespace BankApplication.Services
             }
         }
 
-        public async Task<Transaction> Transfer(string fromAccountNumber, string toAccountNumber, decimal amount, string description)
+        public async Task<Transaction> Transfer(TransferRequestDTO transferRequestDTO)
         {
             using var transaction = await _bankContext.Database.BeginTransactionAsync();
+
+            var fromAccountNumber = transferRequestDTO.FromAccountNumber;
+            var toAccountNumber = transferRequestDTO.ToAccountNumber;
+            var amount = transferRequestDTO.Amount;
+            var description = transferRequestDTO.Description;
 
             try
             {
@@ -159,18 +179,18 @@ namespace BankApplication.Services
                 {
                     AccountNumber = fromAccountNumber,
                     TransferAccountNumber = toAccountNumber,
-                    Amount = -amount,
+                    Amount = amount,
                     Description = description,
                     TransactionType = "Transfer",
                     TransactionDate = DateTime.Now
                 };
 
                 await _bankContext.AddAsync(createdTransaction);
-                
+
                 await _bankContext.SaveChangesAsync();
 
                 await transaction.CommitAsync();
-                return createdTransaction; 
+                return createdTransaction;
             }
             catch (Exception ex)
             {

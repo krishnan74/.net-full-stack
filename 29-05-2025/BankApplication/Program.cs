@@ -1,7 +1,7 @@
 using BankApplication.Contexts;
 using BankApplication.Interfaces;
 using BankApplication.Repositories;
-// using BankApplication.Services;
+using BankApplication.Services;
 
 using BankApplication.Models;
 using Microsoft.EntityFrameworkCore;
@@ -33,9 +33,11 @@ builder.Services.AddTransient<IRepository<int, Transaction>, TransactionReposito
 builder.Services.AddTransient<IRepository<int, User>, UserRepository>();
 
 
-// builder.Services.AddTransient<IDoctorService, DoctorService>();
-
-
+builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IAccountService, AccountService>();
+builder.Services.AddTransient<IAccountTransactionService, AccountTransactionService>();
+builder.Services.AddTransient<IBankService, BankService>();
+builder.Services.AddTransient<IBranchService, BranchService>();
 
 
 var app = builder.Build();

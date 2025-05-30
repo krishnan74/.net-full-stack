@@ -40,15 +40,15 @@ namespace BankApplication.Contexts
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Transaction>().HasOne(t => t.Account)
-                .WithMany(acc => acc.Transactions)
+                .WithMany(acc => acc.AccountTransactions)
                 .HasForeignKey(t => t.AccountNumber)
                 .HasConstraintName("FK_Transaction_Account")
                 .OnDelete(DeleteBehavior.Restrict);
             
             modelBuilder.Entity<Transaction>().HasOne(t => t.TransferAccount)
-                .WithMany(acc => acc.Transactions)
+                .WithMany(acc => acc.ReceivedTransactions)
                 .HasForeignKey(t => t.TransferAccountNumber)
-                .HasConstraintName("FK_Transaction_Account")
+                .HasConstraintName("FK_Transaction_TransferAccount")
                 .OnDelete(DeleteBehavior.Restrict);
 
         }

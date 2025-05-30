@@ -7,7 +7,7 @@ namespace BankApplication.Models
         public int Id { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
-        public string UserName { get; set; }
+        public string Username { get; set; }
         public string PasswordHash { get; set; }
         public bool SessionActive { get; set; } = false;
         public DateTime DateOfBirth { get; set; }

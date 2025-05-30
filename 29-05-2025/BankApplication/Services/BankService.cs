@@ -32,7 +32,8 @@ namespace BankApplication.Services
                     var newBranch = new Branch
                     {
                         BranchName = branch.BranchName,
-                        BankId = createdBank.Id
+                        BankId = createdBank.Id,
+                        BranchCode = branch.BranchCode
                     };
 
                     var createdBranch = await _branchRepository.Add(newBranch);

@@ -22,14 +22,16 @@ namespace BankApplication.Services
         {
             try
             {
+
                 var users = await _userRepository.GetAll();
-                var existingUser = users.FirstOrDefault(u => u.UserName == userAddRequest.UserName);
+                var existingUser = users.FirstOrDefault(u => u.Username == userAddRequest.Username);
                 if (existingUser != null)
                 {
                     throw new Exception("User already exists.");
                 }
 
                 var user = userMapper.MapUserAddRequest(userAddRequest);
+
 
                 var createdUser = await _userRepository.Add(user);
                 return createdUser ?? throw new Exception("User registration failed");
@@ -52,7 +54,7 @@ namespace BankApplication.Services
                     throw new Exception("User not found.");
                 }
 
-                var user = userMapper.MapUserUpdateRequest(userUpdateRequest);
+                var user = userMapper.MapUserUpdateRequest(userUpdateRequest, existingUser);
                 if (user == null)
                 {
                     throw new Exception("Invalid user update request.");
@@ -68,12 +70,12 @@ namespace BankApplication.Services
             }
         }
 
-        public async Task<bool> LoginUserAsync(string username, string password)
+        public async Task<bool> LoginUserAsync(UserLoginRequestDTO userLoginRequest)
         {
             try
             {
                 var users = await _userRepository.GetAll();
-                var user = users.FirstOrDefault(u => u.UserName == username && u.PasswordHash == password);
+                var user = users.FirstOrDefault(u => u.Username == userLoginRequest.Username && u.PasswordHash == userLoginRequest.Password);
                 if (user == null)
                 {
                     throw new Exception("Invalid username or password.");

@@ -4,6 +4,7 @@ namespace BankApplication.Models.DTO
     {
         public string BranchName { get; set; } = string.Empty;
         public int BranchCode { get; set; }
+        public int BankId { get; set; }
        
     }
 }

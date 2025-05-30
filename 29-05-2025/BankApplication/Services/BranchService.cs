@@ -11,12 +11,14 @@ namespace BankApplication.Services
 
         private readonly IRepository<int, Branch> _branchRepository;
 
+        BranchMapper branchMapper;
         public BranchService(IRepository<int, Branch> branchRepository)
         {
             _branchRepository = branchRepository;
+            branchMapper = new BranchMapper();
         }
 
-        public async Task<Branch> CreateBranch(Branch branch)
+        public async Task<Branch> CreateBranch(BranchAddRequestDTO branch)
         {
             try
             {
@@ -27,7 +29,9 @@ namespace BankApplication.Services
                     throw new Exception("Branch already exists.");
                 }
 
-                var createdBranch = await _branchRepository.Add(branch);
+                var newBranch = branchMapper.MapBranchAddRequest(branch);
+
+                var createdBranch = await _branchRepository.Add(newBranch);
                 return createdBranch ?? throw new Exception("Branch creation failed");
             }
             catch (Exception ex)

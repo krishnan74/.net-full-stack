@@ -22,15 +22,32 @@ namespace BankApplication.Services
         {
             try
             {
-
                 var newAccount = accountMapper.MapAccountAddRequest(account);
 
                 var createdAccount = await _accountRepository.Add(newAccount);
+
                 return createdAccount ?? throw new Exception("Account creation failed");
             }
             catch (Exception ex)
             {
                 throw new Exception($"Error creating account: {ex.Message}");
+            }
+        }
+
+        public async Task<decimal> GetAccountBalance(string accountNumber)
+        {
+            try
+            {
+                var account = await _accountRepository.Get(accountNumber);
+                if (account == null)
+                {
+                    throw new Exception("Account not found.");
+                }
+                return account.Balance;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving account balance: {ex.Message}");
             }
         }
 

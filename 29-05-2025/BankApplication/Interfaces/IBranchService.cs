@@ -5,7 +5,7 @@ namespace BankApplication.Interfaces
 {
     public interface IBranchService
     {
-        Task<Branch> CreateBranch(Branch branch);
+        Task<Branch> CreateBranch(BranchAddRequestDTO branch);
         Task<IEnumerable<Branch>> GetBranchesByBank(int bankId);
         Task<Branch> DeleteBranch(int branchCode);
 

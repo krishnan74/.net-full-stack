@@ -31,7 +31,7 @@ namespace BankApplication.Repositories
             {
                 var users = _bankContext.users;
                 if (!users.Any())
-                    throw new Exception("No users found in the database");
+                    return new List<User>();
                 return (await users.ToListAsync());
             }
             catch (Exception ex)
