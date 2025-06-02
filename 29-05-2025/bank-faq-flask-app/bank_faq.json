@@ -1,0 +1,44 @@
+{
+  "faqs": [
+    {
+      "question": "What is the interest rate on savings accounts?",
+      "answer": "The interest rate on savings accounts is currently 1.5%."
+    },
+    {
+      "question": "How can I open a new account?",
+      "answer": "You can open a new account by visiting our website or any of our branches."
+    },
+    {
+      "question": "What are the bank's operating hours?",
+      "answer": "Our operating hours are Monday to Friday, 9 AM to 5 PM."
+    },
+    {
+      "question": "How do I reset my online banking password?",
+      "answer": "To reset your online banking password, go to the login page and click on 'Forgot Password'."
+    },
+    {
+      "question": "What should I do if I lose my debit card?",
+      "answer": "If you lose your debit card, please contact customer service immediately to report it."
+    },
+    {
+      "question": "Are there any fees for account maintenance?",
+      "answer": "Yes, there is a monthly maintenance fee of $5 for checking accounts."
+    },
+    {
+      "question": "How can I transfer money between accounts?",
+      "answer": "You can transfer money between accounts using our online banking platform or mobile app."
+    },
+    {
+      "question": "What is the process for applying for a loan?",
+      "answer": "To apply for a loan, you can fill out an application form on our website or visit a branch."
+    },
+    {
+      "question": "Can I access my account from abroad?",
+      "answer": "Yes, you can access your account from abroad using online banking."
+    },
+    {
+      "question": "What should I do if I suspect fraud on my account?",
+      "answer": "If you suspect fraud, please contact customer service immediately to investigate the issue."
+    }
+  ]
+}
