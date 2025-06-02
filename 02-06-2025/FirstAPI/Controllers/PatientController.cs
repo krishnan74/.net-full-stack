@@ -1,54 +1,63 @@
-using Microsoft.AspNetCore.Mvc;
+
+using System.Threading.Tasks;
+using FirstAPI.Interfaces;
 using FirstAPI.Models;
+using FirstAPI.Models.DTOs.Patient;
+using FirstAPI.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
-[ApiController]
-[Route("/api/[controller]")]
 
-public class PatientController: ControllerBase{
-    static List<Patient> patients = new List<Patient>{
-        new Patient{Id = 1, Name = "Harish", Age = 30, Diagnosis = "Flu"},
-        new Patient{Id = 2, Name = "Vikash", Age = 25, Diagnosis = "Cold"},
-    };
+namespace FirstAPI.Controllers
+{
 
-    [HttpGet]
-    public ActionResult<IEnumerable<Patient>> GetPatients(){
-        return Ok(patients);
-    }
 
-    [HttpGet("{id}")]
-    public ActionResult<Patient> GetPatient(int id){
-        var patient = patients.FirstOrDefault(p => p.Id == id);
-        if (patient == null) {
-            return NotFound();
+    [ApiController]
+    [Route("/api/[controller]")]
+    public class PatientController : ControllerBase
+    {
+        private readonly IPatientService _patientService;
+
+        public PatientController(IPatientService patientService)
+        {
+            _patientService = patientService;
         }
-        return Ok(patient);
-    }
 
-    [HttpPost]
-    public ActionResult<Patient> PostPatient([FromBody] Patient patient){
-        patients.Add(patient);
-        return Created("", patient);
-    }
-
-    [HttpPut("{id}")]
-    public ActionResult<Patient> PutPatient([FromBody] Patient patient){
-        var existingPatient = patients.FirstOrDefault(p => p.Id == patient.Id);
-        if (existingPatient == null) {
-            return NotFound();
+        [HttpGet("by-diagnosis")]
+        [Authorize]
+        public async Task<ActionResult<ICollection<PatientsByDiagnosisResponseDTO>>> GetPatientsByDiagnosis([FromQuery] string diagnosis)
+        {
+            var result = await _patientService.GetPatientsByDiagnosis(diagnosis);
+            if (result == null || !result.Any())
+                return NotFound("No patients found with the specified diagnosis.");
+            return Ok(result);
         }
-        existingPatient.Name = patient.Name;
-        existingPatient.Age = patient.Age;
-        existingPatient.Diagnosis = patient.Diagnosis;
-        return Ok(existingPatient);
-    }
 
-    [HttpDelete("{id}")]
-    public ActionResult DeletePatient(int id){
-        var patient = patients.FirstOrDefault(p => p.Id == id);
-        if (patient == null) {
-            return NotFound();
+        [HttpGet("by-name")]
+        [Authorize]
+        public async Task<ActionResult<Patient>> GetPatientByName([FromQuery] string name)
+        {
+            var patient = await _patientService.GetPatientByName(name);
+            if (patient == null)
+                return NotFound("Patient not found.");
+            return Ok(patient);
         }
-        patients.Remove(patient);
-        return NoContent();
+            
+        [HttpPost]
+        public async Task<ActionResult<Patient>> PostPatient([FromBody] PatientAddRequestDTO patient)
+        {
+            try
+            {
+                var newPatient = await _patientService.AddPatient(patient);
+                if (newPatient != null)
+                    return Created("", newPatient);
+                return BadRequest("Unable to process request at this moment");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
     }
 }
