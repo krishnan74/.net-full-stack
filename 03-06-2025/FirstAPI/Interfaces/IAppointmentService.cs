@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FirstAPI.Models;
+using FirstAPI.Models.DTOs.Appointment;
 
 namespace FirstAPI.Interfaces
 {
     public interface IAppointmentService
     {
-        public Task<Appointment> AddAppointment(Appointment appointment);
+        public Task<Appointment> AddAppointment(AppointmentAddRequestDTO appointment);
+        public Task<Appointment> CancelAppointment(string appointmentNumber);
         // public Task<List<Appointment>>? SearchAppointment( AppointmentSearchModel appointmentSearchModel );
     }
 }

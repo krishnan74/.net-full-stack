@@ -15,12 +15,13 @@ namespace FirstAPI.Services
         {
             _securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Keys:JwtTokenKey"]));
         }
-        public async  Task<string> GenerateToken(User user)
+        public async  Task<string> GenerateToken(User user, float? YearsOfExperience)
         {
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier,user.Username),
-                new Claim(ClaimTypes.Role,user.Role)
+                new Claim(ClaimTypes.Role,user.Role),
+                new Claim("YearsOfExperience", YearsOfExperience.ToString())
             };
             var creds = new SigningCredentials(_securityKey, SecurityAlgorithms.HmacSha256Signature);
 

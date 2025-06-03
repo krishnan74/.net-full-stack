@@ -3,6 +3,7 @@ using FirstAPI.Contexts;
 using FirstAPI.Interfaces;
 using FirstAPI.Misc;
 using FirstAPI.Models;
+using FirstAPI.Policies.Requirements;
 using FirstAPI.Repositories;
 using FirstAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Npgsql.Replication.PgOutput.Messages;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +46,15 @@ builder.Services.AddSwaggerGen(opt =>
         }
     });
 });
+
+builder.Services.AddScoped<IAuthorizationHandler, MinimumExperienceRequirementHandler>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AtLeastHas3YearsExperience", policy =>
+        policy.Requirements.Add(new MinimumExperienceRequirement(3)));
+});
+
 builder.Services.AddControllers()
                 .AddJsonOptions(opts =>
                 {
@@ -68,6 +80,7 @@ builder.Services.AddTransient<IRepository<string, User>, UserRepository>();
 #region Services
 builder.Services.AddTransient<IDoctorService, DoctorService>();
 builder.Services.AddTransient<IPatientService, PatientService>();
+builder.Services.AddTransient<IAppointmentService, AppointmentService>();
 builder.Services.AddTransient<IOtherContextFunctionalities, OtherFunctionalitiesImplementation>();
 builder.Services.AddTransient<IEncryptionService, EncryptionService>();
 builder.Services.AddTransient<ITokenService, TokenService>();

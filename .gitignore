@@ -4,3 +4,4 @@ obj/
 
 # Ignore Visual Studio user-specific files and folders
 .vs/
+.fake

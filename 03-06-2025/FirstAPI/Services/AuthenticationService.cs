@@ -12,16 +12,20 @@ namespace FirstAPI.Services
         private readonly IEncryptionService _encryptionService;
         private readonly IRepository<string, User> _userRepository;
         private readonly ILogger<AuthenticationService> _logger;
+        private readonly IDoctorService _doctorService;
 
         public AuthenticationService(ITokenService tokenService,
                                     IEncryptionService encryptionService,
                                     IRepository<string, User> userRepository,
-                                    ILogger<AuthenticationService> logger)
+                                    ILogger<AuthenticationService> logger, 
+                                    IDoctorService doctorService)
+                                    
         {
             _tokenService = tokenService;
             _encryptionService = encryptionService;
             _userRepository = userRepository;
             _logger = logger;
+            _doctorService = doctorService;
         }
         public async Task<UserLoginResponse> Login(UserLoginRequest user)
         {
@@ -44,8 +48,15 @@ namespace FirstAPI.Services
                     throw new Exception("Invalid password");
                 }
             }
-            dbUser.Role = "Patient";
-            var token = await _tokenService.GenerateToken(dbUser);
+
+            float yearsOfExperience = 0;
+
+            if( dbUser.Role == "Doctor"){
+                var doctor = await _doctorService.GetDoctorByEmail(dbUser.Username);
+                yearsOfExperience = doctor.YearsOfExperience;
+            }
+
+            var token = await _tokenService.GenerateToken(dbUser, yearsOfExperience);
             return new UserLoginResponse
             {
                 Username = user.Username,

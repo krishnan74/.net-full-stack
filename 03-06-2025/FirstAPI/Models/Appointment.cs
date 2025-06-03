@@ -11,8 +11,12 @@ namespace FirstAPI.Models
         public string Description { get; set; } = string.Empty;
         public DateTime AppointmentDateTime { get; set; }
         public string Status { get; set; } = string.Empty;
-        
         public Doctor? Doctor { get; set; }
         public Patient? Patient { get; set; }
+
+        public override string ToString()
+        {
+            return $"Appointment Number: {AppointmentNumber}, Patient ID: {PatientId}, Doctor ID: {DoctorId}, Description: {Description}, Appointment DateTime: {AppointmentDateTime}, Status: {Status}";
+        }
     }
 }

@@ -131,5 +131,23 @@ namespace FirstAPI.Services
             return result;
         }
 
+        public async Task<Doctor> GetDoctorByEmail(string email)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(email))
+                    throw new ArgumentException("Email cannot be null or empty", nameof(email));
+
+                var doctors = await _doctorRepository.GetAll();
+                var doctor = doctors.FirstOrDefault(d => d.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+                return doctor;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return null;
+            }
+        }
+
     }
 }

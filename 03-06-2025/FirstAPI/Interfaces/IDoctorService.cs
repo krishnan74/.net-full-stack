@@ -9,5 +9,6 @@ namespace FirstAPI.Interfaces
         public Task<Doctor> AddDoctor(DoctorAddRequestDTO doctor);
         public Task<Doctor> GetDoctorByName(string name);
         public Task<ICollection<DoctorsBySpecialityResponseDTO>> GetDoctorsBySpeciality(string speciality);
+        public Task<Doctor> GetDoctorByEmail(string email);
     }
 }
