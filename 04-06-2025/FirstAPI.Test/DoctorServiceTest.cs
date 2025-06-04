@@ -132,9 +132,4 @@ public class DoctorServiceTest
         Assert.That(result.Email, Is.EqualTo(email));
     }
 
-    [TearDown]
-    public void TearDown() 
-    {
-        _context.Dispose();
-    }
 }
