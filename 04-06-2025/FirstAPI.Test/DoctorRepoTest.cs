@@ -1,124 +1,107 @@
 ﻿using FirstAPI.Contexts;
 using FirstAPI.Models;
 using FirstAPI.Repositories;
-using FirstAPI.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using NUnit.Framework;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
-
-
-namespace FirstAPI.Test;
-
-public class Tests
+namespace FirstAPI.Test
 {
-    private ClinicContext _context;
-    [SetUp]
-    public void Setup()
+    public class DoctorRepoTest
     {
-        var options = new DbContextOptionsBuilder<ClinicContext>()
-                            .UseInMemoryDatabase("TestDb")
-                            .Options;
-        _context = new ClinicContext(options);
-    }
+        private ClinicContext _context;
+        private DoctorRepository _doctorRepository;
 
-    /*[Test]
-    public async Task AddDoctorTest()
-    {
-        //arrange
-        var email = " test@gmail.com";
-        var password = System.Text.Encoding.UTF8.GetBytes("test123");
-        var key = Guid.NewGuid().ToByteArray();
-        var user = new User
+        [SetUp]
+        public void Setup()
         {
-            Username = email,
-            Password = password,
-            HashKey = key,
-            Role = "Doctor"
-        };
-        _context.Add(user);
-        await _context.SaveChangesAsync();
-        var doctor = new Doctor
+            var options = new DbContextOptionsBuilder<ClinicContext>()
+                .UseInMemoryDatabase(databaseName: "TestDb_Doctor")
+                .Options;
+            _context = new ClinicContext(options);
+            _doctorRepository = new DoctorRepository(_context);
+        }
+
+        [Test]
+        public async Task AddDoctor_Test()
         {
-            Name = "test",
-            YearsOfExperience = 2,
-            Email = email
-        };
-        IRepository<int, Doctor> _doctorRepository = new DoctorRepository(_context);
-        //action
-        var result = await _doctorRepository.Add(doctor);
-        //assert
-        Assert.That(result, Is.Not.Null, "Doctor IS not addeed");
-        Assert.That(result.Id, Is.EqualTo(1));
-    }
-    [TestCase(1)]
-    [TestCase(2)]
-    public async Task GetDoctorPassTest(int id)
-    {
-        //arrange
-        var email = " test@gmail.com";
-        var password = System.Text.Encoding.UTF8.GetBytes("test123");
-        var key = Guid.NewGuid().ToByteArray();
-        var user = new User
+            var doctor = new Doctor { Name = "Test", Email = "test@email.com", YearsOfExperience = 5 };
+            var result = await _doctorRepository.Add(doctor);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Id, Is.GreaterThan(0));
+        }
+
+        [Test]
+        public async Task GetDoctor_Test()
         {
-            Username = email,
-            Password = password,
-            HashKey = key,
-            Role = "Doctor"
-        };
-        _context.Add(user);
-        await _context.SaveChangesAsync();
-        var doctor = new Doctor
+            var doctor = new Doctor { Name = "Test", Email = "test@email.com", YearsOfExperience = 5 };
+            await _doctorRepository.Add(doctor);
+            var result = await _doctorRepository.Get(doctor.Id);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Name, Is.EqualTo("Test"));
+        }
+
+        [Test]
+        public void GetDoctor_Test_NotFoundException()
         {
-            Name = "test",
-            YearsOfExperience = 2,
-            Email = email
-        };
-        IRepository<int, Doctor> _doctorRepository = new DoctorRepository(_context);
-        //action
-        await _doctorRepository.Add(doctor);
+            Assert.ThrowsAsync<System.Exception>(async () => await _doctorRepository.Get(999));
+        }
 
-        //action
-        var result = _doctorRepository.Get(id);
-        //assert
-        Assert.That(result.Id, Is.EqualTo(id));
-
-    }*/
-
-    [TestCase(3)]
-    public async Task GetDoctorExceptionTest(int id)
-    {
-        //arrange
-        var email = " test@gmail.com";
-        var password = System.Text.Encoding.UTF8.GetBytes("test123");
-        var key = Guid.NewGuid().ToByteArray();
-        var user = new User
+        [Test]
+        public async Task GetAllDoctors_Test()
         {
-            Username = email,
-            Password = password,
-            HashKey = key,
-            Role = "Doctor"
-        };
-        _context.Add(user);
-        await _context.SaveChangesAsync();
-        var doctor = new Doctor
+            await _doctorRepository.Add(new Doctor { Name = "Test1", Email = "a@email.com", YearsOfExperience = 1 });
+            await _doctorRepository.Add(new Doctor { Name = "Test2", Email = "b@email.com", YearsOfExperience = 2 });
+            var result = await _doctorRepository.GetAll();
+            Assert.That(result.Count(), Is.EqualTo(2));
+        }
+
+        [Test]
+        public void GetAllDoctors_Test_EmptyException()
         {
-            Name = "test",
-            YearsOfExperience = 2,
-            Email = email
-        };
-        IRepository<int, Doctor> _doctorRepository = new DoctorRepository(_context);
-        //action
-        await _doctorRepository.Add(doctor);
-        //action
+            Assert.ThrowsAsync<System.Exception>(async () => await _doctorRepository.GetAll());
+        }
 
+        [Test]
+        public async Task UpdateDoctor_Test()
+        {
+            var doctor = new Doctor { Name = "Test", Email = "test@email.com", YearsOfExperience = 5 };
+            await _doctorRepository.Add(doctor);
+            doctor.Name = "Updated";
+            var result = await _doctorRepository.Update(doctor.Id, doctor);
+            Assert.That(result.Name, Is.EqualTo("Updated"));
+        }
 
-        //var ex = await Assert.ThrowsAsync<Exception>(() => _doctorRepository.Get(id));
+        [Test]
+        public void UpdateDoctor_Test_NotFoundException()
+        {
+            var doctor = new Doctor { Id = 999, Name = "NotFound" };
+            Assert.ThrowsAsync<System.Exception>(async () => await _doctorRepository.Update(doctor.Id, doctor));
+        }
 
-        //Assert.ThrowsAsync<Exception>(_doctorRepository.Get(id),typeof(System.Exception));
+        [Test]
+        public async Task DeleteDoctor_Test()
+        {
+            var doctor = new Doctor { Name = "Test", Email = "test@email.com", YearsOfExperience = 5 };
+            await _doctorRepository.Add(doctor);
+            var result = await _doctorRepository.Delete(doctor.Id);
+            Assert.That(result, Is.Not.Null);
+            Assert.ThrowsAsync<System.Exception>(async () => await _doctorRepository.Get(doctor.Id));
+        }
 
-    }
-    [TearDown]
-    public void TearDown() 
-    {
-        _context.Dispose();
+        [Test]
+        public void DeleteDoctor_Test_NotFoundException()
+        {
+            Assert.ThrowsAsync<System.Exception>(async () => await _doctorRepository.Delete(999));
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _context.Database.EnsureDeleted();
+            _context.Dispose();
+        }
     }
 }
