@@ -1,8 +1,8 @@
-
 using FirstAPI.Interfaces;
 using FirstAPI.Models.DTOs.DoctorSpecialities;
 using Microsoft.AspNetCore.Mvc;
 using FirstAPI.Misc;
+using Microsoft.AspNetCore.Authentication;
 
 
 namespace FirstAPI.Controllers
@@ -13,10 +13,10 @@ namespace FirstAPI.Controllers
     [Route("/api/[controller]")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly Interfaces.IAuthenticationService _authenticationService;
+        private readonly FirstAPI.Interfaces.IAuthenticationService _authenticationService;
         private readonly ILogger<AuthenticationController> _logger;
 
-        public AuthenticationController(IAuthenticationService authenticationService, ILogger<AuthenticationController> logger)
+        public AuthenticationController(FirstAPI.Interfaces.IAuthenticationService authenticationService, ILogger<AuthenticationController> logger)
         {
             _authenticationService = authenticationService;
             _logger = logger;
@@ -39,6 +39,31 @@ namespace FirstAPI.Controllers
 
             var result = await _authenticationService.Login(loginRequest);
             return Ok(result);
+        }
+
+        [HttpGet("google-signin")]
+        public IActionResult GoogleSignIn(string returnUrl = "/")
+        {
+            var properties = new Microsoft.AspNetCore.Authentication.AuthenticationProperties { RedirectUri = Url.Action("GoogleCallback", new { returnUrl }) };
+            return Challenge(properties, "Google");
+        }
+
+        [HttpGet("google-callback")]
+        public async Task<IActionResult> GoogleCallback(string returnUrl = "/")
+        {
+            var authenticateResult = await HttpContext.AuthenticateAsync("Google");
+            if (!authenticateResult.Succeeded || authenticateResult?.Principal == null)
+            {
+                return Unauthorized();
+            }
+            var email = authenticateResult.Principal.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
+            var name = authenticateResult.Principal.Identity?.Name;
+            if (string.IsNullOrEmpty(email))
+            {
+                return Unauthorized();
+            }
+            var loginResponse = await _authenticationService.LoginWithGoogle(email, name);
+            return Ok(loginResponse);
         }
     }
 }

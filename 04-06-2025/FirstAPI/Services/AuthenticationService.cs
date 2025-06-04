@@ -1,4 +1,3 @@
-
 using FirstAPI.Interfaces;
 using FirstAPI.Models;
 using FirstAPI.Models.DTOs.DoctorSpecialities;
@@ -60,6 +59,33 @@ namespace FirstAPI.Services
             return new UserLoginResponse
             {
                 Username = user.Username,
+                Token = token,
+            };
+        }
+
+        public async Task<UserLoginResponse> LoginWithGoogle(string email, string? name)
+        {
+            var dbUser = await _userRepository.Get(email);
+            if (dbUser == null)
+            {
+                dbUser = new User
+                {
+                    Username = email,
+                    Role = "Patient" // or another default role
+                };
+                dbUser = await _userRepository.Add(dbUser);
+            }
+
+            float yearsOfExperience = 0;
+            if (dbUser.Role == "Doctor")
+            {
+                var doctor = await _doctorService.GetDoctorByEmail(dbUser.Username);
+                yearsOfExperience = doctor?.YearsOfExperience ?? 0;
+            }
+            var token = await _tokenService.GenerateToken(dbUser, yearsOfExperience);
+            return new UserLoginResponse
+            {
+                Username = dbUser.Username,
                 Token = token,
             };
         }
