@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FileAPI.Models
+namespace Notify.Models
 {
     public class FileDetails
     {
