@@ -1,0 +1,6 @@
+@QuizupAPI_HostAddress = http://localhost:5156
+
+GET {{QuizupAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
