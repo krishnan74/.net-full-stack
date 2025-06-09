@@ -4,7 +4,7 @@ namespace QuizupAPI.Models
 {
     public class Student
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         [Required]
         public string Email { get; set; } = string.Empty;
 

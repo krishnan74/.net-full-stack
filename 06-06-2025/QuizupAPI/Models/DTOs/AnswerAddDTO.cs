@@ -5,8 +5,8 @@ namespace QuizupAPI.Models.DTOs.Answer
 {
     public class AnswerAddDTO
     {
-        public int QuestionId { get; set; }
-        public int QuizSubmissionId { get; set; }
+        public long QuestionId { get; set; }
+        public long QuizSubmissionId { get; set; }
         
         [Required(ErrorMessage = "Selected answer is required.")]
         public string SelectedAnswer { get; set; } = string.Empty;

@@ -9,10 +9,10 @@ namespace QuizupAPI.Models.DTOs.QuizSubmission
     public class QuizSubmissionDTO
     {
         [Required]
-        public int StudentId { get; set; }
+        public long StudentId { get; set; }
 
         [Required]
-        public int QuizId { get; set; }
+        public long QuizId { get; set; }
 
         [Required]
         public DateTime SubmissionDate { get; set; } = DateTime.Now;

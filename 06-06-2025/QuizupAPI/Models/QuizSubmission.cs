@@ -2,7 +2,7 @@ namespace QuizupAPI.Models
 {
     public class QuizSubmission
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public int QuizId { get; set; }
         public Quiz? Quiz { get; set; }
         public int StudentId { get; set; }

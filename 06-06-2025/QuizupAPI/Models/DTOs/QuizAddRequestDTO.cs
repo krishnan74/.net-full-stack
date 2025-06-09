@@ -15,7 +15,7 @@ namespace QuizupAPI.Models.DTOs.Quiz
         public DateTime? DueDate { get; set; }
 
         [Required]
-        public int TeacherId { get; set; }
+        public long TeacherId { get; set; }
 
         [Required]
         public List<QuestionAddRequestDTO> Questions { get; set; } = new List<QuestionAddRequestDTO>();
