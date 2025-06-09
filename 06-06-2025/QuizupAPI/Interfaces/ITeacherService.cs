@@ -8,11 +8,11 @@ namespace QuizupAPI.Interfaces
     public interface ITeacherService
     {
         Task<Teacher> AddTeacherAsync(TeacherAddRequestDTO teacher);
-        Task<Teacher> GetTeacherByIdAsync(int id);
+        Task<Teacher> GetTeacherByIdAsync(long id);
         Task<IEnumerable<Teacher>> GetAllTeachersAsync();
-        Task<Teacher> UpdateTeacherAsync(int id, TeacherUpdateRequestDTO teacher);
-        Task<Teacher> DeleteTeacherAsync(int id);
-        Task<Quiz> StartQuizAsync(int teacherId, int quizId);
-        Task<Quiz> EndQuizAsync(int teacherId, int quizId);
+        Task<Teacher> UpdateTeacherAsync(long id, TeacherUpdateRequestDTO teacher);
+        Task<Teacher> DeleteTeacherAsync(long id);
+        Task<Quiz> StartQuizAsync(long teacherId, long quizId);
+        Task<Quiz> EndQuizAsync(long teacherId, long quizId);
     }
 }
