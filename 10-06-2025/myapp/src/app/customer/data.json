@@ -1,0 +1,31 @@
+{
+  "customerData": [
+    {
+      "id": 1,
+      "name": "Mark Grayson",
+      "email": "mark.grayson@example.com",
+      "phone": "123-456-7890",
+      "address": "74 Main St, Y Town, India",
+      "likes": 0,
+      "dislikes": 0
+    },
+    {
+      "id": 2,
+      "name": "Ram Kumar",
+      "email": "ram.kumar@example.com",
+      "phone": "987-654-3210",
+      "address": "56 Another St, Y Town, India",
+      "likes": 0,
+      "dislikes": 0
+    },
+    {
+      "id": 3,
+      "name": "Krish",
+      "email": "krish@example.com",
+      "phone": "456-789-0123",
+      "address": "78 Third St, Y Town, India",
+      "likes": 0,
+      "dislikes": 0
+    }
+  ]
+}

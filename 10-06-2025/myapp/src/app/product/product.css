@@ -1,0 +1,94 @@
+.count{
+    background-color: red;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 50%;
+    font-size: 0.7em;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.cart{
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.product-container{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+.product-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+.product-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 16px;
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    transition: box-shadow 0.2s;
+}
+
+.product-image-div{
+    width: 100%;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border: #ccc 1px solid;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.product-card > button {
+    padding: 4px 0;
+    font-size: 13px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 18px;
+}
+
+.product-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+}
+
+.product-card img {
+    object-fit: cover;
+}
+
+.product-card h3 {
+    margin: 8px 0 12px 0;
+    font-size: 1.25em;
+    text-align: center;
+}
+
+.product-card p {
+    margin: 2px 0;
+    font-size: 0.9em;
+    color: #444;
+    width: 100%;
+    text-align: left;
+}
+
+.product-card button {
+    cursor: pointer;
+}

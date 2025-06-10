@@ -1,0 +1,31 @@
+{
+    "productData": [
+        {
+            "id": 1,
+            "name": "TWS Earbuds",
+            "imageURL": "https://m.media-amazon.com/images/I/71RFdy6y6LL.jpg",
+            "rating": 4.5,
+            "description": "High-quality TWS earbuds with noise cancellation.",
+            "price": 100,
+            "category": "Electronics"
+        },
+        {
+            "id": 2,
+            "name": "Smartphone",
+            "imageURL": "https://m.media-amazon.com/images/I/51AHHmX-17L.jpg",
+            "rating": 4.7,
+            "description": "Latest smartphone with advanced features and sleek design.",
+            "price": 700,
+            "category": "Electronics"
+        },
+        {
+            "id": 3,
+            "name": "Laptop",
+            "imageURL": "https://m.media-amazon.com/images/I/71jG+e7roXL.jpg",
+            "rating": 4.6,
+            "description": "Powerful laptop for gaming and professional use.",
+            "price": 1200,
+            "category": "Electronics"
+        }
+    ]
+}

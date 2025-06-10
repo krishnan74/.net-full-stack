@@ -1,0 +1,56 @@
+.customer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+#dislike{
+    transform: rotate(180deg);
+}
+
+.actions{
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 8px;
+    padding: 4px 0;
+    cursor: pointer;
+}
+
+img{
+    width: 20px;
+    height: 20px;
+}
+
+.customer-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 0;
+    background-color: #f9f9f9;
+    width: 300px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+}
+
+.customer-card h3 {
+    font-size: 1.25em;
+    margin: 0 0 8px 0;
+}
+
+.customer-card p {
+    font-size: 0.9em;
+    color: #333;
+    margin: 0 0 4px 0;
+}

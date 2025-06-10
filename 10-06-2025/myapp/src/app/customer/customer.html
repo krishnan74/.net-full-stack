@@ -1,0 +1,25 @@
+<h2>Customers</h2>
+<div *ngIf="customers && customers.length; else noCustomers">
+    <ul class="customer-list">
+        <li *ngFor="let customer of customers" class="customer-card">
+            <h3>{{ customer.name }}</h3>
+            <p><strong>Address:</strong> {{ customer.address }}</p>
+            <p><strong>Phone:</strong> {{ customer.phone }}</p>
+            <p><strong>Email:</strong> {{ customer.email }}</p>
+            <div class="actions">
+                <button (click)="likeCustomer(customer)">
+                    <img src="https://img.icons8.com/ios-filled/30/facebook-like.png" alt="facebook-like"/>
+                    <span>{{ customer.likes || 0 }}</span>
+                </button>
+                <button (click)="dislikeCustomer(customer)">
+                    <img  src="https://img.icons8.com/ios-filled/30/facebook-like.png" alt="facebook-like" id="dislike"/>
+                    <span>{{ customer.dislikes || 0 }}</span>
+                </button>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<ng-template #noCustomers>
+    <p>No customers found.</p>
+</ng-template>
