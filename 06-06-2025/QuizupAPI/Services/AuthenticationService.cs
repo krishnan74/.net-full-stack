@@ -32,18 +32,11 @@ namespace QuizupAPI.Services
             }
             if (user != null && user.Password != null)
             {
-                var encryptedData = _encryptionService.EncryptData(new EncryptModel
+                var isPasswordValid = _encryptionService.VerifyPassword(user.Password, dbUser.HashedPassword);
+                if (!isPasswordValid)
                 {
-                    Data = user.Password,
-                    HashKey = dbUser.HashKey
-                });
-                for (int i = 0; i < encryptedData.EncryptedData.Length; i++)
-                {
-                    if (encryptedData.EncryptedData[i] != dbUser.Password[i])
-                    {
-                        _logger.LogError("Invalid login attempt");
-                        throw new Exception("Invalid password");
-                    }
+                    _logger.LogWarning("Invalid password for user {Username}", user.Username);
+                    throw new Exception("Invalid password");
                 }
             }
             else

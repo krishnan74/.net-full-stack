@@ -13,31 +13,58 @@ namespace QuizupAPI.Services
     {
         private readonly IRepository<long, Teacher> _teacherRepository;
         private readonly IRepository<long, Quiz> _quizRepository;
+        private readonly IEncryptionService _encryptionService;
+        private readonly IRepository<string, User> _userRepository;
         private readonly IHubContext<QuizNotificationHub> _hubContext;
+
+        public UserMapper userMapper;
         public TeacherMapper teacherMapper;
-        public TeacherService(IRepository<long, Teacher> teacherRepository, IRepository<long, Quiz> quizRepository, IHubContext<QuizNotificationHub> hubContext)
+        public TeacherService(IRepository<long, Teacher> teacherRepository, IRepository<long, Quiz> quizRepository, IHubContext<QuizNotificationHub> hubContext, IEncryptionService encryptionService, IRepository<string, User> userRepository)
         {
             _quizRepository = quizRepository;
             _hubContext = hubContext;
             _teacherRepository = teacherRepository;
+            _encryptionService = encryptionService;
+            _userRepository = userRepository;
             teacherMapper = new TeacherMapper();
+            userMapper = new UserMapper();
         }
 
         public async Task<Teacher> AddTeacherAsync(TeacherAddRequestDTO teacherDTO)
         {
             try
             {
+                
+
                 if (teacherDTO == null)
                 {
                     throw new ArgumentNullException(nameof(teacherDTO), "Teacher data cannot be null.");
                 }
-                if (string.IsNullOrWhiteSpace(teacherDTO.FirstName) || string.IsNullOrWhiteSpace(teacherDTO.LastName) || string.IsNullOrWhiteSpace(teacherDTO.Email))
+                if (string.IsNullOrWhiteSpace(teacherDTO.FirstName) || string.IsNullOrWhiteSpace(teacherDTO.LastName) || string.IsNullOrWhiteSpace(teacherDTO.Email) || string.IsNullOrWhiteSpace(teacherDTO.Password))
                 {
-                    throw new ArgumentException("First name, last name, and email are required fields.");
+                    throw new ArgumentException("First name, last name, email, and password are required fields.");
                 }
                 if (!new EmailAddressAttribute().IsValid(teacherDTO.Email))
                 {
                     throw new ArgumentException("Invalid email format.");
+                }
+
+                var user = userMapper.MapTeacherAddRequestUser(teacherDTO);
+
+                if (user == null)
+                {
+                    throw new Exception("Failed to map TeacherAddRequestDTO to User.");
+                }
+
+                var hashedPassword = _encryptionService.HashPassword(teacherDTO.Password);
+
+                user.HashedPassword = hashedPassword;
+
+                user = await _userRepository.Add(user);
+
+                if (user == null)
+                {
+                    throw new Exception("Failed to add user.");
                 }
 
                 var allTeachers = await _teacherRepository.GetAll();

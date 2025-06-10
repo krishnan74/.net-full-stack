@@ -8,6 +8,10 @@ namespace QuizupAPI.Models.DTOs.Teacher
         [EmailAddress(ErrorMessage = "Invalid email format")]
         public string Email { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Password is required")]
+        [MinLength(6, ErrorMessage = "Password must be at least 6 characters long")]
+        public string Password { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "First name is required")]
         public string FirstName { get; set; } = string.Empty;
 

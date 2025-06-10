@@ -7,16 +7,15 @@ namespace QuizupAPI.Services
 {
     public class EncryptionService : IEncryptionService
     {
-        public EncryptModel EncryptData(EncryptModel data)
+        public string HashPassword(string password)
         {
-            HMACSHA256 hMACSHA256;
-            if (data.HashKey != null)
-                hMACSHA256 = new HMACSHA256(data.HashKey);
-            else
-                hMACSHA256 = new HMACSHA256();
-            data.EncryptedData = hMACSHA256.ComputeHash(Encoding.UTF8.GetBytes(data.Data));
-            data.HashKey = hMACSHA256.Key;
-            return data;
+            return BCrypt.Net.BCrypt.HashPassword(password);
         }
+
+        public bool VerifyPassword(string password, string hashedPassword)
+        {
+            return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
+        }
+    
     }
 }

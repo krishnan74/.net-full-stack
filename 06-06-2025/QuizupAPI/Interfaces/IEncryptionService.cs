@@ -4,6 +4,7 @@ namespace QuizupAPI.Interfaces
 {
     public interface IEncryptionService
     {
-        public EncryptModel EncryptData(EncryptModel data);
+        public string HashPassword(string password);
+        public bool VerifyPassword(string password, string hashedPassword);
     }
 }

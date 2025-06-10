@@ -7,8 +7,7 @@ namespace QuizupAPI.Models
         [Key]
         public string Username { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
-        public byte[]? Password { get; set; }
-        public byte[]? HashKey { get; set; }
+        public string HashedPassword { get; set; } = string.Empty;
         public Teacher? Teacher { get; set; }
         public Student? Student { get; set; }
     }
