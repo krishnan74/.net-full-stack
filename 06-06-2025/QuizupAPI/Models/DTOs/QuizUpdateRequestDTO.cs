@@ -14,6 +14,6 @@ namespace QuizupAPI.Models.DTOs.Quiz
         public string Description { get; set; } = string.Empty;
         public DateTime? DueDate { get; set; }
         [Required]
-        public List<QuestionUpdateRequestDTO> Questions { get; set; } = new List<QuestionUpdateRequestDTO>();
+        public List<QuestionUpdateRequestDTO>? Questions { get; set; } = new List<QuestionUpdateRequestDTO>();
     }
 }

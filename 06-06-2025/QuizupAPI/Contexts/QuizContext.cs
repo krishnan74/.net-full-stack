@@ -11,6 +11,7 @@ namespace QuizupAPI.Contexts
         public DbSet<User> users { get; set; } = null!;
         public DbSet<Quiz> quizzes { get; set; } = null!;
         public DbSet<Question> questions { get; set; } = null!;
+        public DbSet<QuizQuestion> quizQuestions { get; set; } = null!;
         public DbSet<Answer> answers { get; set; } = null!;
         public DbSet<QuizSubmission> quizSubmissions { get; set; } = null!;
         public DbSet<Teacher> teachers { get; set; } = null!;
@@ -36,11 +37,17 @@ namespace QuizupAPI.Contexts
                                         .HasConstraintName("FK_Quiz_Teacher")
                                         .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Question>().HasOne(qs => qs.Quiz)
-                                        .WithMany(q => q.Questions)
-                                        .HasForeignKey(qs => qs.QuizId)
-                                        .HasConstraintName("FK_Question_Quiz")
-                                        .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<QuizQuestion>().HasOne(qq => qq.Quiz)
+                                                .WithMany(q => q.QuizQuestions)
+                                                .HasForeignKey(q => q.QuizId)
+                                                .HasConstraintName("FK_QuizQuestion_Quiz")
+                                                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<QuizQuestion>().HasOne(qq => qq.Question)
+                                                .WithMany(qs => qs.QuizQuestions)
+                                                .HasForeignKey(qs => qs.QuestionId)
+                                                .HasConstraintName("FK_QuizQuestion_Question")
+                                                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<QuizSubmission>().HasOne(qsub => qsub.Quiz)
                                         .WithMany(q => q.Submissions)
