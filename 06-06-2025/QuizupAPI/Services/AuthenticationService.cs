@@ -45,11 +45,47 @@ namespace QuizupAPI.Services
                 throw new Exception("Password is required");
             }
             var token = _tokenService.GenerateToken(dbUser);
+            var refreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(dbUser);
             return new UserLoginResponseDTO
             {
                 Username = user.Username,
-                Token = token,
+                AccessToken = token,
+                RefreshToken = refreshToken,
             };
         }
+
+
+        public async Task<UserLoginResponseDTO> RefreshTokenAsync(RefreshTokenRequestDTO refreshTokenRequest)
+        {
+            var user = await _tokenService.ValidateRefreshTokenAsync(refreshTokenRequest.Username, refreshTokenRequest.RefreshToken);
+            if (user == null)
+            {
+                throw new Exception("Invalid refresh token");
+            }
+            var newAccessToken = _tokenService.GenerateToken(user);
+            var newRefreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(user);
+            
+            return new UserLoginResponseDTO
+            {
+                Username = user.Username,
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken
+            };
+        }
+
+        // public Task<bool> LogoutAsync(string username)
+        // {
+        //     try
+        //     {
+        //         return _tokenService.InvalidateRefreshTokenAsync(username);
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         _logger.LogError(e, "Error during logout for user {Username}", username);
+        //         throw new Exception("Logout failed");
+        //     }
+        // }
+        
+
     }
 }

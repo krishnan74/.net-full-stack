@@ -10,5 +10,8 @@ namespace QuizupAPI.Models
         public string HashedPassword { get; set; } = string.Empty;
         public Teacher? Teacher { get; set; }
         public Student? Student { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
+
     }
 }
