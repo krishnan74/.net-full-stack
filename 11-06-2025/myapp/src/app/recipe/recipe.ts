@@ -1,11 +1,9 @@
 import { Component, inject, Input } from '@angular/core';
-import { RecipeService } from '../services/recipe.service';
 import { RecipeModel } from '../models/recipe';
-import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-recipe',
-  imports: [CurrencyPipe],
+  imports: [],
   templateUrl: './recipe.html',
   styleUrl: './recipe.css'
 })
