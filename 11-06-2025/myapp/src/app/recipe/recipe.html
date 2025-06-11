@@ -1,0 +1,19 @@
+<div class="card" >
+  <img class="card-img-top" [src]="recipe?.image" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title">{{recipe?.name}}</h5>
+    <div class="card-text">
+      
+      <p ><strong>Cuisine: </strong>{{recipe?.cuisine}}</p>
+      <p ><strong>Cooking Time: </strong>{{recipe?.cookTimeMinutes}} minutes</p>
+      <p id="ingredient-heading"><strong>Ingredients </strong></p>
+      <div class="ingredients">
+        @for(
+            ingredient of recipe?.ingredients; track $index
+            ) {
+            <p >{{ingredient}}</p>
+        }
+      </div>
+    </div>
+  </div>
+</div>
