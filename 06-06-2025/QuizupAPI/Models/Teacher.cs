@@ -16,6 +16,10 @@ namespace QuizupAPI.Models
         [Required]
         [MaxLength(100)]
         public string Subject { get; set; } = string.Empty;
+
+        public bool IsDeleted { get; set; } = false;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; }
         public User? User { get; set; }
         public ICollection<Quiz>? Quizzes { get; set; }
     }

@@ -8,8 +8,10 @@ namespace QuizupAPI.Models
         public long TeacherId { get; set; }
         public Teacher? Teacher { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; }
         public DateTime? DueDate { get; set; }
         public bool IsActive { get; set; } = true;
+        public bool IsDeleted { get; set; } = false;
         public ICollection<QuizQuestion>? QuizQuestions { get; set; }
         public ICollection<QuizSubmission>? Submissions { get; set; }
     }

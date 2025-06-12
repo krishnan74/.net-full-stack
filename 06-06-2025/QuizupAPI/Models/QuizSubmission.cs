@@ -7,9 +7,10 @@ namespace QuizupAPI.Models
         public Quiz? Quiz { get; set; }
         public long StudentId { get; set; }
         public Student? Student { get; set; }
-        public DateTime SubmissionDate { get; set; } = DateTime.Now;
+        public DateTime SubmissionDate { get; set; }
+        public DateTime? SavedDate { get; set; }
         public List<Answer>? Answers { get; set; }
         public string SubmissionStatus { get; set; } = "InProgress";
-        public long? Score { get; set; }
+        public int? Score { get; set; }
     }
 }

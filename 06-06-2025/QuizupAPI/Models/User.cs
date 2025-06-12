@@ -11,6 +11,9 @@ namespace QuizupAPI.Models
         public Teacher? Teacher { get; set; }
         public Student? Student { get; set; }
         public string? RefreshToken { get; set; }
+        public bool IsDeleted { get; set; } = false;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
 
     }
