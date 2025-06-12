@@ -1,9 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-
 namespace QuizupAPI.Models.DTOs.Answer
 {
-    public class AnswerAddDTO
+    public class AnswerAddRequestDTO
     {
         public long QuestionId { get; set; }
         public long QuizSubmissionId { get; set; }

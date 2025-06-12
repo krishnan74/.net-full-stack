@@ -15,9 +15,6 @@ namespace QuizupAPI.Models.DTOs.QuizSubmission
         public long QuizId { get; set; }
 
         [Required]
-        public DateTime SubmissionDate { get; set; } = DateTime.Now;
-
-        [Required]
-        public List<AnswerAddDTO> Answers { get; set; } = new List<AnswerAddDTO>();
+        public List<AnswerAddRequestDTO> Answers { get; set; } = new List<AnswerAddRequestDTO>();
     }
 }

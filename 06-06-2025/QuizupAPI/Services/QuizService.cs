@@ -216,7 +216,7 @@ namespace QuizupAPI.Services
 
             foreach (var questionDTO in quizAddRequestDTO.Questions)
             {
-                var question = questionMapper.MapQuestionAddRequestQuestion( questionDTO);
+                var question = questionMapper.MapQuestionAddRequestQuestion(questionDTO);
                 if (question == null)
                 {
                     throw new Exception("Failed to map question from DTO.");

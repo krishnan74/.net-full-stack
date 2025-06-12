@@ -14,8 +14,9 @@ namespace QuizupAPI.Interfaces
         Task<Student> UpdateStudentAsync(long id, StudentUpdateRequestDTO student);
         Task<Student> DeleteStudentAsync(long id);
         Task<IEnumerable<QuizSubmission>> GetSubmissionsByStudentIdAsync(long id);
-        Task<QuizSubmission> SubmitQuizAsync(long studentId, QuizSubmissionDTO submission);
-        Task<QuizSubmission> SaveAnswersAsync(long studentId, QuizSubmissionDTO submission);
+        Task<QuizSubmission> StartQuizAsync(long studentId, long quizId);
+        Task<QuizSubmission> SubmitQuizAsync(long studentId, long quizSubmissionId, QuizSubmissionDTO submission);
+        Task<QuizSubmission> SaveAnswersAsync(long studentId, long quizSubmissionId, QuizSubmissionDTO submission);
 
     }
 }
