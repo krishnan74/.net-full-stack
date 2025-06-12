@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        Fetching Data using Async/Await, Callback, and Promise
+    </title>
+    
+</head>
+<body style="font-family: 'Inter', sans-serif; display: flex ; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+    <h1>
+        Fetching Data using Async/Await, Callback, and Promise
+    </h1>
+    <button onclick="fetchAndRenderAll()">Get All</button>
+    <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px;">
+        <button onclick="fetchAndRenderByAsyncAwait()">Get by Async / Await</button>
+        <button onclick="fetchAndRenderByCallback()">Get by Callback</button>
+        <button onclick="fetchAndRenderByPromise()">Get by Promise</button>
+    </div>
+    <div style="display: flex; align-items: flex-start; justify-content: center; gap: 30px; margin-top: 20px;">
+        <div id="await-container" style="flex: 1;">
+            <h2>Async/Await</h2>
+        </div>
+        <div id="callback-container" style="flex: 1;">
+            <h2>Callback</h2>
+        </div>
+
+        <div id="promise-container" style="flex: 1;">
+            <h2>Promise</h2>
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+
+</body>
+</html>
