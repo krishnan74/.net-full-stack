@@ -1,0 +1,10 @@
+@if (weather) {
+    <div>
+        <app-weather-card-component [weather]="weather"></app-weather-card-component>
+    </div>
+}
+@else {
+    <div>
+        No weather data available
+    </div>
+}

@@ -1,0 +1,13 @@
+
+@if (weather) {
+    <div class="weather-card">
+        <h2>{{ weather.location }}</h2>
+        <img [src]="weather.weatherIcon" [alt]="weather.condition">
+        <p>Temperature: {{ weather.temperature }}°C</p>
+        <p>Condition: {{ weather.condition }}</p>
+        <p>Humidity: {{ weather.humidity }}%</p>
+        <p>Wind: {{ weather.windSpeed }} km/h</p>
+    </div>
+} @else {
+    <p>No weather data available.</p>
+}

@@ -1,0 +1,28 @@
+<div class="city-search-component">
+    <div class="search-container">
+        <label for="cityName">City Name:</label>
+        <input
+            type="text"
+            id="cityName"
+            name="cityName"
+            [(ngModel)]="cityName"
+            (ngModelChange)="onCityNameChange()"
+            placeholder="Enter city name"
+            required
+            autocomplete="off"
+        />
+        <button (click)="onSubmit()">Search</button>
+    </div>
+
+    @if (showSuggestions && suggestedCities.length === 0) {
+        <p>No suggestions available</p>
+    } @else {
+        <ul class="suggestions-list">
+            @for (city of suggestedCities ; track city.id) {
+            <li (click)="onCitySelect(city.name)">
+                {{ city.name }}
+            </li>
+            }
+        </ul>
+    }
+</div>
