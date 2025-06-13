@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Serilog;
+using System.Data.Common;
 using System.Diagnostics;
+using ILogger = Serilog.ILogger;
+using System.Threading;
 
 namespace QuizupAPI.Interceptors
 {
@@ -15,15 +18,14 @@ namespace QuizupAPI.Interceptors
             _logger = Log.ForContext<DatabasePerformanceInterceptor>();
         }
 
-        public override async ValueTask<InterceptionResult<DbDataReader>> ReaderExecutedAsync(
+        public override async ValueTask<DbDataReader> ReaderExecutedAsync(
             DbCommand command,
-            CommandEventData eventData,
-            InterceptionResult<DbDataReader> result,
-            DbDataReader reader,
+            CommandExecutedEventData eventData,
+            DbDataReader result,
             CancellationToken cancellationToken = default)
         {
             var stopwatch = Stopwatch.StartNew();
-            var result2 = await base.ReaderExecutedAsync(command, eventData, result, reader, cancellationToken);
+            var result2 = await base.ReaderExecutedAsync(command, eventData, result, cancellationToken);
             stopwatch.Stop();
 
             var timeTakenInMs = stopwatch.ElapsedMilliseconds;
@@ -41,15 +43,14 @@ namespace QuizupAPI.Interceptors
             return result2;
         }
 
-        public override async ValueTask<InterceptionResult<int>> NonQueryExecutedAsync(
+        public override async ValueTask<int> NonQueryExecutedAsync(
             DbCommand command,
-            CommandEventData eventData,
-            InterceptionResult<int> result,
+            CommandExecutedEventData eventData,
             int rowsAffected,
             CancellationToken cancellationToken = default)
         {
             var stopwatch = Stopwatch.StartNew();
-            var result2 = await base.NonQueryExecutedAsync(command, eventData, result, rowsAffected, cancellationToken);
+            var result2 = await base.NonQueryExecutedAsync(command, eventData, rowsAffected, cancellationToken);
             stopwatch.Stop();
 
             var timeTakenInMs = stopwatch.ElapsedMilliseconds;

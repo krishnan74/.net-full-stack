@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using QuizupAPI.Models;
 using QuizupAPI.Contexts;
 using QuizupAPI.Interfaces;
 using Serilog;
 using System.Diagnostics;
+using ILogger = Serilog.ILogger;
 
 namespace QuizupAPI.Controllers
 {
@@ -88,7 +91,7 @@ namespace QuizupAPI.Controllers
             return Ok(dbHealth);
         }
 
-        private async Task<object> CheckDatabaseHealth()
+        private async Task<DatabaseHealth> CheckDatabaseHealth()
         {
             var stopwatch = Stopwatch.StartNew();
             try
@@ -101,7 +104,7 @@ namespace QuizupAPI.Controllers
                 
                 _performanceService.TrackDatabaseOperation("HEALTH_CHECK", responseTime);
 
-                return new
+                return new DatabaseHealth
                 {
                     Status = "Healthy",
                     ResponseTime = responseTime,
@@ -117,7 +120,7 @@ namespace QuizupAPI.Controllers
                 
                 _logger.Error(ex, "Database health check failed");
 
-                return new
+                return new DatabaseHealth
                 {
                     Status = "Unhealthy",
                     ResponseTime = responseTime,

@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 using QuizupAPI.Contexts;
 using QuizupAPI.Hubs;
@@ -8,6 +9,7 @@ using QuizupAPI.Repositories;
 using QuizupAPI.Middleware;
 using QuizupAPI.Interceptors;
 using Serilog;
+using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,9 +18,19 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
 // Adding services
-builder.Services.AddControllers();
+
+builder.Services.AddControllers()
+                .AddJsonOptions(opts =>
+                {
+                    opts.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+                    opts.JsonSerializerOptions.WriteIndented = true;
+                });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Quizup API", Version = "v1" });
+});
+
 
 
 builder.Services.AddDbContext<QuizContext>((serviceProvider, opts) =>
@@ -61,6 +73,17 @@ builder.Services.AddTransient<IEncryptionService, EncryptionService>();
 
 builder.Services.AddSingleton<IPerformanceMonitoringService, PerformanceMonitoringService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://127.0.0.1:5500")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -68,6 +91,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseCors();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
@@ -84,4 +111,4 @@ app.MapControllers();
 
 app.Run();
 
-public partial class Program { }
+// public partial class Program { }

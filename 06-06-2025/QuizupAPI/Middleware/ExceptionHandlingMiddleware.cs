@@ -3,6 +3,8 @@ using Serilog;
 using System.Net;
 using System.Text.Json;
 using System.Security.Claims;
+using ILogger = Serilog.ILogger;
+
 
 namespace QuizupAPI.Middleware
 {
@@ -85,7 +87,6 @@ namespace QuizupAPI.Middleware
             return exception switch
             {
                 ArgumentException => (int)HttpStatusCode.BadRequest,
-                ArgumentNullException => (int)HttpStatusCode.BadRequest,
                 KeyNotFoundException => (int)HttpStatusCode.NotFound,
                 UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
                 InvalidOperationException => (int)HttpStatusCode.Conflict,

@@ -47,7 +47,7 @@ namespace QuizupAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred during authentication." });
+                return StatusCode(500, new { message = "An error occurred during authentication. " + ex.Message });
             }
         }
 
@@ -82,7 +82,7 @@ namespace QuizupAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while refreshing token." });
+                return StatusCode(500, new { message = "An error occurred while refreshing token. " + ex.Message });
             }
         }
 
@@ -117,7 +117,7 @@ namespace QuizupAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving user information." });
+                return StatusCode(500, new { message = "An error occurred while retrieving user information. " + ex.Message });
             }
         }
     }

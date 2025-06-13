@@ -33,7 +33,7 @@ namespace QuizupAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving quizzes." });
+                return StatusCode(500, new { message = "An error occurred while retrieving quizzes. " +  ex.Message });
             }
         }
 
@@ -59,7 +59,7 @@ namespace QuizupAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving the quiz." });
+                return StatusCode(500, new { message = "An error occurred while retrieving the quiz. " + ex.Message });
             }
         }
 
@@ -94,7 +94,7 @@ namespace QuizupAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while creating the quiz." });
+                return StatusCode(500, new { message = "An error occurred while creating the quiz. " + ex.Message });
             }
         }
 
@@ -136,7 +136,7 @@ namespace QuizupAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while updating the quiz." });
+                return StatusCode(500, new { message = "An error occurred while updating the quiz. " + ex.Message });
             }
         }
 
@@ -163,7 +163,7 @@ namespace QuizupAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while deleting the quiz." });
+                return StatusCode(500, new { message = "An error occurred while deleting the quiz. " + ex.Message });
             }
         }
 
@@ -205,7 +205,7 @@ namespace QuizupAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while adding the question to the quiz." });
+                return StatusCode(500, new { message = "An error occurred while adding the question to the quiz. " + ex.Message });
             }
         }
 
@@ -247,7 +247,7 @@ namespace QuizupAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while updating the question." });
+                return StatusCode(500, new { message = "An error occurred while updating the question. " + ex.Message });
             }
         }
     }

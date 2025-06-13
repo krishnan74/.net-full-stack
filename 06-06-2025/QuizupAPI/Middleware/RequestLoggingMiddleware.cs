@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Http;
 using Serilog;
 using System.Diagnostics;
 using System.Security.Claims;
+using ILogger = Serilog.ILogger;
+
 
 namespace QuizupAPI.Middleware
 {

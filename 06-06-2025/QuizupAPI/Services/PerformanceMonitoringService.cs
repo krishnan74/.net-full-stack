@@ -1,6 +1,7 @@
 using Serilog;
 using System.Diagnostics;
 using QuizupAPI.Interfaces;
+using ILogger = Serilog.ILogger;
 
 namespace QuizupAPI.Services
 {
