@@ -5,6 +5,8 @@ using QuizupAPI.Interfaces;
 using QuizupAPI.Models;
 using QuizupAPI.Services;
 using QuizupAPI.Repositories;
+using QuizupAPI.Middleware;
+using QuizupAPI.Interceptors;
 using Serilog;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -13,14 +15,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
-// Add services to the container.
+// Adding services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<QuizContext>(opts =>
+
+builder.Services.AddDbContext<QuizContext>((serviceProvider, opts) =>
 {
     opts.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    opts.AddInterceptors(new DatabasePerformanceInterceptor());
 });
 
 builder.Services.AddRateLimiter(
@@ -55,14 +59,18 @@ builder.Services.AddTransient<IAuthenticationService, AuthenticationService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<IEncryptionService, EncryptionService>();
 
+builder.Services.AddSingleton<IPerformanceMonitoringService, PerformanceMonitoringService>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<RequestLoggingMiddleware>();
 
 app.UseSerilogRequestLogging();
 
@@ -73,6 +81,7 @@ app.UseRateLimiter();
 
 app.MapControllers();
 
+
 app.Run();
 
-// public partial class Program { }
+public partial class Program { }
