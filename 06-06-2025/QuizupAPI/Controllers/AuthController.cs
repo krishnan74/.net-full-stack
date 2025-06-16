@@ -60,6 +60,7 @@ namespace QuizupAPI.Controllers
         [ProducesResponseType(typeof(UserLoginResponseDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
+        [Authorize]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDTO refreshTokenRequest)
         {
             try
@@ -93,6 +94,7 @@ namespace QuizupAPI.Controllers
         [HttpGet("me")]
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
+        [Authorize]
         public IActionResult GetCurrentUser()
         {
             try

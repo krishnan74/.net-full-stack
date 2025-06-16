@@ -27,6 +27,7 @@ namespace QuizupAPI.Controllers
 
         [HttpGet]
         [ProducesResponseType(200)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetHealth()
         {
             var healthStatus = new
@@ -51,6 +52,7 @@ namespace QuizupAPI.Controllers
 
         [HttpGet("metrics")]
         [ProducesResponseType(200)]
+        [Authorize(Roles = "Admin")]
         public IActionResult GetMetrics()
         {
             var process = Process.GetCurrentProcess();
@@ -78,10 +80,11 @@ namespace QuizupAPI.Controllers
 
         [HttpGet("database")]
         [ProducesResponseType(200)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetDatabaseHealth()
         {
             var dbHealth = await CheckDatabaseHealth();
-            
+
             _logger.Information(
                 "Database health check - Status: {Status}, ResponseTime: {ResponseTime}ms",
                 dbHealth.Status,

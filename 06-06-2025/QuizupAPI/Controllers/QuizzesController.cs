@@ -100,6 +100,7 @@ namespace QuizupAPI.Controllers
         [ProducesResponseType(typeof(Quiz), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> CreateQuiz([FromBody] QuizAddRequestDTO quizDto)
         {
             try
@@ -138,6 +139,7 @@ namespace QuizupAPI.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> UpdateQuiz(long id, [FromQuery] long teacherId, [FromBody] QuizUpdateRequestDTO quizDto)
         {
             try
@@ -178,6 +180,7 @@ namespace QuizupAPI.Controllers
         [ProducesResponseType(typeof(Quiz), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteQuiz(long id, [FromQuery] long teacherId)
         {
             try
@@ -207,6 +210,7 @@ namespace QuizupAPI.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> AddQuestionToQuiz(long quizId, [FromQuery] long teacherId, [FromBody] QuestionAddRequestDTO questionDto)
         {
             try
@@ -249,6 +253,7 @@ namespace QuizupAPI.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> UpdateQuestion(long quizId, [FromQuery] long teacherId, [FromBody] QuestionUpdateRequestDTO questionDto)
         {
             try

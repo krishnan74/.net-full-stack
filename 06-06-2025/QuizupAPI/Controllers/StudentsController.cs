@@ -101,6 +101,7 @@ namespace QuizupAPI.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateStudent([FromBody] StudentAddRequestDTO studentDto)
         {
             try
@@ -142,6 +143,7 @@ namespace QuizupAPI.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Student, Admin")]
         public async Task<IActionResult> UpdateStudent(long id, [FromBody] StudentUpdateRequestDTO studentDto)
         {
             try
@@ -181,6 +183,7 @@ namespace QuizupAPI.Controllers
         [ProducesResponseType(typeof(Student), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteStudent(long id)
         {
             try
@@ -234,6 +237,7 @@ namespace QuizupAPI.Controllers
         [ProducesResponseType(typeof(QuizSubmission), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> StartQuiz(long studentId, long quizId)
         {
             try
@@ -263,6 +267,7 @@ namespace QuizupAPI.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> SubmitQuiz(long studentId, long quizSubmissionId, [FromBody] QuizSubmissionDTO submission)
         {
             try
@@ -301,6 +306,7 @@ namespace QuizupAPI.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> SaveQuizAnswers(long studentId, long quizSubmissionId, [FromBody] QuizSubmissionDTO submission)
         {
             try
