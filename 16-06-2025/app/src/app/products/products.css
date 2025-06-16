@@ -8,3 +8,44 @@
         opacity: 1;
     }
 }
+
+.count{
+    background-color: red;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 50%;
+    font-size: 0.7em;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.cart{
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.product-tools-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    gap: 16px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.product-tools-container input[type="text"]{
+    font-size: large;
+    padding: 8px;
+    font-weight: 500;
+    width: 100%;
+    color: #212529;
+}
+
+.products-list{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    padding: 16px;
+}
