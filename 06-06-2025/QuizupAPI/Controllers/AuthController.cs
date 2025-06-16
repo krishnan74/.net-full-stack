@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using QuizupAPI.Interfaces;
 using QuizupAPI.Models.DTOs.Authentication;
+using QuizupAPI.Models.DTOs.Response;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 
@@ -23,32 +24,38 @@ namespace QuizupAPI.Controllers
         /// <param name="loginRequest">Login credentials</param>
         /// <returns>Access token and user information</returns>
         [HttpPost("login")]
-        [ProducesResponseType(typeof(UserLoginResponseDTO), 200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(401)]
+        [ProducesResponseType(typeof(ApiResponse<UserLoginResponseDTO>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 400)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 401)]
         public async Task<IActionResult> Login([FromBody] UserLoginRequestDTO loginRequest)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState
+                        .Where(x => x.Value?.Errors.Count > 0)
+                        .ToDictionary(
+                            kvp => kvp.Key,
+                            kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray()
+                        );
+                    return BadRequest(ApiResponse<object>.ErrorResponse("Validation failed", errors));
                 }
 
                 var response = await _authenticationService.Login(loginRequest);
-                return Ok(response);
+                return Ok(ApiResponse<UserLoginResponseDTO>.SuccessResponse(response, "Login successful"));
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.ErrorResponse(ex.Message));
             }
             catch (UnauthorizedAccessException ex)
             {
-                return Unauthorized(new { message = ex.Message });
+                return Unauthorized(ApiResponse<object>.ErrorResponse(ex.Message));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred during authentication. " + ex.Message });
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred during authentication. " + ex.Message));
             }
         }
 
@@ -58,9 +65,9 @@ namespace QuizupAPI.Controllers
         /// <param name="refreshTokenRequest">Refresh token</param>
         /// <returns>New access token</returns>
         [HttpPost("refresh")]
-        [ProducesResponseType(typeof(UserLoginResponseDTO), 200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(401)]
+        [ProducesResponseType(typeof(ApiResponse<UserLoginResponseDTO>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 400)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 401)]
         [Authorize]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDTO refreshTokenRequest)
         {
@@ -68,23 +75,29 @@ namespace QuizupAPI.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState
+                        .Where(x => x.Value?.Errors.Count > 0)
+                        .ToDictionary(
+                            kvp => kvp.Key,
+                            kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray()
+                        );
+                    return BadRequest(ApiResponse<object>.ErrorResponse("Validation failed", errors));
                 }
 
                 var response = await _authenticationService.RefreshTokenAsync(refreshTokenRequest);
-                return Ok(response);
+                return Ok(ApiResponse<UserLoginResponseDTO>.SuccessResponse(response, "Token refreshed successfully"));
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.ErrorResponse(ex.Message));
             }
             catch (UnauthorizedAccessException ex)
             {
-                return Unauthorized(new { message = ex.Message });
+                return Unauthorized(ApiResponse<object>.ErrorResponse(ex.Message));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while refreshing token. " + ex.Message });
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while refreshing token. " + ex.Message));
             }
         }
 
@@ -93,8 +106,8 @@ namespace QuizupAPI.Controllers
         /// </summary>
         /// <returns>Current user information</returns>
         [HttpGet("me")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(401)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 401)]
         public IActionResult GetCurrentUser()
         {
             try
@@ -104,7 +117,7 @@ namespace QuizupAPI.Controllers
 
                 if (string.IsNullOrEmpty(username))
                 {
-                    return Unauthorized(new { message = "User not authenticated." });
+                    return Unauthorized(ApiResponse<object>.ErrorResponse("User not authenticated."));
                 }
 
                 var userInfo = new
@@ -113,11 +126,11 @@ namespace QuizupAPI.Controllers
                     Role = userRole
                 };
 
-                return Ok(userInfo);
+                return Ok(ApiResponse<object>.SuccessResponse(userInfo, "User information retrieved successfully"));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving user information. " + ex.Message });
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while retrieving user information. " + ex.Message));
             }
         }
     }

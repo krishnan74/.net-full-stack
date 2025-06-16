@@ -3,6 +3,7 @@ using QuizupAPI.Interfaces;
 using QuizupAPI.Models;
 using QuizupAPI.Models.DTOs.Quiz;
 using QuizupAPI.Models.DTOs.Question;
+using QuizupAPI.Models.DTOs.Response;
 using Microsoft.AspNetCore.Authorization;
 
 
@@ -24,18 +25,18 @@ namespace QuizupAPI.Controllers
         /// </summary>
         /// <returns>List of all quizzes</returns>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<Quiz>), 200)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<Quiz>>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 500)]
         public async Task<IActionResult> GetAllQuizzes()
         {
             try
             {
                 var quizzes = await _quizService.GetAllQuizzesAsync();
-                return Ok(quizzes);
+                return Ok(ApiResponse<IEnumerable<Quiz>>.SuccessResponse(quizzes, "Quizzes fetched successfully"));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving quizzes. " +  ex.Message });
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while retrieving quizzes. " + ex.Message));
             }
         }
 
@@ -45,51 +46,63 @@ namespace QuizupAPI.Controllers
         /// <param name="id">Quiz ID</param>
         /// <returns>Quiz information</returns>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Quiz), 200)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(ApiResponse<Quiz>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 500)]
         public async Task<IActionResult> GetQuizById(long id)
         {
             try
             {
                 var quiz = await _quizService.GetQuizByIdAsync(id);
-                return Ok(quiz);
+                return Ok(ApiResponse<Quiz>.SuccessResponse(quiz, "Quiz fetched successfully"));
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { message = ex.Message });
+                return NotFound(ApiResponse<object>.ErrorResponse(ex.Message));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving the quiz. " + ex.Message });
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while retrieving the quiz. " + ex.Message));
             }
         }
         
-        // <summary>
+        /// <summary>
         /// Get quizzes based on pagination
         /// </summary>
         /// <param name="pageNumber">Page number</param>
         /// <param name="pageSize">Number of quizzes per page</param>
         /// <returns>List of quizzes with pagination</returns>
         [HttpGet("pagination")]
-        [ProducesResponseType(typeof(IEnumerable<Quiz>), 200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(PaginatedResponse<IEnumerable<Quiz>>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 400)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 500)]
         public async Task<IActionResult> GetQuizzesPagination([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             try
             {
                 if (pageNumber <= 0 || pageSize <= 0)
                 {
-                    return BadRequest(new { message = "Page number and size must be greater than zero." });
+                    return BadRequest(ApiResponse<object>.ErrorResponse("Page number and size must be greater than zero."));
                 }
 
-                var quizzes = await _quizService.GetQuizzesPaginationAsync(pageNumber, pageSize);
-                return Ok(quizzes);
+                var result = await _quizService.GetQuizzesPaginationAsync(pageNumber, pageSize);
+                var allQuizzes = await _quizService.GetAllQuizzesAsync();
+                var totalRecords = allQuizzes.Count();
+                var totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+
+                var paginationInfo = new PaginationInfo
+                {
+                    TotalRecords = totalRecords,
+                    Page = pageNumber,
+                    PageSize = pageSize,
+                    TotalPages = totalPages
+                };
+
+                return Ok(PaginatedResponse<IEnumerable<Quiz>>.SuccessResponse(result, paginationInfo, "Quizzes fetched successfully"));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving quizzes. " + ex.Message });
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while retrieving quizzes. " + ex.Message));
             }
         }
 
@@ -99,9 +112,9 @@ namespace QuizupAPI.Controllers
         /// <param name="quizDto">Quiz information</param>
         /// <returns>Created quiz</returns>
         [HttpPost]
-        [ProducesResponseType(typeof(Quiz), 201)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(ApiResponse<Quiz>), 201)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 400)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 500)]
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> CreateQuiz([FromBody] QuizAddRequestDTO quizDto)
         {
@@ -109,23 +122,30 @@ namespace QuizupAPI.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState
+                        .Where(x => x.Value?.Errors.Count > 0)
+                        .ToDictionary(
+                            kvp => kvp.Key,
+                            kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray()
+                        );
+                    return BadRequest(ApiResponse<object>.ErrorResponse("Validation failed", errors));
                 }
 
                 var quiz = await _quizService.AddQuizAsync(quizDto);
-                return CreatedAtAction(nameof(GetQuizById), new { id = quiz.Id }, quiz);
+                return CreatedAtAction(nameof(GetQuizById), new { id = quiz.Id }, 
+                    ApiResponse<Quiz>.SuccessResponse(quiz, "Quiz created successfully"));
             }
             catch (ArgumentNullException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.ErrorResponse(ex.Message));
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.ErrorResponse(ex.Message));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while creating the quiz. " + ex.Message });
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while creating the quiz. " + ex.Message));
             }
         }
 
@@ -137,10 +157,10 @@ namespace QuizupAPI.Controllers
         /// <param name="quizDto">Updated quiz information</param>
         /// <returns>Updated quiz</returns>
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(Quiz), 200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(ApiResponse<Quiz>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 400)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 500)]
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> UpdateQuiz(long id, [FromQuery] long teacherId, [FromBody] QuizUpdateRequestDTO quizDto)
         {
@@ -148,27 +168,33 @@ namespace QuizupAPI.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState
+                        .Where(x => x.Value?.Errors.Count > 0)
+                        .ToDictionary(
+                            kvp => kvp.Key,
+                            kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray()
+                        );
+                    return BadRequest(ApiResponse<object>.ErrorResponse("Validation failed", errors));
                 }
 
                 var quiz = await _quizService.UpdateQuizAsync(id, teacherId, quizDto);
-                return Ok(quiz);
+                return Ok(ApiResponse<Quiz>.SuccessResponse(quiz, "Quiz updated successfully"));
             }
             catch (ArgumentNullException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.ErrorResponse(ex.Message));
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.ErrorResponse(ex.Message));
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { message = ex.Message });
+                return NotFound(ApiResponse<object>.ErrorResponse(ex.Message));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while updating the quiz. " + ex.Message });
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while updating the quiz. " + ex.Message));
             }
         }
 
@@ -179,24 +205,24 @@ namespace QuizupAPI.Controllers
         /// <param name="teacherId">Teacher ID</param>
         /// <returns>Deleted quiz</returns>
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(Quiz), 200)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(ApiResponse<Quiz>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 500)]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteQuiz(long id, [FromQuery] long teacherId)
         {
             try
             {
                 var quiz = await _quizService.DeleteQuizAsync(id, teacherId);
-                return Ok(quiz);
+                return Ok(ApiResponse<Quiz>.SuccessResponse(quiz, "Quiz deleted successfully"));
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { message = ex.Message });
+                return NotFound(ApiResponse<object>.ErrorResponse(ex.Message));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while deleting the quiz. " + ex.Message });
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while deleting the quiz. " + ex.Message));
             }
         }
 
@@ -208,10 +234,10 @@ namespace QuizupAPI.Controllers
         /// <param name="questionDto">Question information</param>
         /// <returns>Created question</returns>
         [HttpPost("{quizId}/questions")]
-        [ProducesResponseType(typeof(Question), 201)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(ApiResponse<Question>), 201)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 400)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 500)]
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> AddQuestionToQuiz(long quizId, [FromQuery] long teacherId, [FromBody] QuestionAddRequestDTO questionDto)
         {
@@ -219,27 +245,34 @@ namespace QuizupAPI.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState
+                        .Where(x => x.Value?.Errors.Count > 0)
+                        .ToDictionary(
+                            kvp => kvp.Key,
+                            kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray()
+                        );
+                    return BadRequest(ApiResponse<object>.ErrorResponse("Validation failed", errors));
                 }
 
                 var question = await _quizService.AddQuestionToQuizAsync(quizId, teacherId, questionDto);
-                return CreatedAtAction(nameof(GetQuizById), new { id = quizId }, question);
+                return CreatedAtAction(nameof(AddQuestionToQuiz), new { quizId, teacherId }, 
+                    ApiResponse<Question>.SuccessResponse(question, "Question added successfully"));
             }
             catch (ArgumentNullException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.ErrorResponse(ex.Message));
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.ErrorResponse(ex.Message));
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { message = ex.Message });
+                return NotFound(ApiResponse<object>.ErrorResponse(ex.Message));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while adding the question to the quiz. " + ex.Message });
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while adding the question. " + ex.Message));
             }
         }
 
@@ -251,10 +284,10 @@ namespace QuizupAPI.Controllers
         /// <param name="questionDto">Updated question information</param>
         /// <returns>Updated question</returns>
         [HttpPut("{quizId}/questions")]
-        [ProducesResponseType(typeof(Question), 200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(ApiResponse<Question>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 400)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 500)]
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> UpdateQuestion(long quizId, [FromQuery] long teacherId, [FromBody] QuestionUpdateRequestDTO questionDto)
         {
@@ -262,27 +295,33 @@ namespace QuizupAPI.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState
+                        .Where(x => x.Value?.Errors.Count > 0)
+                        .ToDictionary(
+                            kvp => kvp.Key,
+                            kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray()
+                        );
+                    return BadRequest(ApiResponse<object>.ErrorResponse("Validation failed", errors));
                 }
 
                 var question = await _quizService.UpdateQuestionAsync(quizId, teacherId, questionDto);
-                return Ok(question);
+                return Ok(ApiResponse<Question>.SuccessResponse(question, "Question updated successfully"));
             }
             catch (ArgumentNullException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.ErrorResponse(ex.Message));
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.ErrorResponse(ex.Message));
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { message = ex.Message });
+                return NotFound(ApiResponse<object>.ErrorResponse(ex.Message));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while updating the question. " + ex.Message });
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while updating the question. " + ex.Message));
             }
         }
     }

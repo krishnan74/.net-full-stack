@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using QuizupAPI.Models;
 using QuizupAPI.Contexts;
 using QuizupAPI.Interfaces;
+using QuizupAPI.Models.DTOs.Response;
 using Serilog;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
@@ -27,7 +28,7 @@ namespace QuizupAPI.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 200)]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetHealth()
         {
@@ -47,12 +48,12 @@ namespace QuizupAPI.Controllers
                 healthStatus.Database.Status
             );
 
-            return Ok(healthStatus);
+            return Ok(ApiResponse<object>.SuccessResponse(healthStatus, "Health check completed successfully"));
         }
 
 
         [HttpGet("metrics")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 200)]
         [Authorize(Roles = "Admin")]
         public IActionResult GetMetrics()
         {
@@ -76,11 +77,11 @@ namespace QuizupAPI.Controllers
                 metrics.Threads
             );
 
-            return Ok(metrics);
+            return Ok(ApiResponse<object>.SuccessResponse(metrics, "Metrics retrieved successfully"));
         }
 
         [HttpGet("database")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ApiResponse<DatabaseHealth>), 200)]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetDatabaseHealth()
         {
@@ -92,7 +93,7 @@ namespace QuizupAPI.Controllers
                 dbHealth.ResponseTime
             );
 
-            return Ok(dbHealth);
+            return Ok(ApiResponse<DatabaseHealth>.SuccessResponse(dbHealth, "Database health check completed successfully"));
         }
 
         private async Task<DatabaseHealth> CheckDatabaseHealth()
