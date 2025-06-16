@@ -20,9 +20,9 @@ namespace QuizupAPI.Repositories
 
         public override async Task<IEnumerable<Quiz>> GetAll()
         {
-            var quizzes = _quizContext.quizzes;
-            if (quizzes.Count() == 0)
-                throw new Exception("No Quiz in the database");
+            var quizzes = _quizContext.quizzes.Where(q => !q.IsDeleted);
+            if (!quizzes.Any())
+                throw new Exception("No active quizzes in the database");
             return (await quizzes.ToListAsync());
         }
     }

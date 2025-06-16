@@ -6,6 +6,9 @@ using QuizupAPI.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using QuizupAPI.Misc.Mappers;
 using System.ComponentModel.DataAnnotations;
+using QuizupAPI.Contexts;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace QuizupAPI.Services
 {
@@ -16,16 +19,18 @@ namespace QuizupAPI.Services
         private readonly IEncryptionService _encryptionService;
         private readonly IRepository<string, User> _userRepository;
         private readonly IHubContext<QuizNotificationHub> _hubContext;
+        private readonly QuizContext _context;
 
         public UserMapper userMapper;
         public TeacherMapper teacherMapper;
-        public TeacherService(IRepository<long, Teacher> teacherRepository, IRepository<long, Quiz> quizRepository, IHubContext<QuizNotificationHub> hubContext, IEncryptionService encryptionService, IRepository<string, User> userRepository)
+        public TeacherService(IRepository<long, Teacher> teacherRepository, IRepository<long, Quiz> quizRepository, IHubContext<QuizNotificationHub> hubContext, IEncryptionService encryptionService, IRepository<string, User> userRepository, QuizContext context)
         {
             _quizRepository = quizRepository;
             _hubContext = hubContext;
             _teacherRepository = teacherRepository;
             _encryptionService = encryptionService;
             _userRepository = userRepository;
+            _context = context;
             teacherMapper = new TeacherMapper();
             userMapper = new UserMapper();
         }
@@ -213,6 +218,38 @@ namespace QuizupAPI.Services
                 throw new Exception($"An error occurred while ending the quiz with ID {quizId}.", ex);
             }
             
+        }
+
+        public async Task<TeacherSummaryDTO> GetTeacherQuizSummaryAsync(long teacherId, DateTime? startDate = null, DateTime? endDate = null)
+        {
+            try
+            {
+                // Verify teacher exists
+                var teacher = await _teacherRepository.Get(teacherId);
+                if (teacher == null)
+                {
+                    throw new KeyNotFoundException($"Teacher with ID {teacherId} not found.");
+                }
+
+                // Execute the PostgreSQL function
+                var result = await _context.Set<TeacherSummaryDTO>()
+                    .FromSqlRaw("SELECT * FROM get_teacher_quiz_summary({0}, {1}, {2})", 
+                        teacherId, 
+                        startDate.HasValue ? startDate.Value : DBNull.Value,
+                        endDate.HasValue ? endDate.Value : DBNull.Value)
+                    .FirstOrDefaultAsync();
+
+                if (result == null)
+                {
+                    throw new Exception($"Failed to retrieve quiz summary for teacher with ID {teacherId}.");
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while retrieving quiz summary for teacher with ID {teacherId}.", ex);
+            }
         }
     }
 }

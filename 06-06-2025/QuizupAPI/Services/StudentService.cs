@@ -8,6 +8,9 @@ using QuizupAPI.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using QuizupAPI.Misc.Mappers;
 using System.ComponentModel.DataAnnotations;
+using QuizupAPI.Contexts;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace QuizupAPI.Services
 {
@@ -19,12 +22,13 @@ namespace QuizupAPI.Services
         private readonly IRepository<string, User> _userRepository;
         private readonly IRepository<long, QuizSubmission> _quizSubmissionRepository;
         private readonly IRepository<long, Answer> _answerRepository;
+        private readonly QuizContext _context;
 
         public UserMapper userMapper;
         public StudentMapper studentMapper;
         public AnswerMapper answerMapper;
 
-        public StudentService(IRepository<long, Student> studentRepository, IRepository<long, Quiz> quizRepository, IEncryptionService encryptionService, IRepository<string, User> userRepository, IRepository<long, QuizSubmission> quizSubmissionRepository, IRepository<long, Answer> answerRepository)
+        public StudentService(IRepository<long, Student> studentRepository, IRepository<long, Quiz> quizRepository, IEncryptionService encryptionService, IRepository<string, User> userRepository, IRepository<long, QuizSubmission> quizSubmissionRepository, IRepository<long, Answer> answerRepository, QuizContext context)
         {
             _quizRepository = quizRepository;
             _studentRepository = studentRepository;
@@ -32,6 +36,7 @@ namespace QuizupAPI.Services
             _userRepository = userRepository;
             _quizSubmissionRepository = quizSubmissionRepository;
             _answerRepository = answerRepository;
+            _context = context;
             studentMapper = new StudentMapper();
             userMapper = new UserMapper();
             answerMapper = new AnswerMapper();
@@ -389,6 +394,38 @@ namespace QuizupAPI.Services
             int score = (int)((double)correctAnswers / totalQuestions * 100);
 
             return score;
+        }
+
+        public async Task<StudentSummaryDTO> GetStudentQuizSummaryAsync(long studentId, DateTime? startDate = null, DateTime? endDate = null)
+        {
+            try
+            {
+                // Verify student exists
+                var student = await _studentRepository.Get(studentId);
+                if (student == null)
+                {
+                    throw new KeyNotFoundException($"Student with ID {studentId} not found.");
+                }
+
+                // Execute the PostgreSQL function
+                var result = await _context.Set<StudentSummaryDTO>()
+                    .FromSqlRaw("SELECT * FROM get_student_quiz_summary({0}, {1}, {2})", 
+                        studentId, 
+                        startDate.HasValue ? startDate.Value : DBNull.Value,
+                        endDate.HasValue ? endDate.Value : DBNull.Value)
+                    .FirstOrDefaultAsync();
+
+                if (result == null)
+                {
+                    throw new Exception($"Failed to retrieve quiz summary for student with ID {studentId}.");
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while retrieving quiz summary for student with ID {studentId}.", ex);
+            }
         }
     }
     

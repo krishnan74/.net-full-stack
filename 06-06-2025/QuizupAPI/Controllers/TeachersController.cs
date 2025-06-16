@@ -170,7 +170,7 @@ namespace QuizupAPI.Controllers
         }
 
         /// <summary>
-        /// Start a quiz (make it active for students)
+        /// Start a quiz
         /// </summary>
         /// <param name="teacherId">Teacher ID</param>
         /// <param name="quizId">Quiz ID</param>
@@ -197,7 +197,7 @@ namespace QuizupAPI.Controllers
         }
 
         /// <summary>
-        /// End a quiz (make it inactive for students)
+        /// End a quiz
         /// </summary>
         /// <param name="teacherId">Teacher ID</param>
         /// <param name="quizId">Quiz ID</param>
@@ -220,6 +220,34 @@ namespace QuizupAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "An error occurred while ending the quiz. " + ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get comprehensive quiz summary for a teacher
+        /// </summary>
+        /// <param name="id">Teacher ID</param>
+        /// <param name="startDate">Start date for filtering ( Optional ) (format: yyyy-MM-dd)</param>
+        /// <param name="endDate">End date for filtering ( Optional ) (format: yyyy-MM-dd)</param>
+        /// <returns>Teacher quiz summary with performance analytics</returns>
+        [HttpGet("{id}/summary")]
+        [ProducesResponseType(typeof(TeacherSummaryDTO), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetTeacherQuizSummary(long id, [FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null)
+        {
+            try
+            {
+                var summary = await _teacherService.GetTeacherQuizSummaryAsync(id, startDate, endDate);
+                return Ok(summary);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while retrieving teacher quiz summary. " + ex.Message });
             }
         }
     }

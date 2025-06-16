@@ -298,5 +298,33 @@ namespace QuizupAPI.Controllers
                 return StatusCode(500, new { message = "An error occurred while saving quiz answers. " + ex.Message });
             }
         }
+
+        /// <summary>
+        /// Get quiz summary for a student
+        /// </summary>
+        /// <param name="id">Student ID</param>
+        /// <param name="startDate">Start date for filtering ( Optional ) (format: yyyy-MM-dd)</param>
+        /// <param name="endDate">End date for filtering ( Optional ) (format: yyyy-MM-dd)</param>
+        /// <returns>Student quiz summary with performance analytics</returns>
+        [HttpGet("{id}/summary")]
+        [ProducesResponseType(typeof(StudentSummaryDTO), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetStudentQuizSummary(long id, [FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null)
+        {
+            try
+            {
+                var summary = await _studentService.GetStudentQuizSummaryAsync(id, startDate, endDate);
+                return Ok(summary);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while retrieving student quiz summary. " + ex.Message });
+            }
+        }
     }
 } 

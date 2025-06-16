@@ -14,5 +14,6 @@ namespace QuizupAPI.Interfaces
         Task<Teacher> DeleteTeacherAsync(long id);
         Task<Quiz> StartQuizAsync(long teacherId, long quizId);
         Task<Quiz> EndQuizAsync(long teacherId, long quizId);
+        Task<TeacherSummaryDTO> GetTeacherQuizSummaryAsync(long teacherId, DateTime? startDate = null, DateTime? endDate = null);
     }
 }

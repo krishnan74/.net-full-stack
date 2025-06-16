@@ -20,9 +20,9 @@ namespace QuizupAPI.Repositories
 
         public override async Task<IEnumerable<User>> GetAll()
         {
-            var users = _quizContext.users;
-            if (users.Count() == 0)
-                throw new Exception("No user in the database");
+            var users = _quizContext.users.Where(u => !u.IsDeleted);
+            if (!users.Any())
+                throw new Exception("No active users in the database");
             return (await users.ToListAsync());
         }
     }

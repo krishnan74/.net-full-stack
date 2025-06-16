@@ -20,9 +20,9 @@ namespace QuizupAPI.Repositories
 
         public override async Task<IEnumerable<Teacher>> GetAll()
         {
-            var teachers = _quizContext.teachers;
-            if (teachers.Count() == 0)
-                throw new Exception("No teacher in the database");
+            var teachers = _quizContext.teachers.Where(t => !t.IsDeleted);
+            if (!teachers.Any())
+                throw new Exception("No active teachers in the database");
             return (await teachers.ToListAsync());
         }
     }
