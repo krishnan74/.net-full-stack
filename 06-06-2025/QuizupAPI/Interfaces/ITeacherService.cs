@@ -15,5 +15,10 @@ namespace QuizupAPI.Interfaces
         Task<Quiz> StartQuizAsync(long teacherId, long quizId);
         Task<Quiz> EndQuizAsync(long teacherId, long quizId);
         Task<TeacherSummaryDTO> GetTeacherQuizSummaryAsync(long teacherId, DateTime? startDate = null, DateTime? endDate = null);
+
+        Task<IEnumerable<Teacher>> GetTeachersPaginationAsync(
+            int pageNumber,
+            int pageSize
+        );
     }
 }

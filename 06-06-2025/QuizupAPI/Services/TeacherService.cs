@@ -39,7 +39,7 @@ namespace QuizupAPI.Services
         {
             try
             {
-                
+
 
                 if (teacherDTO == null)
                 {
@@ -217,7 +217,7 @@ namespace QuizupAPI.Services
             {
                 throw new Exception($"An error occurred while ending the quiz with ID {quizId}.", ex);
             }
-            
+
         }
 
         public async Task<TeacherSummaryDTO> GetTeacherQuizSummaryAsync(long teacherId, DateTime? startDate = null, DateTime? endDate = null)
@@ -233,8 +233,8 @@ namespace QuizupAPI.Services
 
                 // Execute the PostgreSQL function
                 var result = await _context.Set<TeacherSummaryDTO>()
-                    .FromSqlRaw("SELECT * FROM get_teacher_quiz_summary({0}, {1}, {2})", 
-                        teacherId, 
+                    .FromSqlRaw("SELECT * FROM get_teacher_quiz_summary({0}, {1}, {2})",
+                        teacherId,
                         startDate.HasValue ? startDate.Value : DBNull.Value,
                         endDate.HasValue ? endDate.Value : DBNull.Value)
                     .FirstOrDefaultAsync();
@@ -249,6 +249,28 @@ namespace QuizupAPI.Services
             catch (Exception ex)
             {
                 throw new Exception($"An error occurred while retrieving quiz summary for teacher with ID {teacherId}.", ex);
+            }
+        }
+        
+
+        public async Task<IEnumerable<Teacher>> GetTeachersPaginationAsync(int pageNumber, int pageSize)
+        {
+            try
+            {
+                if (pageNumber < 1 || pageSize < 1)
+                {
+                    throw new ArgumentException("Page number and page size must be greater than zero.");
+                }
+
+                var teachers = await _teacherRepository.GetAll();
+                return teachers
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving teachers with pagination.", ex);
             }
         }
     }

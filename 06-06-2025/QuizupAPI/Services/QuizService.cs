@@ -51,7 +51,7 @@ namespace QuizupAPI.Services
                     throw new Exception("Failed to add quiz");
                 }
 
-                await MapAndAddQuestionsAsync(addedQuiz.Id, quizAddRequestDTO); 
+                await MapAndAddQuestionsAsync(addedQuiz.Id, quizAddRequestDTO);
 
                 return addedQuiz;
             }
@@ -165,7 +165,7 @@ namespace QuizupAPI.Services
                 throw new ValidationException("Question text and options are required.");
             }
 
-            var question = questionMapper.MapQuestionAddRequestQuestion( questionAddRequestDTO);
+            var question = questionMapper.MapQuestionAddRequestQuestion(questionAddRequestDTO);
             if (question == null)
             {
                 throw new Exception("Failed to map question from DTO.");
@@ -206,6 +206,27 @@ namespace QuizupAPI.Services
             return updatedQuestion;
         }
 
+        public async Task<IEnumerable<Quiz>> GetQuizzesPaginationAsync(int pageNumber, int pageSize)
+        {
+            try
+            {
+                if (pageNumber <= 0 || pageSize <= 0)
+                {
+                    throw new ArgumentException("Page number and size must be greater than zero.");
+                }
+
+                var quizzes = await _quizRepository.GetAll();
+                return quizzes
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while retrieving quizzes: {ex.Message}");
+            }
+        }
+
 
         private async Task MapAndAddQuestionsAsync(long quizId, QuizAddRequestDTO quizAddRequestDTO)
         {
@@ -239,6 +260,8 @@ namespace QuizupAPI.Services
                 }
             }
         }
+        
+
         
    }
 }

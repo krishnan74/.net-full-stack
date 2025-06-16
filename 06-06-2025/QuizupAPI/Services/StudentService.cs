@@ -244,7 +244,7 @@ namespace QuizupAPI.Services
                     throw new KeyNotFoundException($"Student with ID {studentId} not found.");
                 }
 
-                if( existingQuizSubmission.StudentId != studentId )
+                if (existingQuizSubmission.StudentId != studentId)
                 {
                     throw new UnauthorizedAccessException("You are not authorized to submit this quiz.");
                 }
@@ -273,7 +273,7 @@ namespace QuizupAPI.Services
         }
         public async Task<QuizSubmission> SaveAnswersAsync(long studentId, long quizSubmissionId, QuizSubmissionDTO submission)
         {
-             try
+            try
             {
                 if (submission == null)
                 {
@@ -315,14 +315,14 @@ namespace QuizupAPI.Services
             {
                 throw new Exception("An error occurred while submitting the quiz.", ex);
             }
-            
+
         }
 
         private async Task MapAndAddAnswersAsync(List<Answer> existingAnswers, List<AnswerAddRequestDTO> currentAnswers)
         {
             if (currentAnswers == null || currentAnswers.Count == 0)
             {
-            throw new ValidationException("At least one answer is required.");
+                throw new ValidationException("At least one answer is required.");
             }
 
             foreach (var answerDTO in currentAnswers)
@@ -358,7 +358,7 @@ namespace QuizupAPI.Services
                         throw new Exception("Failed to update answer");
                     }
                 }
-                
+
             }
         }
 
@@ -370,7 +370,7 @@ namespace QuizupAPI.Services
 
             // Get all questions for this quiz via the QuizQuestions navigation property
             var quizQuestions = quiz.QuizQuestions;
-            
+
             if (quizQuestions == null || !quizQuestions.Any())
             {
                 throw new Exception("No questions found for this quiz.");
@@ -409,8 +409,8 @@ namespace QuizupAPI.Services
 
                 // Execute the PostgreSQL function
                 var result = await _context.Set<StudentSummaryDTO>()
-                    .FromSqlRaw("SELECT * FROM get_student_quiz_summary({0}, {1}, {2})", 
-                        studentId, 
+                    .FromSqlRaw("SELECT * FROM get_student_quiz_summary({0}, {1}, {2})",
+                        studentId,
                         startDate.HasValue ? startDate.Value : DBNull.Value,
                         endDate.HasValue ? endDate.Value : DBNull.Value)
                     .FirstOrDefaultAsync();
@@ -425,6 +425,27 @@ namespace QuizupAPI.Services
             catch (Exception ex)
             {
                 throw new Exception($"An error occurred while retrieving quiz summary for student with ID {studentId}.", ex);
+            }
+        }
+        
+        public async Task<IEnumerable<Student>> GetStudentsPaginationAsync(int pageNumber, int pageSize)
+        {
+            try
+            {
+                if (pageNumber < 1 || pageSize < 1)
+                {
+                    throw new ArgumentException("Page number and page size must be greater than zero.");
+                }
+
+                var students = await _studentRepository.GetAll();
+                return students
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving paginated students.", ex);
             }
         }
     }

@@ -63,6 +63,34 @@ namespace QuizupAPI.Controllers
         }
 
         /// <summary>
+        /// Get teachers based on pagination
+        /// </summary>
+        /// <param name="pageNumber">Page number</param>
+        /// <param name="pageSize">Number of teachers per page</param>
+        /// <returns>List of teachers with pagination</returns>
+        [HttpGet("pagination")]
+        [ProducesResponseType(typeof(IEnumerable<Teacher>), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetTeachersPagination([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                if (pageNumber <= 0 || pageSize <= 0)
+                {
+                    return BadRequest(new { message = "Page number and size must be greater than zero." });
+                }
+
+                var teachers = await _teacherService.GetTeachersPaginationAsync(pageNumber, pageSize);
+                return Ok(teachers);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while retrieving teachers. " + ex.Message });
+            }
+        }
+
+        /// <summary>
         /// Create a new teacher
         /// </summary>
         /// <param name="teacherDto">Teacher information</param>

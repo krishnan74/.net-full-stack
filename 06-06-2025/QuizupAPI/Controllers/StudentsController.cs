@@ -64,6 +64,34 @@ namespace QuizupAPI.Controllers
         }
 
         /// <summary>
+        /// Get students based on pagination
+        /// </summary>
+        /// <param name="pageNumber">Page number</param>
+        /// <param name="pageSize">Number of students per page</param>
+        /// <returns>List of students with pagination</returns>
+        [HttpGet("pagination")]
+        [ProducesResponseType(typeof(IEnumerable<Student>), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetStudentsPagination([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                if (pageNumber <= 0 || pageSize <= 0)
+                {
+                    return BadRequest(new { message = "Page number and size must be greater than zero." });
+                }
+
+                var students = await _studentService.GetStudentsPaginationAsync(pageNumber, pageSize);
+                return Ok(students);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while retrieving students. " + ex.Message });
+            }
+        }
+
+        /// <summary>
         /// Create a new student
         /// </summary>
         /// <param name="studentDto">Student information</param>

@@ -12,8 +12,13 @@ namespace QuizupAPI.Interfaces
         Task<Quiz> GetQuizByIdAsync(long id);
         Task<IEnumerable<Quiz>> GetAllQuizzesAsync();
         Task<Quiz> UpdateQuizAsync(long quizId, long teacherId, QuizUpdateRequestDTO quiz);
-        Task<Question> AddQuestionToQuizAsync(long quizId,long teacherId, QuestionAddRequestDTO question);
+        Task<Question> AddQuestionToQuizAsync(long quizId, long teacherId, QuestionAddRequestDTO question);
         Task<Question> UpdateQuestionAsync(long quizId, long teacherId, QuestionUpdateRequestDTO question);
         Task<Quiz> DeleteQuizAsync(long id, long teacherId);
+
+        Task<IEnumerable<Quiz>> GetQuizzesPaginationAsync(
+            int pageNumber,
+            int pageSize
+            );
     }
 }

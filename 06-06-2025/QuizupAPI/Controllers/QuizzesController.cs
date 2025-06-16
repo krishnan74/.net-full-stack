@@ -62,6 +62,34 @@ namespace QuizupAPI.Controllers
                 return StatusCode(500, new { message = "An error occurred while retrieving the quiz. " + ex.Message });
             }
         }
+        
+        // <summary>
+        /// Get quizzes based on pagination
+        /// </summary>
+        /// <param name="pageNumber">Page number</param>
+        /// <param name="pageSize">Number of quizzes per page</param>
+        /// <returns>List of quizzes with pagination</returns>
+        [HttpGet("pagination")]
+        [ProducesResponseType(typeof(IEnumerable<Quiz>), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetQuizzesPagination([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                if (pageNumber <= 0 || pageSize <= 0)
+                {
+                    return BadRequest(new { message = "Page number and size must be greater than zero." });
+                }
+
+                var quizzes = await _quizService.GetQuizzesPaginationAsync(pageNumber, pageSize);
+                return Ok(quizzes);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while retrieving quizzes. " + ex.Message });
+            }
+        }
 
         /// <summary>
         /// Create a new quiz
