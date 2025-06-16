@@ -22,7 +22,7 @@ namespace QuizupAPI.Repositories
         {
             var students = _quizContext.students.Where(s => !s.IsDeleted);
             if (!students.Any())
-                throw new Exception("No active students in the database");
+                return Enumerable.Empty<Student>();
             return (await students.ToListAsync());
         }
     }

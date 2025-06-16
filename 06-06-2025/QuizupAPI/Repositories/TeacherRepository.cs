@@ -22,7 +22,7 @@ namespace QuizupAPI.Repositories
         {
             var teachers = _quizContext.teachers.Where(t => !t.IsDeleted);
             if (!teachers.Any())
-                throw new Exception("No active teachers in the database");
+                return Enumerable.Empty<Teacher>();
             return (await teachers.ToListAsync());
         }
     }

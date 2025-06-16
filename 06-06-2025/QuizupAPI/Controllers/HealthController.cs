@@ -6,6 +6,7 @@ using QuizupAPI.Contexts;
 using QuizupAPI.Interfaces;
 using Serilog;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using ILogger = Serilog.ILogger;
 
 namespace QuizupAPI.Controllers

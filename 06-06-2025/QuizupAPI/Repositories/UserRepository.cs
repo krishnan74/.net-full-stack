@@ -22,7 +22,7 @@ namespace QuizupAPI.Repositories
         {
             var users = _quizContext.users.Where(u => !u.IsDeleted);
             if (!users.Any())
-                throw new Exception("No active users in the database");
+                return Enumerable.Empty<User>();
             return (await users.ToListAsync());
         }
     }

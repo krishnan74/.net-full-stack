@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using QuizupAPI.Interfaces;
 using QuizupAPI.Models;
 using QuizupAPI.Models.DTOs.Teacher;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace QuizupAPI.Controllers
 {

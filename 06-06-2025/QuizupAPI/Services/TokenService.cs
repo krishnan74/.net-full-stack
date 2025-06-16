@@ -15,12 +15,11 @@ namespace QuizupAPI.Services
         public TokenService(IConfiguration configuration, IRepository<string, User> userRepository)
         {
             _userRepository = userRepository;
-            var key = configuration["Keys:JwtTokenKey"];
-            if (string.IsNullOrEmpty(key))
-                throw new ArgumentNullException("JwtTokenKey", "JWT token key is missing in configuration.");
-            _securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            
+            _securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Keys:JwtTokenKey"]));
+            
         }
-        public string GenerateToken(User user)
+        public async Task<string> GenerateToken(User user)
         {
             List<Claim> claims = new List<Claim>
             {

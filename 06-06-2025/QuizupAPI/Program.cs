@@ -14,9 +14,38 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
-using Microsoft.AspNetCore.RateLimiting.Metadata;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Quizup API", Version = "v1" });
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
 
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
@@ -29,55 +58,9 @@ builder.Services.AddControllers()
                     opts.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
                     opts.JsonSerializerOptions.WriteIndented = true;
                 });
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(opt =>
-{
-    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Quizup API", Version = "v1" });
-    
-    // Add JWT authentication to Swagger
-    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
 
-    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[] {}
-        }
-    });
-});
 
-// Add JWT Authentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        var key = builder.Configuration["Jwt:Key"];
-        if (string.IsNullOrEmpty(key))
-            throw new ArgumentNullException("JwtTokenKey", "JWT token key is missing in configuration.");
-        
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero
-        };
-    });
+
 
 builder.Services.AddDbContext<QuizContext>((serviceProvider, opts) =>
 {
@@ -163,6 +146,25 @@ builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<IEncryptionService, EncryptionService>();
 
 builder.Services.AddSingleton<IPerformanceMonitoringService, PerformanceMonitoringService>();
+
+
+// Add JWT Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateAudience = false,
+        ValidateIssuer = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Keys:JwtTokenKey"]))
+    };
+});
 
 builder.Services.AddCors(options =>
 {

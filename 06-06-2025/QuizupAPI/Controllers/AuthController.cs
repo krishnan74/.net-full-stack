@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using QuizupAPI.Interfaces;
 using QuizupAPI.Models.DTOs.Authentication;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace QuizupAPI.Controllers
 {
@@ -94,24 +95,21 @@ namespace QuizupAPI.Controllers
         [HttpGet("me")]
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
-        [Authorize]
         public IActionResult GetCurrentUser()
         {
             try
             {
-                var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
-                if (string.IsNullOrEmpty(userEmail))
+                if (string.IsNullOrEmpty(username))
                 {
                     return Unauthorized(new { message = "User not authenticated." });
                 }
 
                 var userInfo = new
                 {
-                    Email = userEmail,
-                    UserId = userId,
+                    Username = username,
                     Role = userRole
                 };
 

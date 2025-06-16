@@ -3,6 +3,8 @@ using QuizupAPI.Interfaces;
 using QuizupAPI.Models;
 using QuizupAPI.Models.DTOs.Student;
 using QuizupAPI.Models.DTOs.QuizSubmission;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace QuizupAPI.Controllers
 {

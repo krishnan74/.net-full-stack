@@ -44,7 +44,7 @@ namespace QuizupAPI.Services
                 _logger.LogError("Password is required");
                 throw new Exception("Password is required");
             }
-            var token = _tokenService.GenerateToken(dbUser);
+            var token = await _tokenService.GenerateToken(dbUser);
             var refreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(dbUser);
             return new UserLoginResponseDTO
             {
@@ -62,7 +62,7 @@ namespace QuizupAPI.Services
             {
                 throw new Exception("Invalid refresh token");
             }
-            var newAccessToken = _tokenService.GenerateToken(user);
+            var newAccessToken = await _tokenService.GenerateToken(user);
             var newRefreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(user);
             
             return new UserLoginResponseDTO

@@ -22,7 +22,7 @@ namespace QuizupAPI.Repositories
         {
             var quizQuestions = _quizContext.quizQuestions;
             if (quizQuestions.Count() == 0)
-                throw new Exception("No quizQuestion in the database");
+                return Enumerable.Empty<QuizQuestion>();
             return (await quizQuestions.ToListAsync());
         }
     }
