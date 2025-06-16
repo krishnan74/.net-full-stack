@@ -6,20 +6,24 @@ import { CurrencyPipe } from '@angular/common';
   selector: 'app-product',
   imports: [CurrencyPipe],
   templateUrl: './product.html',
-  styleUrl: './product.css'
+  styleUrl: './product.css',
 })
 export class Product {
-@Input() product:ProductModel|null = new ProductModel();
-@Output() addToCart:EventEmitter<number> = new EventEmitter<number>();
+  @Input() product: ProductModel | null = new ProductModel();
+  @Output() addToCart: EventEmitter<number> = new EventEmitter<number>();
+  @Input() searchTerm: string = '';
 
-handleBuyClick(pid:number|undefined){
-  if(pid)
-  {
+  handleBuyClick(pid: number | undefined) {
+    if (pid) {
       this.addToCart.emit(pid);
+    }
   }
-}
-constructor(){
 
-}
+  highlightSearchTerm(text: string): string {
+    if (!this.searchTerm) return text;
+    const regex = new RegExp(`(${this.searchTerm})`, 'gi');
+    return text.replace(regex, '<span class="highlight">$1</span>');
+  }
 
+  constructor() {}
 }

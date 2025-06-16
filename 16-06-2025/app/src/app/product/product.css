@@ -1,62 +1,69 @@
-.count{
-    background-color: red;
-    color: white;
-    padding: 2px 6px;
-    border-radius: 50%;
-    font-size: 0.7em;
-    position: absolute;
-    top: 0;
-    right: 0;
+.count {
+  background-color: red;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-size: 0.7em;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
-.cart{
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
+.cart {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
 }
 
-.product-container{
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    gap: 30px;
+.product-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 30px;
 }
 
 .product-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
-    justify-content: flex-start;
-    margin-bottom: 20px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: flex-start;
+  margin-bottom: 20px;
 }
 
 #product-card {
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    transition: box-shadow 0.2s;
-    padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s;
+  padding: 20px;
 }
 
 #product-card button {
-    padding: 4px 0;
-    font-size: 13px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 16px;
+  padding: 4px 0;
+  font-size: 13px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 16px;
 }
 
 #product-card img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
 }
 
 #product-card:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
+.highlight {
+  background-color: #ffeb3b;
+  color: #000;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: bold;
+}
