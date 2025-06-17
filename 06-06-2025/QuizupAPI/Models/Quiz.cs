@@ -12,7 +12,7 @@ namespace QuizupAPI.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
         public DateTime? DueDate { get; set; }
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; } = false;
         public bool IsDeleted { get; set; } = false;
         public ICollection<QuizQuestion>? QuizQuestions { get; set; }
         public ICollection<QuizSubmission>? Submissions { get; set; }

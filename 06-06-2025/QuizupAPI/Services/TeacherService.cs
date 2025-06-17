@@ -207,6 +207,14 @@ namespace QuizupAPI.Services
             {
                 throw new KeyNotFoundException(ex.Message);
             }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                throw new UnauthorizedAccessException(ex.Message);
+            }
             catch (Exception ex)
             {
                 throw new Exception($"An error occurred while starting the quiz with ID {quizId}.", ex);
@@ -235,6 +243,14 @@ namespace QuizupAPI.Services
             catch (KeyNotFoundException ex)
             {
                 throw new KeyNotFoundException(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                throw new UnauthorizedAccessException(ex.Message);
             }
 
             catch (Exception ex)

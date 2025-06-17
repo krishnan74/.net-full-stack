@@ -9,12 +9,6 @@ namespace QuizupAPI.Models.DTOs.QuizSubmission
     public class QuizSubmissionDTO
     {
         [Required]
-        public long StudentId { get; set; }
-
-        [Required]
-        public long QuizId { get; set; }
-
-        [Required]
         public List<AnswerAddRequestDTO> Answers { get; set; } = new List<AnswerAddRequestDTO>();
     }
 }

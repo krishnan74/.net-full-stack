@@ -13,7 +13,7 @@ namespace QuizupAPI.Repositories
 
         public override async Task<User> Get(string key)
         {
-            var user = await _quizContext.users.SingleOrDefaultAsync(p => p.Username == key);
+            var user = await _quizContext.users.SingleOrDefaultAsync(u => u.Username == key);
 
             return user ?? throw new KeyNotFoundException($"No user with the given ID: {key}");
         }

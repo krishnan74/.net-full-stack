@@ -192,7 +192,7 @@ app.UseCors();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 
-app.UseSerilogRequestLogging();
+// app.UseSerilogRequestLogging();
 
 app.MapHub<QuizNotificationHub>("/quizNotificationHub");
 

@@ -43,21 +43,15 @@ namespace QuizupAPI.Middleware
             // Logging the exception
             _logger.Error(
                 exception,
-                "Unhandled exception occurred. Request: {Method} {Path} by {Username} (Role: {Role}). " +
-                "Exception: {ExceptionType}, Message: {ExceptionMessage}",
-                requestMethod,
-                requestPath,
-                username,
-                role,
-                exception.GetType().Name,
-                exception.Message
+                $"Unhandled exception occurred. Request: {requestMethod} {requestPath} by {username} (Role: {role}). " +
+                $"Exception: {exception.GetType().Name}, Message: {exception.Message}"
+                
             );
 
             // Logging stack trace
             
             _logger.Error(
-                "Stack trace: {StackTrace}",
-                exception.StackTrace
+                $"Stack trace: {exception.StackTrace}"
             );
 
             context.Response.StatusCode = GetStatusCode(exception);

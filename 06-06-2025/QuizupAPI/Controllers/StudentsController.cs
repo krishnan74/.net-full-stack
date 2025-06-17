@@ -165,7 +165,7 @@ namespace QuizupAPI.Controllers
         [ProducesResponseType(typeof(ApiResponse<object>), 400)]
         [ProducesResponseType(typeof(ApiResponse<object>), 404)]
         [ProducesResponseType(typeof(ApiResponse<object>), 500)]
-        [Authorize(Roles = "Student, Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateStudent(long id, [FromBody] StudentUpdateRequestDTO studentDto)
         {
             try

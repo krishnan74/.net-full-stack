@@ -5,11 +5,11 @@ namespace QuizupAPI.Misc.Mappers
 {
     public class AnswerMapper
     {
-        public Answer? MapAnswerDTOToAnswer( AnswerAddRequestDTO addRequestDto )
+        public Answer? MapAnswerDTOToAnswer( AnswerAddRequestDTO addRequestDto, long quizSubmissionId )
         {
             Answer answer = new();
             answer.QuestionId = addRequestDto.QuestionId;
-            answer.QuizSubmissionId = addRequestDto.QuizSubmissionId;
+            answer.QuizSubmissionId = quizSubmissionId;
             answer.SelectedAnswer = addRequestDto.SelectedAnswer;
 
             return answer;

@@ -27,12 +27,7 @@ namespace QuizupAPI.Middleware
 
             // Log request start
             _logger.Information(
-                "HTTP {Method} {Path} started by {Username} (Role: {Role}) at {RequestTime}",
-                context.Request.Method,
-                context.Request.Path,
-                username,
-                role,
-                requestTime
+                $"HTTP {context.Request.Method} {context.Request.Path} started by {username} (Role: {role}) at {requestTime}"
             );
 
             try
@@ -43,24 +38,14 @@ namespace QuizupAPI.Middleware
 
                 // Logging successful response
                 _logger.Information(
-                    "HTTP {Method} {Path} completed by {Username} (Role: {Role}) in {ElapsedMs}ms with status {StatusCode}",
-                    context.Request.Method,
-                    context.Request.Path,
-                    username,
-                    role,
-                    stopwatch.ElapsedMilliseconds,
-                    context.Response.StatusCode
+                    $"HTTP {context.Request.Method} {context.Request.Path} completed by {username} (Role: {role}) in {stopwatch.ElapsedMilliseconds}ms with status {context.Response.StatusCode}"
                 );
 
                 // Logging slow request warning
                 if (stopwatch.ElapsedMilliseconds > 1000)
                 {
                     _logger.Warning(
-                        "Slow request detected: HTTP {Method} {Path} took {ElapsedMs}ms by {Username}",
-                        context.Request.Method,
-                        context.Request.Path,
-                        stopwatch.ElapsedMilliseconds,
-                        username
+                        $"Slow request detected: HTTP {context.Request.Method} {context.Request.Path} took {stopwatch.ElapsedMilliseconds}ms by {username} (Role: {role})"
                     );
                 }
             }
@@ -71,13 +56,7 @@ namespace QuizupAPI.Middleware
                 // Logging error 
                 _logger.Error(
                     ex,
-                    "HTTP {Method} {Path} failed for {Username} (Role: {Role}) after {ElapsedMs}ms. Error: {ErrorMessage}",
-                    context.Request.Method,
-                    context.Request.Path,
-                    username,
-                    role,
-                    stopwatch.ElapsedMilliseconds,
-                    ex.Message
+                    $"HTTP {context.Request.Method} {context.Request.Path} failed for {username} (Role: {role}) after {stopwatch.ElapsedMilliseconds}ms. Error: {ex.Message}"
                 );
 
                 throw;
