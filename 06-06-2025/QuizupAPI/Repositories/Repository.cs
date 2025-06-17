@@ -33,7 +33,7 @@ namespace QuizupAPI.Repositories
                 await _quizContext.SaveChangesAsync();
                 return item;
             }
-            throw new Exception("No such item found for updation");
+            throw new KeyNotFoundException("No such item found for updation");
         }
 
         public async Task<T> Delete(K key)
@@ -45,7 +45,7 @@ namespace QuizupAPI.Repositories
                 await _quizContext.SaveChangesAsync();
                 return item;
             }
-            throw new Exception("No such item found for deleting");
+            throw new KeyNotFoundException("No such item found for deleting");
         }
 
     }

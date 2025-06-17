@@ -15,7 +15,7 @@ namespace QuizupAPI.Repositories
         {
             var teacher = await _quizContext.teachers.SingleOrDefaultAsync(p => p.Id == key);
 
-            return teacher??throw new Exception("No teacher with the given ID");
+            return teacher??throw new KeyNotFoundException($"No teacher with the given ID: {key}");
         }
 
         public override async Task<IEnumerable<Teacher>> GetAll()

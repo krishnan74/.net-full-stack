@@ -143,10 +143,7 @@ namespace QuizupAPI.Controllers
             {
                 return BadRequest(ApiResponse<object>.ErrorResponse(ex.Message));
             }
-            catch (InvalidOperationException ex)
-            {
-                return Conflict(ApiResponse<object>.ErrorResponse(ex.Message));
-            }
+        
             catch (Exception ex)
             {
                 return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while creating the teacher. " + ex.Message));

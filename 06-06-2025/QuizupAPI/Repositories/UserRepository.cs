@@ -15,7 +15,7 @@ namespace QuizupAPI.Repositories
         {
             var user = await _quizContext.users.SingleOrDefaultAsync(p => p.Username == key);
 
-            return user??throw new Exception("No user with the given ID");
+            return user??throw new KeyNotFoundException($"No user with the given ID: {key}");
         }
 
         public override async Task<IEnumerable<User>> GetAll()

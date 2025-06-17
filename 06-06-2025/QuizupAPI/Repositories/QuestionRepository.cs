@@ -15,7 +15,7 @@ namespace QuizupAPI.Repositories
         {
             var question = await _quizContext.questions.SingleOrDefaultAsync(p => p.Id == key);
 
-            return question??throw new Exception("No question with the given ID");
+            return question??throw new KeyNotFoundException($"No question with the given ID: {key}");
         }
 
         public override async Task<IEnumerable<Question>> GetAll()
