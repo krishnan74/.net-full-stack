@@ -1,0 +1,65 @@
+<div class="product-tools-container">
+  <input
+    type="text"
+    [(ngModel)]="searchString"
+    (input)="handleSearchProducts()"
+    placeholder="Search products..."
+  />
+
+  <div class="cart">
+    <img
+      width="40"
+      height="40"
+      src="https://img.icons8.com/ios-glyphs/50/shopping-cart--v1.png"
+      alt="shopping-cart--v1"
+    />
+    <span class="count">{{ cartCount }}</span>
+  </div>
+</div>
+
+@if (loading && products.length === 0) {
+<div class="loading-container">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <p>Searching products...</p>
+</div>
+} @if (!loading || products.length > 0) {
+<div class="products-list">
+  @for (item of products; track item.id) {
+  <app-product
+    [product]="item"
+    [searchTerm]="searchString"
+  ></app-product>
+  }
+</div>
+} 
+
+<!-- 
+@if (loadingMore) {
+<div class="loading-more-container">
+  <div class="spinner-border text-success" role="status">
+    <span class="visually-hidden">Loading more...</span>
+  </div>
+  <p>Loading more products...</p>
+</div>
+} -->
+
+<!-- No results message -->
+@if (!loading && products.length === 0 && searchString) {
+<div class="no-results">
+  <p>No products found for "{{ searchString }}"</p>
+</div>
+} 
+
+
+@if (showBackToTop) {
+<button class="back-to-top" (click)="scrollToTop()" title="Back to top">
+  <img
+    width="24"
+    height="24"
+    src="https://img.icons8.com/material-sharp/24/circled-up.png"
+    alt="circled-up"
+  />
+</button>
+}

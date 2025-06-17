@@ -1,38 +1,54 @@
-import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import { UserModel } from "../models/user";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { inject, Injectable } from "@angular/core";
+
 
 @Injectable()
-export class UserService {
-
-    private dummyUsers: UserModel[] = [
-        new UserModel('testuser', 'password123'),
-        new UserModel('admin', 'adminpass')
-    ];
-
+export class UserService
+{
+    private http = inject(HttpClient);
     private usernameSubject = new BehaviorSubject<string|null>(null);
     username$:Observable<string|null> = this.usernameSubject.asObservable();
 
-    login(username: string, password: string): void {
-        const user = this.dummyUsers.find(
-            u => u.username === username && u.password === password
-        );
-        if (user) {
-            localStorage.setItem('user', JSON.stringify(user));
-            this.usernameSubject.next(user.username);
+    validateUserLogin(user:UserModel)
+    {
+        if(user.username.length<3)
+        {
+            this.usernameSubject.next(null);
+            
         }
-        else{
-            this.usernameSubject.error("Invalid username or password");
+            
+        else
+        {
+            this.callLoginAPI(user).subscribe(
+                {
+                    next:(data:any)=>{
+                        this.usernameSubject.next(user.username);
+                        localStorage.setItem("token",data.accessToken)
+                    }
+                }
+            )
+            
         }
+            
+    }
+    
+    callGetProfile()
+    {
+        var token = localStorage.getItem("token")
+        const httpHeader = new HttpHeaders({
+            'Authorization':`Bearer ${token}`
+        })
+        return this.http.get('https://dummyjson.com/auth/me',{headers:httpHeader});
+        
     }
 
-    logout(): void {
-        localStorage.removeItem('user');
+    callLoginAPI(user:UserModel)
+    {
+        return this.http.post("https://dummyjson.com/auth/login",user);
+    }
+    logout(){
         this.usernameSubject.next(null);
-    }
-
-    getCurrentUser(): UserModel | null {
-        const userJson = localStorage.getItem('user');
-        return userJson ? JSON.parse(userJson) : null;
     }
 }

@@ -1,0 +1,153 @@
+.not-found-container{
+    text-align: center;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f8d7da;
+    border-radius: 8px;
+    color: #721c24;
+}
+a{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.product-page-container{
+    max-width: 60vw;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.product-details-container {
+    display: flex;
+    align-items: start;
+    gap: 2rem;
+}
+
+.product-images{
+    flex: 1;
+}
+
+.product-details{
+    flex: 1.5;
+}
+
+.product-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #222;
+}
+
+.product-tags{
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.product-tag{
+    background: #e0f7fa;
+    color: #00796b;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.product-thumbnail {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: block;
+}
+
+.product-description {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: #444;
+}
+#discount{
+    font-size: 0.9rem;
+    color: #d32f2f;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.product-price {
+    font-size: 1.3rem;
+    color: #1a8917;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+p {
+    font-size: 1rem;
+    margin-bottom: 0.4rem;
+    color: #555;
+}
+
+
+
+.reviews-title,
+.images-title {
+    margin-top: 2.5rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.reviews-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 2rem 0;
+}
+
+.review-item {
+    display: flex;
+    gap: 0.5rem;
+    background: #f8f8f8;
+    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.7rem;
+    font-size: 1rem;
+    color: #333;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+}
+
+.reviewer-name {
+    font-weight: bolder;
+}
+
+.review-date {
+    font-size: 0.95em;
+    color: #888;
+}
+
+.review-comment {
+    margin-left: 0.3em;
+}
+
+.review-rating {
+    font-weight: 500;
+}
+
+.images-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.product-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #eee;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}

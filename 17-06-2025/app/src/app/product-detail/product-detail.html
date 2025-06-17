@@ -1,0 +1,61 @@
+
+    @if(!notFound){
+<div class="product-page-container">
+
+    <div class="product-details-container">
+        <div class="product-images">
+            <img class="product-thumbnail" [src]="product.thumbnail" alt="{{ product.title }}" />
+            <div class="images-list">
+                @for (image of product.images; track $index) {
+                    <img class="product-image" [src]="image" alt="Product Image" />
+                }
+            </div>
+        </div>
+        <div class="product-details">
+            <h1 class="product-title">{{ product.title }}</h1>
+            <p class="product-rating">
+                <span class="rating-stars">
+                    @for (star of ratingArray; track $index) {
+                        <img width="48" height="48" src="https://img.icons8.com/fluency/48/star--v1.png" alt="star--v1"/>
+                    }
+                </span>
+            </p>
+            <ul class="product-tags">
+                @for (tag of product.tags; track $index) {
+                    <li class="product-tag">{{ tag }}</li>
+                }
+            </ul>
+            <p class="product-description">{{ product.description }}</p>
+            <p class="product-price"><strong>Price:</strong> {{ product.price }}  <span id="discount">( - {{ product.discountPercentage }}% )</span> </p>
+            <p ><strong>Brand:</strong> {{ product.brand }}</p>
+            <p ><strong>Category:</strong> {{ product.category }}</p>
+            <p ><strong>Weight:</strong> {{ product.weight }} kg</p>
+            <p ><strong>Dimensions:</strong> {{ product.dimensions.width }} x {{ product.dimensions.height }} x {{ product.dimensions.depth }} cm</p>
+            <p ><strong>Warranty:</strong> {{ product.warrantyInformation }}</p>
+            <p ><strong>Shipping:</strong> {{ product.shippingInformation }}</p>
+            <p ><strong>Status:</strong> {{ product.availabilityStatus }}</p>
+        </div>
+    </div>
+
+    <h2 class="reviews-title">Reviews</h2>
+    <ul class="reviews-list">
+        @for (review of product.reviews; track $index) {
+            <li class="review-item">
+                <strong class="reviewer-name">{{ review.reviewerName }}</strong>
+                <span class="review-date">({{ formatDate( review.date ) }})</span>:
+                <span class="review-comment">{{ review.comment }}</span> -
+                <span class="review-rating">{{ review.rating }}/5</span>
+            </li>
+        }
+    </ul>
+</div>
+
+}
+@else{
+    <div class="not-found-container">
+        <h1>Product Not Found</h1>
+        <p>Sorry, the product you are looking for does not exist.</p>
+        <p>Please check the product ID or return to the <a routerLink="/products">product list</a>.</p>
+    </div>
+}
+
