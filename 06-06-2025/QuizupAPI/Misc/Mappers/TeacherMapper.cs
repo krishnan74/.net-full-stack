@@ -16,14 +16,13 @@ namespace QuizupAPI.Misc.Mappers
             return teacher;
         }
 
-        public Teacher? MapTeacherUpdateRequestTeacher(TeacherUpdateRequestDTO updateRequestDto)
+        public Teacher? MapTeacherUpdateRequestTeacher(Teacher existingTeacher, TeacherUpdateRequestDTO updateRequestDto)
         {
-            Teacher teacher = new();
-            teacher.FirstName = updateRequestDto.FirstName;
-            teacher.LastName = updateRequestDto.LastName;
-            teacher.Subject = updateRequestDto.Subject;
+            existingTeacher.FirstName = updateRequestDto.FirstName;
+            existingTeacher.LastName = updateRequestDto.LastName;
+            existingTeacher.Subject = updateRequestDto.Subject;
 
-            return teacher;
+            return existingTeacher;
         }
     }
 }
