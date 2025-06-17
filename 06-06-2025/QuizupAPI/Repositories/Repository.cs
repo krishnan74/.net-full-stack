@@ -36,7 +36,7 @@ namespace QuizupAPI.Repositories
             throw new KeyNotFoundException("No such item found for updation");
         }
 
-        public async Task<T> Delete(K key)
+        public virtual async Task<T> Delete(K key)
         {
             var item = await Get(key);
             if (item != null)

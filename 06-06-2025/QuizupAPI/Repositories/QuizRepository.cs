@@ -13,14 +13,16 @@ namespace QuizupAPI.Repositories
 
         public override async Task<Quiz> Get(long key)
         {
-            var quiz = await _quizContext.quizzes.SingleOrDefaultAsync(p => p.Id == key);
+            var quiz = await _quizContext.quizzes
+                                .Include(q => q.QuizQuestions)
+                                .ThenInclude(q => q.Question).SingleOrDefaultAsync(p => p.Id == key );
 
             return quiz??throw new KeyNotFoundException($"No Quiz with the given ID: {key}");
         }
 
         public override async Task<IEnumerable<Quiz>> GetAll()
         {
-            var quizzes = _quizContext.quizzes.Where(q => !q.IsDeleted);
+            var quizzes = _quizContext.quizzes;
             if (!quizzes.Any())
                 return Enumerable.Empty<Quiz>();
             return (await quizzes.ToListAsync());

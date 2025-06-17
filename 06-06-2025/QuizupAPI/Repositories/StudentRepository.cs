@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace QuizupAPI.Repositories
 {
-    public  class StudentRepository : Repository<long, Student>
+    public class StudentRepository : Repository<long, Student>
     {
         public StudentRepository(QuizContext quizContext) : base(quizContext)
         {
@@ -13,17 +13,31 @@ namespace QuizupAPI.Repositories
 
         public override async Task<Student> Get(long key)
         {
-            var student = await _quizContext.students.SingleOrDefaultAsync(p => p.Id == key);
+            var student = await _quizContext.students.
+                Include(s => s.QuizSubmissions)
+                .SingleOrDefaultAsync(p => p.Id == key);
 
-            return student??throw new KeyNotFoundException($"No student with the given ID: {key}");
+            return student ?? throw new KeyNotFoundException($"No student with the given ID: {key}");
         }
 
         public override async Task<IEnumerable<Student>> GetAll()
         {
-            var students = _quizContext.students.Where(s => !s.IsDeleted);
+            var students = _quizContext.students;
             if (!students.Any())
                 return Enumerable.Empty<Student>();
             return (await students.ToListAsync());
+        }
+
+        public override async Task<Student> Delete(long key)
+        {
+            var student = await Get(key);
+            if (student != null)
+            {
+                student.IsDeleted = true;
+                await _quizContext.SaveChangesAsync();
+                return student;
+            }
+            throw new KeyNotFoundException("No such student found for deletion");
         }
     }
 }

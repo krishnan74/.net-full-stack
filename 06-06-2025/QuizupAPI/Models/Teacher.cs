@@ -1,10 +1,11 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using QuizupAPI.Interfaces;
 
 namespace QuizupAPI.Models
 {
-    public class Teacher
+    public class Teacher : ISoftDeletable
     {
         public long Id { get; set; }
         [Required]

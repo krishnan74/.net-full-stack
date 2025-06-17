@@ -1,5 +1,7 @@
 using QuizupAPI.Models;
+using QuizupAPI.Interfaces;
 using Microsoft.EntityFrameworkCore;
+
 namespace QuizupAPI.Contexts
 {
     public class QuizContext : DbContext
@@ -17,8 +19,27 @@ namespace QuizupAPI.Contexts
         public DbSet<Teacher> teachers { get; set; } = null!;
         public DbSet<Student> students { get; set; } = null!;
 
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var entries = ChangeTracker.Entries()
+                .Where(e => e.Entity is ISoftDeletable && e.State == EntityState.Deleted);
+
+            foreach (var entry in entries)
+            {
+                ((ISoftDeletable)entry.Entity).IsDeleted = true;
+                entry.State = EntityState.Modified;
+            }
+
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsDeleted);
+            modelBuilder.Entity<Teacher>().HasQueryFilter(t => !t.IsDeleted);
+            modelBuilder.Entity<Student>().HasQueryFilter(s => !s.IsDeleted);
+            modelBuilder.Entity<Quiz>().HasQueryFilter(q => !q.IsDeleted);
+            
             modelBuilder.Entity<Student>().HasOne(s => s.User)
                                         .WithOne(u => u.Student)
                                         .HasForeignKey<Student>(s => s.Email)

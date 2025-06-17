@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using QuizupAPI.Interfaces;
 
 namespace QuizupAPI.Models
 {
-    public class Student
+    public class Student : ISoftDeletable
     {
         public long Id { get; set; }
         [Required]
