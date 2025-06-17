@@ -1,9 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [],
+  imports: [RouterOutlet],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })

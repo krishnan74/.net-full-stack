@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserModel } from '../models/user';
 import { UserService } from '../services/user.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
