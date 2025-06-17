@@ -10,9 +10,6 @@ namespace QuizupAPI.Models.DTOs.Question
         public List<string> Options { get; set; } = new List<string>();
 
         [Required]
-        public long QuizId { get; set; }
-
-        [Required]
         public string CorrectAnswer { get; set; } = string.Empty;
     }
 }

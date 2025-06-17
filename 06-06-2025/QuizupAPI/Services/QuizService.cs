@@ -67,11 +67,12 @@ namespace QuizupAPI.Services
             try
             {
                 var quiz = await _quizRepository.Get(id);
-                if (quiz == null)
-                {
-                    throw new KeyNotFoundException($"Quiz with ID {id} not found");
-                }
+                
                 return quiz;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
             }
             catch (Exception ex)
             {
@@ -105,21 +106,20 @@ namespace QuizupAPI.Services
                 }
 
                 var existingQuiz = await _quizRepository.Get(quizId);
-                if (existingQuiz == null)
-                {
-                    throw new KeyNotFoundException($"Quiz with ID {quizId} not found.");
-                }
+                
 
                 if (existingQuiz.TeacherId != teacherId)
                 {
                     throw new UnauthorizedAccessException("You are not authorized to update this quiz.");
                 }
 
-                existingQuiz.Title = quizUpdateRequestDTO.Title;
-                existingQuiz.Description = quizUpdateRequestDTO.Description;
-                existingQuiz.DueDate = quizUpdateRequestDTO.DueDate;
+                var quiz = quizMapper.MapQuizUpdateRequestQuiz(existingQuiz, quizUpdateRequestDTO);
+                if (quiz == null)
+                {
+                    throw new Exception("Failed to map quiz from DTO.");
+                }
 
-                var updatedQuiz = await _quizRepository.Update(quizId, existingQuiz);
+                var updatedQuiz = await _quizRepository.Update(quizId, quiz);
 
                 if (updatedQuiz == null)
                 {
@@ -127,6 +127,10 @@ namespace QuizupAPI.Services
                 }
 
                 return updatedQuiz;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
             }
             catch (Exception ex)
             {
@@ -138,15 +142,16 @@ namespace QuizupAPI.Services
             try
             {
                 var quiz = await _quizRepository.Get(id);
-                if (quiz == null)
-                {
-                    throw new KeyNotFoundException($"Quiz with ID {id} not found");
-                }
+                
                 if (quiz.TeacherId != teacherId)
                 {
                     throw new UnauthorizedAccessException("You are not authorized to delete this quiz.");
                 }
                 return await _quizRepository.Delete(id);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
             }
             catch (Exception ex)
             {
@@ -177,9 +182,20 @@ namespace QuizupAPI.Services
                 throw new Exception("Failed to add question");
             }
 
+            var quizQuestion = new QuizQuestion
+            {
+                QuizId = quizId,
+                QuestionId = addedQuestion.Id
+            };
+            var addedQuizQuestion = await _quizQuestionRepository.Add(quizQuestion);
+            if (addedQuizQuestion == null)
+            {
+                throw new Exception("Failed to add question to quiz");
+            }
+
             return addedQuestion;
         }
-        public async Task<Question> UpdateQuestionAsync(long quizId, long teacherId, QuestionUpdateRequestDTO questionUpdateRequestDTO)
+        public async Task<Question> UpdateQuestionAsync(long questionId, long teacherId, QuestionUpdateRequestDTO questionUpdateRequestDTO)
         {
             if (questionUpdateRequestDTO == null)
             {
@@ -191,13 +207,15 @@ namespace QuizupAPI.Services
                 throw new ValidationException("Question text, options, and correct answer are required.");
             }
 
-            var question = questionMapper.MapQuestionUpdateRequestQuestion(questionUpdateRequestDTO);
+            var existingQuestion = await _questionRepository.Get(questionId);
+
+            var question = questionMapper.MapQuestionUpdateRequestQuestion(existingQuestion, questionUpdateRequestDTO);
             if (question == null)
             {
                 throw new Exception("Failed to map question from DTO.");
             }
 
-            var updatedQuestion = await _questionRepository.Update(question.Id, question);
+            var updatedQuestion = await _questionRepository.Update(questionId, question);
             if (updatedQuestion == null)
             {
                 throw new Exception("Failed to update question");
@@ -226,7 +244,6 @@ namespace QuizupAPI.Services
                 throw new Exception($"An error occurred while retrieving quizzes: {ex.Message}");
             }
         }
-
 
         private async Task MapAndAddQuestionsAsync(long quizId, QuizAddRequestDTO quizAddRequestDTO)
         {

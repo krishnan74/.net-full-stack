@@ -15,14 +15,13 @@ namespace QuizupAPI.Misc.Mappers
             return question;
         }
 
-        public Question? MapQuestionUpdateRequestQuestion( QuestionUpdateRequestDTO updateRequestDto)
+        public Question? MapQuestionUpdateRequestQuestion(Question existingQuestion, QuestionUpdateRequestDTO updateRequestDto)
         {
-            Question question = new();
-            question.Text = updateRequestDto.Text;
-            question.Options = updateRequestDto.Options;
-            question.CorrectAnswer = updateRequestDto.CorrectAnswer;
-            
-            return question;
+            existingQuestion.Text = updateRequestDto.Text;
+            existingQuestion.Options = updateRequestDto.Options;
+            existingQuestion.CorrectAnswer = updateRequestDto.CorrectAnswer;
+
+            return existingQuestion;
         }
     }
 }

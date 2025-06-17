@@ -279,17 +279,17 @@ namespace QuizupAPI.Controllers
         /// <summary>
         /// Update a question in a quiz
         /// </summary>
-        /// <param name="quizId">Quiz ID</param>
+        /// <param name="questionId">Question ID</param>
         /// <param name="teacherId">Teacher ID</param>
         /// <param name="questionDto">Updated question information</param>
         /// <returns>Updated question</returns>
-        [HttpPut("{quizId}/questions")]
+        [HttpPut("{questionId}/questions")]
         [ProducesResponseType(typeof(ApiResponse<Question>), 200)]
         [ProducesResponseType(typeof(ApiResponse<object>), 400)]
         [ProducesResponseType(typeof(ApiResponse<object>), 404)]
         [ProducesResponseType(typeof(ApiResponse<object>), 500)]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> UpdateQuestion(long quizId, [FromQuery] long teacherId, [FromBody] QuestionUpdateRequestDTO questionDto)
+        public async Task<IActionResult> UpdateQuestion(long questionId, [FromQuery] long teacherId, [FromBody] QuestionUpdateRequestDTO questionDto)
         {
             try
             {
@@ -304,7 +304,7 @@ namespace QuizupAPI.Controllers
                     return BadRequest(ApiResponse<object>.ErrorResponse("Validation failed", errors));
                 }
 
-                var question = await _quizService.UpdateQuestionAsync(quizId, teacherId, questionDto);
+                var question = await _quizService.UpdateQuestionAsync(questionId, teacherId, questionDto);
                 return Ok(ApiResponse<Question>.SuccessResponse(question, "Question updated successfully"));
             }
             catch (ArgumentNullException ex)

@@ -99,6 +99,10 @@ namespace QuizupAPI.Services
             {
                 return await _teacherRepository.Get(id);
             }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
+            }
             catch (Exception ex)
             {
                 throw new Exception($"An error occurred while retrieving the teacher with ID {id}.", ex);
@@ -132,18 +136,25 @@ namespace QuizupAPI.Services
                 }
 
                 var existingTeacher = await _teacherRepository.Get(id);
-                if (existingTeacher == null)
-                {
-                    throw new KeyNotFoundException($"Teacher with ID {id} not found.");
-                }
+                
 
-                var teacher = teacherMapper.MapTeacherUpdateRequestTeacher(teacherDTO);
+                var teacher = teacherMapper.MapTeacherUpdateRequestTeacher(existingTeacher, teacherDTO);
                 if (teacher == null)
                 {
                     throw new Exception("Failed to map TeacherUpdateRequestDTO to Teacher.");
                 }
 
-                return await _teacherRepository.Update(id, teacher);
+                var updatedTeacher = await _teacherRepository.Update(id, teacher);
+                if (updatedTeacher == null)
+                {
+                    throw new Exception($"Failed to update teacher with ID {id}.");
+                }
+
+                return updatedTeacher;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
             }
             catch (Exception ex)
             {
@@ -155,12 +166,23 @@ namespace QuizupAPI.Services
         {
             try
             {
-                return await _teacherRepository.Delete(id);
+                var existingTeacher = await _teacherRepository.Get(id);
+                
+                var deletedTeacher = await _teacherRepository.Delete(id);
+                await _userRepository.Delete(existingTeacher.Email);
+                return deletedTeacher;
             }
-            catch (Exception ex)
+
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
+            }
+
+             catch (Exception ex)
             {
                 throw new Exception($"An error occurred while deleting the teacher with ID {id}.", ex);
-            }
+            }   
+
         }
 
         public async Task<Quiz> StartQuizAsync(long teacherId, long quizId)
@@ -168,10 +190,7 @@ namespace QuizupAPI.Services
             try
             {
                 var quiz = await _quizRepository.Get(quizId);
-                if (quiz == null)
-                {
-                    throw new Exception($"Quiz with ID {quizId} not found.");
-                }
+                
                 if (quiz.TeacherId != teacherId)
                 {
                     throw new UnauthorizedAccessException("You are not authorized to start this quiz.");
@@ -184,6 +203,10 @@ namespace QuizupAPI.Services
                 await _hubContext.Clients.All.SendAsync("NotifyStartQuiz", quiz);
                 return await _quizRepository.Update(quizId, quiz);
             }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
+            }
             catch (Exception ex)
             {
                 throw new Exception($"An error occurred while starting the quiz with ID {quizId}.", ex);
@@ -195,10 +218,7 @@ namespace QuizupAPI.Services
             try
             {
                 var quiz = await _quizRepository.Get(quizId);
-                if (quiz == null)
-                {
-                    throw new Exception($"Quiz with ID {quizId} not found.");
-                }
+                
                 if (quiz.TeacherId != teacherId)
                 {
                     throw new UnauthorizedAccessException("You are not authorized to end this quiz.");
@@ -211,6 +231,10 @@ namespace QuizupAPI.Services
                 await _hubContext.Clients.All.SendAsync("NotifyEndQuiz", quiz);
 
                 return await _quizRepository.Update(quizId, quiz);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
             }
 
             catch (Exception ex)
@@ -226,10 +250,7 @@ namespace QuizupAPI.Services
             {
                 // Verify teacher exists
                 var teacher = await _teacherRepository.Get(teacherId);
-                if (teacher == null)
-                {
-                    throw new KeyNotFoundException($"Teacher with ID {teacherId} not found.");
-                }
+                
 
                 // Execute the PostgreSQL function
                 var result = await _context.Set<TeacherSummaryDTO>()
@@ -245,6 +266,10 @@ namespace QuizupAPI.Services
                 }
 
                 return result;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
             }
             catch (Exception ex)
             {

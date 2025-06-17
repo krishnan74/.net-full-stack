@@ -16,14 +16,14 @@ namespace QuizupAPI.Misc.Mappers
             return quiz;
         }
 
-        public Quiz? MapQuizUpdateRequestQuiz(QuizUpdateRequestDTO updateRequestDto)
+        public Quiz? MapQuizUpdateRequestQuiz(Quiz existingQuiz, QuizUpdateRequestDTO updateRequestDto)
         {
-            Quiz quiz = new();
-            quiz.Title = updateRequestDto.Title;
-            quiz.Description = updateRequestDto.Description;            
-            quiz.DueDate = updateRequestDto.DueDate;
-        
-            return quiz;
+            existingQuiz.Title = updateRequestDto.Title;
+            existingQuiz.Description = updateRequestDto.Description;
+            existingQuiz.DueDate = updateRequestDto.DueDate;
+
+            return existingQuiz;
         }
+         
     }
 }

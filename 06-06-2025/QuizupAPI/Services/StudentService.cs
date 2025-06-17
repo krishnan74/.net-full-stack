@@ -106,6 +106,10 @@ namespace QuizupAPI.Services
             {
                 return await _studentRepository.Get(id);
             }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
+            }
             catch (Exception ex)
             {
                 throw new Exception($"An error occurred while retrieving the student with ID {id}.", ex);
@@ -144,13 +148,19 @@ namespace QuizupAPI.Services
                     throw new KeyNotFoundException($"Student with ID {id} not found.");
                 }
 
-                var student = studentMapper.MapStudentUpdateRequestStudent(studentDTO);
+                var student = studentMapper.MapStudentUpdateRequestStudent(existingStudent, studentDTO);
                 if (student == null)
                 {
                     throw new Exception("Failed to map StudentUpdateRequestDTO to Student.");
                 }
 
-                return await _studentRepository.Update(id, student);
+                var updatedStudent = await _studentRepository.Update(id, student);
+                if (updatedStudent == null)
+                {
+                    throw new Exception($"Failed to update student with ID {id}.");
+                }
+
+                return updatedStudent;
             }
             catch (Exception ex)
             {
@@ -162,10 +172,20 @@ namespace QuizupAPI.Services
         {
             try
             {
+                var existingStudent = await _studentRepository.Get(id);
+
+                await _userRepository.Delete(existingStudent.Email);
+                
                 return await _studentRepository.Delete(id);
+            }
+
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
             }
             catch (Exception ex)
             {
+             
                 throw new Exception($"An error occurred while deleting the student with ID {id}.", ex);
             }
         }
@@ -198,10 +218,6 @@ namespace QuizupAPI.Services
             try
             {
                 var student = await _studentRepository.Get(studentId);
-                if (student == null)
-                {
-                    throw new KeyNotFoundException($"Student with ID {studentId} not found.");
-                }
 
                 var quiz = await _quizRepository.Get(quizId);
                 if (quiz == null)
@@ -215,6 +231,10 @@ namespace QuizupAPI.Services
                 quizSubmission.SubmissionStatus = "InProgress";
 
                 return await _quizSubmissionRepository.Add(quizSubmission);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
             }
             catch (Exception ex)
             {
@@ -233,17 +253,8 @@ namespace QuizupAPI.Services
 
                 var existingQuizSubmission = await _quizSubmissionRepository.Get(quizSubmissionId);
 
-                if (existingQuizSubmission == null)
-                {
-                    throw new KeyNotFoundException($"QuizSubmission with ID {quizSubmissionId} not found.");
-                }
-
                 var student = await _studentRepository.Get(studentId);
-                if (student == null)
-                {
-                    throw new KeyNotFoundException($"Student with ID {studentId} not found.");
-                }
-
+                
                 if (existingQuizSubmission.StudentId != studentId)
                 {
                     throw new UnauthorizedAccessException("You are not authorized to submit this quiz.");
@@ -266,6 +277,10 @@ namespace QuizupAPI.Services
 
                 return updatedQuizSubmission;
             }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
+            }
             catch (Exception ex)
             {
                 throw new Exception("An error occurred while submitting the quiz.", ex);
@@ -281,17 +296,9 @@ namespace QuizupAPI.Services
                 }
 
                 var existingQuizSubmission = await _quizSubmissionRepository.Get(quizSubmissionId);
-                if (existingQuizSubmission == null)
-                {
-                    throw new KeyNotFoundException($"QuizSubmission with ID {quizSubmissionId} not found.");
-                }
-
+               
                 var student = await _studentRepository.Get(studentId);
-                if (student == null)
-                {
-                    throw new KeyNotFoundException($"Student with ID {studentId} not found.");
-                }
-
+       
                 if (existingQuizSubmission.StudentId != studentId)
                 {
                     throw new UnauthorizedAccessException("You are not authorized to save answers for this quiz.");
@@ -310,6 +317,10 @@ namespace QuizupAPI.Services
                 }
 
                 return updatedQuizSubmission;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
             }
             catch (Exception ex)
             {
@@ -402,10 +413,7 @@ namespace QuizupAPI.Services
             {
                 // Verify student exists
                 var student = await _studentRepository.Get(studentId);
-                if (student == null)
-                {
-                    throw new KeyNotFoundException($"Student with ID {studentId} not found.");
-                }
+                
 
                 // Execute the PostgreSQL function
                 var result = await _context.Set<StudentSummaryDTO>()
@@ -421,6 +429,10 @@ namespace QuizupAPI.Services
                 }
 
                 return result;
+            }
+             catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
             }
             catch (Exception ex)
             {
