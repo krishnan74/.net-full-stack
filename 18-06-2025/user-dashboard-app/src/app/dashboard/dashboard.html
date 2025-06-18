@@ -1,0 +1,25 @@
+<div class="dashboard">
+  <h1>Dashboard</h1>
+  <div class="chart-container">
+    <div class="chart">
+      <h3>Users by Gender</h3>
+      <canvas id="pieChart" baseChart [data]="pieChartData" type="pie">
+      </canvas>
+    </div>
+    <div class="chart">
+      <h3>Users by Role</h3>
+      <canvas id="barChart" baseChart [data]="barChartData" type="bar">
+      </canvas>
+    </div>
+
+    <div class="chart">
+      <h3>Users by State</h3>
+      <canvas
+        baseChart
+        [type]="'choropleth'"
+        [data]="stateChartData"
+        [options]="stateChartOptions"
+      ></canvas>
+    </div>
+  </div>
+</div>

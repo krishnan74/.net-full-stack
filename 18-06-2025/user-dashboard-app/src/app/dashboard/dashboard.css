@@ -1,0 +1,44 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-container {
+  display: grid;
+  gap: 20px;
+  padding: 30px;
+  grid-template-columns: 46vw 46vw;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.chart:first-child {
+  width: 50%;
+}
+
+.chart:nth-child(2) {
+  width: 90%;
+}
+
+.chart:last-child {
+  grid-column: span 2;
+  width: 50%;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 32px;
+  text-transform: uppercase;
+}
+
+#pieChart {
+  height: 400px;
+}
+#barChart {
+  height: 800px;
+}

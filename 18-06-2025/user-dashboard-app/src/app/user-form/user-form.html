@@ -1,0 +1,116 @@
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+  <h2>Adding User</h2>
+  <div class="form-group">
+    <label>
+      First Name:
+      <input type="text" formControlName="firstName" class="form-control" />
+    </label>
+
+    @if(userForm.get('firstName')?.invalid &&
+    userForm.get('firstName')?.touched) {
+
+    <div class="text-danger">
+      @if(userForm.get('firstName')?.errors?.['required']) {
+      <p>First Name is required.</p>
+      } @if(userForm.get('firstName')?.errors?.['minlength']) {
+      <p>First Name must be at least 3 characters long.</p>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="form-group">
+    <label>
+      Last Name:
+      <input type="text" formControlName="lastName" class="form-control" />
+    </label>
+
+    @if(userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched)
+    {
+    <div class="text-danger">
+      @if(userForm.get('lastName')?.errors?.['required']) {
+      <p>Last Name is required.</p>
+      } @if(userForm.get('lastName')?.errors?.['minlength']) {
+      <p>Last Name must be at least 3 characters long.</p>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="form-group">
+    <label>
+      Email:
+      <input type="email" formControlName="email" class="form-control" />
+    </label>
+    @if(userForm.get('email')?.invalid && userForm.get('email')?.touched) {
+    <div class="text-danger">
+      @if(userForm.get('email')?.errors?.['required']) {
+      <p>Email is required.</p>
+      } @if(userForm.get('email')?.errors?.['pattern']) {
+      <p>Invalid email format.</p>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="form-group">
+    <label>
+      Username:
+      <input type="text" formControlName="username" class="form-control" />
+    </label>
+    @if(userForm.get('username')?.invalid && userForm.get('username')?.touched)
+    {
+    <div class="text-danger">
+      @if(userForm.get('username')?.errors?.['required']) {
+      <p>Username is required.</p>
+      } @if(userForm.get('username')?.errors?.['minlength']) {
+      <p>Username must be at least 3 characters long.</p>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="form-group">
+    <label>
+      Gender:
+      <input type="text" formControlName="gender" class="form-control" />
+    </label>
+    @if(userForm.get('gender')?.invalid && userForm.get('gender')?.touched) {
+    <div class="text-danger">
+      @if(userForm.get('gender')?.errors?.['required']) {
+      <p>Gender is required.</p>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="form-group">
+    <label>
+      Role:
+      <input type="text" formControlName="role" class="form-control" />
+    </label>
+    @if(userForm.get('role')?.invalid && userForm.get('role')?.touched) {
+    <div class="text-danger">
+      @if(userForm.get('role')?.errors?.['required']) {
+      <p>Role is required.</p>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="form-group">
+    <label>
+      State:
+      <input type="text" formControlName="state" class="form-control" />
+    </label>
+    @if(userForm.get('state')?.invalid && userForm.get('state')?.touched) {
+    <div class="text-danger">
+      @if(userForm.get('state')?.errors?.['required']) {
+      <p>State is required.</p>
+      }
+    </div>
+    }
+  </div>
+
+  <button type="submit">Submit</button>
+</form>
