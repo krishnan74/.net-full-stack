@@ -1,0 +1,97 @@
+<form>
+  <h2>Template Driven Form Validation</h2>
+  <div class="form-group">
+    <label>
+      First Name:
+      <input
+        type="text"
+        #firstName="ngModel"
+        [(ngModel)]="userObject.firstName"
+        name="firstName"
+        minlength="3"
+        required
+      />
+    </label>
+
+    @if(firstName.invalid && firstName.touched) {
+    <div class="text-danger">
+      @if(firstName.errors?.['required']) {
+      <p>First Name is required.</p>
+      } @if(firstName.errors?.['minlength']) {
+      <p>First Name must be at least 3 characters long.</p>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="form-group">
+    <label>
+      Last Name:
+      <input
+        type="text"
+        #lastName="ngModel"
+        [(ngModel)]="userObject.lastName"
+        name="lastName"
+        minlength="3"
+        required
+      />
+    </label>
+
+    @if(lastName.invalid && lastName.touched) {
+    <div class="text-danger">
+      @if(lastName.errors?.['required']) {
+      <p>Last Name is required.</p>
+      } @if(lastName.errors?.['minlength']) {
+      <p>Last Name must be at least 3 characters long.</p>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="form-group">
+    <label>
+      Email:
+      <input
+        type="email"
+        #email="ngModel"
+        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+        [(ngModel)]="userObject.email"
+        name="email"
+        required
+      />
+    </label>
+
+    @if(email.invalid && email.touched) {
+    <div class="text-danger">
+      @if(email.errors?.['required']) {
+      <p>Email is required.</p>
+      } @if(email.errors?.['pattern']) {
+      <p>Invalid email format.</p>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="form-group">
+    <label>
+      Password:
+      <input
+        type="password"
+        #password="ngModel"
+        [(ngModel)]="userObject.password"
+        name="password"
+        required
+      />
+    </label>
+
+    @if(password.invalid && password.touched) {
+    <div class="text-danger">
+      @if(password.errors?.['required']) {
+      <p>Password is required.</p>
+      }
+    </div>
+    }
+  </div>
+
+  <button type="submit">Submit</button>
+</form>
