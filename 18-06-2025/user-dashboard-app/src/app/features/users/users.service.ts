@@ -9,6 +9,16 @@ export class UserService {
   private usersSubject = new BehaviorSubject<UserModel[]>([]);
   users$: Observable<UserModel[]> = this.usersSubject.asObservable();
 
+  getProductSearchResult(
+    searchData: string,
+    limit: number = 10,
+    skip: number = 10
+  ) {
+    return this.http.get(
+      `https://dummyjson.com/products/search?q=${searchData}&limit=${limit}&skip=${skip}`
+    );
+  }
+
   getUsers(): void {
     this.http
       .get<any>('https://dummyjson.com/users')

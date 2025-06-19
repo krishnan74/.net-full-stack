@@ -1,0 +1,100 @@
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+  <h2>Adding User</h2>
+  <div class="form-group">
+    <label>
+      Username:
+      <input type="text" formControlName="username" class="form-control" />
+    </label>
+    @if(userForm.get('username')?.invalid && userForm.get('username')?.touched)
+    {
+    <div class="text-danger">
+      @if(userForm.get('username')?.errors?.['required']) {
+      <p>Username is required.</p>
+      } @if(userForm.get('username')?.errors?.['minlength']) {
+      <p>Username must be at least 3 characters long.</p>
+      } @if(userForm.get('username')?.errors?.['usernameValidator()']) {
+      <p>Username can only contain letters, numbers, and underscores.</p>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="form-group">
+    <label>
+      Email:
+      <input type="email" formControlName="email" class="form-control" />
+    </label>
+    @if(userForm.get('email')?.invalid && userForm.get('email')?.touched) {
+    <div class="text-danger">
+      @if(userForm.get('email')?.errors?.['required']) {
+      <p>Email is required.</p>
+      } @if(userForm.get('email')?.errors?.['pattern']) {
+      <p>Invalid email format.</p>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="form-group">
+    <label>
+      Password:
+      <input type="password" formControlName="password" class="form-control" />
+    </label>
+    @if(userForm.get('password')?.invalid && userForm.get('password')?.touched)
+    {
+    <div class="text-danger">
+      @if(userForm.get('password')?.errors?.['required']) {
+      <p>Password is required.</p>
+      } @if(userForm.get('password')?.errors?.['minlength']) {
+      <p>Password must be at least 6 characters long.</p>
+      } @if(userForm.get('password')?.errors?.['pattern']){
+      <p>
+        Password must contain at least one uppercase letter, one lowercase
+        letter, one number, and one special character.
+      </p>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="form-group">
+    <label>
+      Confirm Password:
+      <input
+        type="password"
+        formControlName="confirmPassword"
+        class="form-control"
+      />
+    </label>
+    @if(userForm.get('confirmPassword')?.invalid &&
+    userForm.get('confirmPassword')?.touched) {
+    <div class="text-danger">
+      @if(userForm.get('confirmPassword')?.errors?.['required']) {
+      <p>Confirm Password is required.</p>
+      } @if(userForm.get('confirmPassword')?.errors?.['mismatch']) {
+      <p>Passwords do not match.</p>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="form-group">
+    <label>
+      Role:
+      <select name="role" formControlName="role" class="form-control">
+        <option value="admin">Admin</option>
+        <option value="user">User</option>
+        <option value="guest">Guest</option>
+      </select>
+    </label>
+    @if(userForm.get('role')?.invalid && userForm.get('role')?.touched) {
+    <div class="text-danger">
+      @if(userForm.get('role')?.errors?.['required']) {
+      <p>Role is required.</p>
+      }
+    </div>
+    }
+  </div>
+
+  <button type="submit">Submit</button>
+</form>

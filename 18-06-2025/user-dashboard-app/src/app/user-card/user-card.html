@@ -1,0 +1,19 @@
+<div class="card" id="product-card" style="width: 18rem">
+  <img class="card-img-top" [src]="product?.thumbnail" alt="Card image cap" />
+  <div class="card-body">
+    <h3 class="card-title">{{user?.username}}</h3>
+
+    <p class="card-text">
+      <strong>FirstName: </strong>{{ product?.firstName }}
+    </p>
+    <p class="card-text"><strong>LastName: </strong>{{ product?.lastName }}</p>
+
+    <p class="card-text"><strong>Email: </strong>{{ product?.email }}</p>
+
+    <p class="card-text"><strong>Gender: </strong>{{ product?.gender }}</p>
+
+    <p class="card-text"><strong>Role: </strong>{{ product?.role }}</p>
+
+    <p class="card-text"><strong>State: </strong>{{ product?.state }}</p>
+  </div>
+</div>
