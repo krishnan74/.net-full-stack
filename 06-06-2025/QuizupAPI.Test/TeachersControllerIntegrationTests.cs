@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using QuizupAPI.Models;
 using QuizupAPI.Models.DTOs.Teacher;
+using QuizupAPI.Models.DTOs.Response;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -22,12 +23,14 @@ namespace QuizupAPI.Test
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await response.Content.ReadAsStringAsync();
-            var teachers = JsonSerializer.Deserialize<List<Teacher>>(content, new JsonSerializerOptions
+            var apiResponse = JsonSerializer.Deserialize<ApiResponse<IEnumerable<Teacher>>>(content, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
-            teachers.Should().NotBeNull();
-            teachers.Should().BeEmpty();
+            apiResponse.Should().NotBeNull();
+            apiResponse.Success.Should().BeTrue();
+            apiResponse.Data.Should().NotBeNull();
+            apiResponse.Data.Should().BeEmpty();
         }
 
         [Fact]
@@ -52,17 +55,19 @@ namespace QuizupAPI.Test
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.Created);
             var responseContent = await response.Content.ReadAsStringAsync();
-            var createdTeacher = JsonSerializer.Deserialize<Teacher>(responseContent, new JsonSerializerOptions
+            var apiResponse = JsonSerializer.Deserialize<ApiResponse<Teacher>>(responseContent, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
 
-            createdTeacher.Should().NotBeNull();
-            createdTeacher.Email.Should().Be(teacherDto.Email);
-            createdTeacher.FirstName.Should().Be(teacherDto.FirstName);
-            createdTeacher.LastName.Should().Be(teacherDto.LastName);
-            createdTeacher.Subject.Should().Be(teacherDto.Subject);
-            createdTeacher.Id.Should().BeGreaterThan(0);
+            apiResponse.Should().NotBeNull();
+            apiResponse.Success.Should().BeTrue();
+            apiResponse.Data.Should().NotBeNull();
+            apiResponse.Data.Email.Should().Be(teacherDto.Email);
+            apiResponse.Data.FirstName.Should().Be(teacherDto.FirstName);
+            apiResponse.Data.LastName.Should().Be(teacherDto.LastName);
+            apiResponse.Data.Subject.Should().Be(teacherDto.Subject);
+            apiResponse.Data.Id.Should().BeGreaterThan(0);
         }
 
         [Fact]
@@ -128,14 +133,16 @@ namespace QuizupAPI.Test
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await response.Content.ReadAsStringAsync();
-            var retrievedTeacher = JsonSerializer.Deserialize<Teacher>(content, new JsonSerializerOptions
+            var apiResponse = JsonSerializer.Deserialize<ApiResponse<Teacher>>(content, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
 
-            retrievedTeacher.Should().NotBeNull();
-            retrievedTeacher.Id.Should().Be(teacher.Id);
-            retrievedTeacher.Email.Should().Be(teacher.Email);
+            apiResponse.Should().NotBeNull();
+            apiResponse.Success.Should().BeTrue();
+            apiResponse.Data.Should().NotBeNull();
+            apiResponse.Data.Id.Should().Be(teacher.Id);
+            apiResponse.Data.Email.Should().Be(teacher.Email);
         }
 
         [Fact]
@@ -179,15 +186,17 @@ namespace QuizupAPI.Test
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var responseContent = await response.Content.ReadAsStringAsync();
-            var updatedTeacher = JsonSerializer.Deserialize<Teacher>(responseContent, new JsonSerializerOptions
+            var apiResponse = JsonSerializer.Deserialize<ApiResponse<Teacher>>(responseContent, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
 
-            updatedTeacher.Should().NotBeNull();
-            updatedTeacher.FirstName.Should().Be(updateDto.FirstName);
-            updatedTeacher.LastName.Should().Be(updateDto.LastName);
-            updatedTeacher.Subject.Should().Be(updateDto.Subject);
+            apiResponse.Should().NotBeNull();
+            apiResponse.Success.Should().BeTrue();
+            apiResponse.Data.Should().NotBeNull();
+            apiResponse.Data.FirstName.Should().Be(updateDto.FirstName);
+            apiResponse.Data.LastName.Should().Be(updateDto.LastName);
+            apiResponse.Data.Subject.Should().Be(updateDto.Subject);
         }
 
         [Fact]
@@ -232,13 +241,15 @@ namespace QuizupAPI.Test
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await response.Content.ReadAsStringAsync();
-            var deletedTeacher = JsonSerializer.Deserialize<Teacher>(content, new JsonSerializerOptions
+            var apiResponse = JsonSerializer.Deserialize<ApiResponse<Teacher>>(content, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
 
-            deletedTeacher.Should().NotBeNull();
-            deletedTeacher.Id.Should().Be(teacher.Id);
+            apiResponse.Should().NotBeNull();
+            apiResponse.Success.Should().BeTrue();
+            apiResponse.Data.Should().NotBeNull();
+            apiResponse.Data.Id.Should().Be(teacher.Id);
 
             var getResponse = await _client.GetAsync($"/api/v1/teachers/{teacher.Id}");
             getResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -260,8 +271,8 @@ namespace QuizupAPI.Test
             // Arrange
             var teachers = new List<Teacher>
             {
-                new Teacher { Email = "teacher1@example.com", FirstName = "Rahul", LastName = "Kumar", Subject = "Mathematics" },
-                new Teacher { Email = "teacher2@example.com", FirstName = "Dr. Jane", LastName = "Doe", Subject = "Physics" }
+                new Teacher { Email = "teacher1@gmail.com", FirstName = "John", LastName = "Doe", Subject = "Mathematics" },
+                new Teacher { Email = "teacher2@gmail.com", FirstName = "Jane", LastName = "Smith", Subject = "Physics" }
             };
 
             _context.teachers.AddRange(teachers);
@@ -273,15 +284,61 @@ namespace QuizupAPI.Test
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await response.Content.ReadAsStringAsync();
-            var retrievedTeachers = JsonSerializer.Deserialize<List<Teacher>>(content, new JsonSerializerOptions
+            var apiResponse = JsonSerializer.Deserialize<ApiResponse<IEnumerable<Teacher>>>(content, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
 
-            retrievedTeachers.Should().NotBeNull();
-            retrievedTeachers.Should().HaveCount(2);
-            retrievedTeachers.Should().Contain(t => t.Email == "teacher1@example.com");
-            retrievedTeachers.Should().Contain(t => t.Email == "teacher2@example.com");
+            apiResponse.Should().NotBeNull();
+            apiResponse.Success.Should().BeTrue();
+            apiResponse.Data.Should().NotBeNull();
+            apiResponse.Data.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public async Task GetTeachersPagination_ShouldReturnPaginatedTeachers_WhenValidParametersProvided()
+        {
+            // Arrange
+            var teachers = new List<Teacher>
+            {
+                new Teacher { Email = "teacher1@gmail.com", FirstName = "John", LastName = "Doe", Subject = "Mathematics" },
+                new Teacher { Email = "teacher2@gmail.com", FirstName = "Jane", LastName = "Smith", Subject = "Physics" },
+                new Teacher { Email = "teacher3@gmail.com", FirstName = "Bob", LastName = "Johnson", Subject = "Chemistry" }
+            };
+
+            _context.teachers.AddRange(teachers);
+            await _context.SaveChangesAsync();
+
+            // Act
+            var response = await _client.GetAsync("/api/v1/teachers/pagination?pageNumber=1&pageSize=2");
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var content = await response.Content.ReadAsStringAsync();
+            var paginatedResponse = JsonSerializer.Deserialize<PaginatedResponse<IEnumerable<Teacher>>>(content, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            paginatedResponse.Should().NotBeNull();
+            paginatedResponse.Success.Should().BeTrue();
+            paginatedResponse.Data.Should().NotBeNull();
+            paginatedResponse.Data.Should().HaveCount(2);
+            paginatedResponse.Pagination.Should().NotBeNull();
+            paginatedResponse.Pagination.TotalRecords.Should().Be(3);
+            paginatedResponse.Pagination.Page.Should().Be(1);
+            paginatedResponse.Pagination.PageSize.Should().Be(2);
+            paginatedResponse.Pagination.TotalPages.Should().Be(2);
+        }
+
+        [Fact]
+        public async Task GetTeachersPagination_ShouldReturnBadRequest_WhenInvalidParametersProvided()
+        {
+            // Act
+            var response = await _client.GetAsync("/api/v1/teachers/pagination?pageNumber=0&pageSize=0");
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
         [Fact]
@@ -299,31 +356,30 @@ namespace QuizupAPI.Test
             var quiz = new Quiz
             {
                 Title = "Math Quiz",
-                Description = "Basic math questions",
-                TeacherId = 1, 
+                Description = "Basic mathematics questions",
+                TeacherId = 1,
                 IsActive = false
             };
 
             _context.teachers.Add(teacher);
-            await _context.SaveChangesAsync();
-
-            quiz.TeacherId = teacher.Id;
             _context.quizzes.Add(quiz);
             await _context.SaveChangesAsync();
 
             // Act
-            var response = await _client.PostAsync($"/api/v1/teachers/{teacher.Id}/quizzes/{quiz.Id}/start", null);
+            var response = await _client.PostAsync($"/api/v1/teachers/{teacher.Id}/quizzes/{quiz.Id}/start");
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await response.Content.ReadAsStringAsync();
-            var updatedQuiz = JsonSerializer.Deserialize<Quiz>(content, new JsonSerializerOptions
+            var apiResponse = JsonSerializer.Deserialize<ApiResponse<Quiz>>(content, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
 
-            updatedQuiz.Should().NotBeNull();
-            updatedQuiz.IsActive.Should().BeTrue();
+            apiResponse.Should().NotBeNull();
+            apiResponse.Success.Should().BeTrue();
+            apiResponse.Data.Should().NotBeNull();
+            apiResponse.Data.IsActive.Should().BeTrue();
         }
 
         [Fact]
@@ -341,31 +397,30 @@ namespace QuizupAPI.Test
             var quiz = new Quiz
             {
                 Title = "Math Quiz",
-                Description = "Basic math questions",
-                TeacherId = 1, 
+                Description = "Basic mathematics questions",
+                TeacherId = 1,
                 IsActive = true
             };
 
             _context.teachers.Add(teacher);
-            await _context.SaveChangesAsync();
-
-            quiz.TeacherId = teacher.Id;
             _context.quizzes.Add(quiz);
             await _context.SaveChangesAsync();
 
             // Act
-            var response = await _client.PostAsync($"/api/v1/teachers/{teacher.Id}/quizzes/{quiz.Id}/end", null);
+            var response = await _client.PostAsync($"/api/v1/teachers/{teacher.Id}/quizzes/{quiz.Id}/end");
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await response.Content.ReadAsStringAsync();
-            var updatedQuiz = JsonSerializer.Deserialize<Quiz>(content, new JsonSerializerOptions
+            var apiResponse = JsonSerializer.Deserialize<ApiResponse<Quiz>>(content, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
 
-            updatedQuiz.Should().NotBeNull();
-            updatedQuiz.IsActive.Should().BeFalse();
+            apiResponse.Should().NotBeNull();
+            apiResponse.Success.Should().BeTrue();
+            apiResponse.Data.Should().NotBeNull();
+            apiResponse.Data.IsActive.Should().BeFalse();
         }
     }
 } 

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using QuizupAPI.Models;
 using QuizupAPI.Models.DTOs.Authentication;
+using QuizupAPI.Models.DTOs.Response;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -42,15 +43,17 @@ namespace QuizupAPI.Test
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var responseContent = await response.Content.ReadAsStringAsync();
-            var loginResponse = JsonSerializer.Deserialize<UserLoginResponseDTO>(responseContent, new JsonSerializerOptions
+            var apiResponse = JsonSerializer.Deserialize<ApiResponse<UserLoginResponseDTO>>(responseContent, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
 
-            loginResponse.Should().NotBeNull();
-            loginResponse.AccessToken.Should().NotBeNullOrEmpty();
-            loginResponse.RefreshToken.Should().NotBeNullOrEmpty();
-            loginResponse.Username.Should().Be(loginDto.Username);
+            apiResponse.Should().NotBeNull();
+            apiResponse.Success.Should().BeTrue();
+            apiResponse.Data.Should().NotBeNull();
+            apiResponse.Data.AccessToken.Should().NotBeNullOrEmpty();
+            apiResponse.Data.RefreshToken.Should().NotBeNullOrEmpty();
+            apiResponse.Data.Username.Should().Be(loginDto.Username);
         }
 
         [Fact]
@@ -147,14 +150,14 @@ namespace QuizupAPI.Test
             var loginContent = new StringContent(loginJson, Encoding.UTF8, "application/json");
             var loginResponse = await _client.PostAsync("/api/v1/auth/login", loginContent);
             var loginResponseContent = await loginResponse.Content.ReadAsStringAsync();
-            var loginResult = JsonSerializer.Deserialize<UserLoginResponseDTO>(loginResponseContent, new JsonSerializerOptions
+            var loginApiResponse = JsonSerializer.Deserialize<ApiResponse<UserLoginResponseDTO>>(loginResponseContent, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
 
             var refreshDto = new RefreshTokenRequestDTO
             {
-                RefreshToken = loginResult.RefreshToken
+                RefreshToken = loginApiResponse.Data.RefreshToken
             };
 
             var refreshJson = JsonSerializer.Serialize(refreshDto);
@@ -166,15 +169,17 @@ namespace QuizupAPI.Test
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var responseContent = await response.Content.ReadAsStringAsync();
-            var refreshResponse = JsonSerializer.Deserialize<UserLoginResponseDTO>(responseContent, new JsonSerializerOptions
+            var refreshApiResponse = JsonSerializer.Deserialize<ApiResponse<UserLoginResponseDTO>>(responseContent, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
 
-            refreshResponse.Should().NotBeNull();
-            refreshResponse.AccessToken.Should().NotBeNullOrEmpty();
-            refreshResponse.RefreshToken.Should().NotBeNullOrEmpty();
-            refreshResponse.AccessToken.Should().NotBe(loginResult.AccessToken); 
+            refreshApiResponse.Should().NotBeNull();
+            refreshApiResponse.Success.Should().BeTrue();
+            refreshApiResponse.Data.Should().NotBeNull();
+            refreshApiResponse.Data.AccessToken.Should().NotBeNullOrEmpty();
+            refreshApiResponse.Data.RefreshToken.Should().NotBeNullOrEmpty();
+            refreshApiResponse.Data.AccessToken.Should().NotBe(loginApiResponse.Data.AccessToken); 
         }
 
         [Fact]
@@ -228,8 +233,6 @@ namespace QuizupAPI.Test
         [Fact]
         public async Task GetCurrentUser_ShouldReturnUserInfo_WhenAuthenticated()
         {
-           
-
             // Act
             var response = await _client.GetAsync("/api/v1/auth/me");
 
