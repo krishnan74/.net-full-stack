@@ -2,6 +2,7 @@ using QuizupAPI.Interfaces;
 using QuizupAPI.Models;
 using QuizupAPI.Repositories;
 using QuizupAPI.Models.DTOs.Teacher;
+using QuizupAPI.Models.DTOs.Notifications;
 using QuizupAPI.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using QuizupAPI.Misc.Mappers;
@@ -200,7 +201,18 @@ namespace QuizupAPI.Services
                     throw new InvalidOperationException("Quiz is already active.");
                 }
                 quiz.IsActive = true;
-                await _hubContext.Clients.All.SendAsync("NotifyStartQuiz", quiz);
+
+                var quizNotificationDTO = new QuizNotificationDTO
+                {
+                    Id = quiz.Id,
+                    Title = quiz.Title,
+                    Description = quiz.Description,
+                    CreatedAt = DateTime.UtcNow,
+                    DueDate = quiz.DueDate,
+                    TeacherName = quiz.Teacher.FirstName + " " + quiz.Teacher.LastName
+                };
+                await _hubContext.Clients.All.SendAsync("NotifyStartQuiz", quizNotificationDTO);
+           
                 return await _quizRepository.Update(quizId, quiz);
             }
             catch (KeyNotFoundException ex)
@@ -236,7 +248,18 @@ namespace QuizupAPI.Services
                     throw new InvalidOperationException("Quiz is not currently active.");
                 }
                 quiz.IsActive = false;
-                await _hubContext.Clients.All.SendAsync("NotifyEndQuiz", quiz);
+
+                var quizNotificationDTO = new QuizNotificationDTO
+                {
+                    Id = quiz.Id,
+                    Title = quiz.Title,
+                    Description = quiz.Description,
+                    CreatedAt = DateTime.UtcNow,
+                    DueDate = quiz.DueDate,
+                    TeacherName = quiz.Teacher.FirstName + " " + quiz.Teacher.LastName
+                };
+
+                await _hubContext.Clients.All.SendAsync("NotifyEndQuiz", quizNotificationDTO);
 
                 return await _quizRepository.Update(quizId, quiz);
             }

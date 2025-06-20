@@ -14,6 +14,7 @@ namespace QuizupAPI.Repositories
         public override async Task<Quiz> Get(long key)
         {
             var quiz = await _quizContext.quizzes
+                                .Include(q => q.Teacher)
                                 .Include(q => q.QuizQuestions)
                                 .ThenInclude(q => q.Question).SingleOrDefaultAsync(p => p.Id == key );
 

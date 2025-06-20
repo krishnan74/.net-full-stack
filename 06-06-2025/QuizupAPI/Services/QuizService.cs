@@ -30,36 +30,34 @@ namespace QuizupAPI.Services
         }
         public async Task<Quiz> AddQuizAsync(QuizAddRequestDTO quizAddRequestDTO)
         {
+            if (quizAddRequestDTO == null)
+                throw new ArgumentNullException(nameof(quizAddRequestDTO), "Quiz cannot be null");
+
+            if (string.IsNullOrWhiteSpace(quizAddRequestDTO.Title) ||
+                string.IsNullOrWhiteSpace(quizAddRequestDTO.Description))
+                throw new ValidationException("Title and description are required.");
+
             try
             {
-                if (quizAddRequestDTO == null)
-                {
-                    throw new ArgumentNullException(nameof(quizAddRequestDTO), "Quiz cannot be null");
-                }
-
-                if (string.IsNullOrWhiteSpace(quizAddRequestDTO.Title) ||
-                    string.IsNullOrWhiteSpace(quizAddRequestDTO.Description))
-                {
-                    throw new ValidationException("Title, description are required.");
-                }
-
                 var quiz = quizMapper.MapQuizAddRequestQuiz(quizAddRequestDTO);
                 var addedQuiz = await _quizRepository.Add(quiz);
 
                 if (addedQuiz == null)
-                {
                     throw new Exception("Failed to add quiz");
-                }
 
                 await MapAndAddQuestionsAsync(addedQuiz.Id, quizAddRequestDTO);
 
                 return addedQuiz;
             }
+            catch (ValidationException) { throw; }
+            catch (ArgumentNullException) { throw; }
+            catch (ArgumentException) { throw; }
+            catch (KeyNotFoundException) { throw; }
+            catch (UnauthorizedAccessException) { throw; }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred while adding the quiz: {ex.Message}");
+                throw new Exception("An error occurred while adding the quiz.", ex);
             }
-
         }
 
         public async Task<Quiz> GetQuizByIdAsync(long id)
@@ -132,6 +130,18 @@ namespace QuizupAPI.Services
             {
                 throw new KeyNotFoundException(ex.Message);
             }
+            catch (ArgumentNullException ex)
+            {
+                throw new ArgumentNullException(ex.ParamName, ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                throw new UnauthorizedAccessException(ex.Message);
+            }
             catch (Exception ex)
             {
                 throw new Exception($"An error occurred while updating the quiz: {ex.Message}");
@@ -151,7 +161,11 @@ namespace QuizupAPI.Services
             }
             catch (KeyNotFoundException ex)
             {
-                throw new KeyNotFoundException(ex.Message);
+                throw;
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {

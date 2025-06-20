@@ -194,18 +194,25 @@ namespace QuizupAPI.Services
         {
             try
             {
-                var quizSubmission = await _quizSubmissionRepository.GetAll();
-                if (quizSubmission == null || !quizSubmission.Any())
+                var student = await _studentRepository.Get(id);
+                
+                var quizSubmissions = await _quizSubmissionRepository.GetAll();
+                if (quizSubmissions == null || !quizSubmissions.Any())
                 {
-                    throw new KeyNotFoundException($"No quiz submissions found for student with ID {id}.");
+                    return Enumerable.Empty<QuizSubmission>();
                 }
-                quizSubmission = quizSubmission.Where(qs => qs.StudentId == id).ToList();
-                if (quizSubmission == null || !quizSubmission.Any())
+                quizSubmissions = quizSubmissions.Where(qs => qs.StudentId == id).ToList();
+                if (quizSubmissions == null || !quizSubmissions.Any())
                 {
-                    throw new KeyNotFoundException($"No quiz submissions found for student with ID {id}.");
+                    return Enumerable.Empty<QuizSubmission>();
                 }
-                return quizSubmission;
 
+                return quizSubmissions;
+
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
             }
             catch (Exception ex)
             {
@@ -246,35 +253,44 @@ namespace QuizupAPI.Services
         {
             try
             {
-                if (submission == null)
-                {
-                    throw new ArgumentNullException(nameof(submission), "Submission data cannot be null.");
-                }
+                Console.WriteLine("Starting SubmitQuizAsync...");
 
+                Console.WriteLine($"Fetching quiz submission with ID {quizSubmissionId}...");
                 var existingQuizSubmission = await _quizSubmissionRepository.Get(quizSubmissionId);
 
+                Console.WriteLine($"Fetching student with ID {studentId}...");
                 var student = await _studentRepository.Get(studentId);
-                
+
                 if (existingQuizSubmission.StudentId != studentId)
                 {
+                    Console.WriteLine("Unauthorized access: student does not match submission.");
                     throw new UnauthorizedAccessException("You are not authorized to submit this quiz.");
                 }
 
+                Console.WriteLine("Setting submission status to Submitted and updating SubmissionDate...");
                 existingQuizSubmission.SubmissionStatus = "Submitted";
-                existingQuizSubmission.SubmissionDate = DateTime.Now;
+                existingQuizSubmission.SubmissionDate = DateTime.UtcNow;
 
-                await MapAndAddAnswersAsync(existingQuizSubmission.Answers, submission.Answers);
+                if (submission.Answers.Count != 0)
+                {
+                    Console.WriteLine("Mapping and adding/updating answers...");
+                    await MapAndAddAnswersAsync(existingQuizSubmission.Answers, submission.Answers, quizSubmissionId);
+                }
 
-                int score = await GetScoreAsync(submission);
+                Console.WriteLine("Calculating score...");
+                int score = await GetScoreAsync(existingQuizSubmission);
                 existingQuizSubmission.Score = score;
 
+                Console.WriteLine("Updating quiz submission in repository...");
                 var updatedQuizSubmission = await _quizSubmissionRepository.Update(quizSubmissionId, existingQuizSubmission);
 
                 if (updatedQuizSubmission == null)
                 {
+                    Console.WriteLine("Failed to update quiz submission.");
                     throw new Exception("Failed to update quiz submission.");
                 }
 
+                Console.WriteLine("SubmitQuizAsync completed successfully.");
                 return updatedQuizSubmission;
             }
             catch (KeyNotFoundException ex)
@@ -290,33 +306,48 @@ namespace QuizupAPI.Services
         {
             try
             {
+                Console.WriteLine("Starting SaveAnswersAsync...");
+
                 if (submission == null)
                 {
+                    Console.WriteLine("Submission data is null.");
                     throw new ArgumentNullException(nameof(submission), "Submission data cannot be null.");
                 }
 
+                Console.WriteLine($"Fetching quiz submission with ID {quizSubmissionId}...");
                 var existingQuizSubmission = await _quizSubmissionRepository.Get(quizSubmissionId);
-               
+
+                Console.WriteLine($"Fetching student with ID {studentId}...");
                 var student = await _studentRepository.Get(studentId);
-       
+
                 if (existingQuizSubmission.StudentId != studentId)
                 {
+                    Console.WriteLine("Unauthorized access: student does not match submission.");
                     throw new UnauthorizedAccessException("You are not authorized to save answers for this quiz.");
                 }
 
-                existingQuizSubmission.SubmissionStatus = "InProgress";
-                existingQuizSubmission.SavedDate = DateTime.Now;
+                Console.WriteLine("Setting submission status to InProgress and updating SavedDate...");
+                existingQuizSubmission.SubmissionStatus = "Saved";
+                existingQuizSubmission.SavedDate = DateTime.UtcNow;
 
-                await MapAndAddAnswersAsync(existingQuizSubmission.Answers, submission.Answers);
+                Console.WriteLine("Mapping and adding/updating answers...");
+                await MapAndAddAnswersAsync(existingQuizSubmission.Answers, submission.Answers, quizSubmissionId);
 
+                Console.WriteLine("Updating quiz submission in repository...");
                 var updatedQuizSubmission = await _quizSubmissionRepository.Update(quizSubmissionId, existingQuizSubmission);
 
                 if (updatedQuizSubmission == null)
                 {
+                    Console.WriteLine("Failed to update quiz submission.");
                     throw new Exception("Failed to update quiz submission.");
                 }
 
+                Console.WriteLine("SaveAnswersAsync completed successfully.");
                 return updatedQuizSubmission;
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                throw new UnauthorizedAccessException(ex.Message);
             }
             catch (KeyNotFoundException ex)
             {
@@ -324,85 +355,123 @@ namespace QuizupAPI.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while submitting the quiz.", ex);
+                throw new Exception(ex.Message);
             }
 
         }
 
-        private async Task MapAndAddAnswersAsync(List<Answer> existingAnswers, List<AnswerAddRequestDTO> currentAnswers)
+        private async Task MapAndAddAnswersAsync(List<Answer> existingAnswers, List<AnswerAddRequestDTO> currentAnswers, long quizSubmissionId )
         {
+            Console.WriteLine("Starting MapAndAddAnswersAsync...");
+
             if (currentAnswers == null || currentAnswers.Count == 0)
             {
-                throw new ValidationException("At least one answer is required.");
+            Console.WriteLine("No answers provided in currentAnswers.");
+            throw new ValidationException("At least one answer is required.");
             }
 
             foreach (var answerDTO in currentAnswers)
             {
-                // Check if an answer for the same question already exists
-                var existingAnswer = existingAnswers.FirstOrDefault(a => a.QuestionId == answerDTO.QuestionId);
+            Console.WriteLine($"Processing answer for QuestionId: {answerDTO.QuestionId}");
 
-                // Add the answer if it doesn't exist
-                if (existingAnswer == null)
-                {
-                    var answer = answerMapper.MapAnswerDTOToAnswer(answerDTO);
-                    if (answer == null)
-                    {
-                        throw new Exception("Failed to map answer from DTO.");
-                    }
-                    var addedAnswer = await _answerRepository.Add(answer);
+            Answer existingAnswer = null;
 
-                    if (addedAnswer == null)
-                    {
-                        throw new Exception("Failed to add answer");
-                    }
-
-                    continue;
-                }
-
-                // Update the existing answer if it exists
-                if (!string.Equals(existingAnswer.SelectedAnswer, answerDTO.SelectedAnswer, StringComparison.OrdinalIgnoreCase))
-                {
-                    existingAnswer.SelectedAnswer = answerDTO.SelectedAnswer;
-                    var updatedAnswer = await _answerRepository.Update(existingAnswer.Id, existingAnswer);
-                    if (updatedAnswer == null)
-                    {
-                        throw new Exception("Failed to update answer");
-                    }
-                }
-
+            if (existingAnswers != null)
+            {
+                Console.WriteLine("Checking for existing answers...");
+                existingAnswer = existingAnswers.FirstOrDefault(a => a.QuestionId == answerDTO.QuestionId);
+                Console.WriteLine(existingAnswer != null ? "Existing answer found." : "No existing answer found.");
             }
+
+            // Check if an answer for the same question already exists
+
+            // Add the answer if it doesn't exist
+            if (existingAnswer == null)
+            {
+                Console.WriteLine("No existing answer found. Mapping and adding new answer...");
+                var answer = answerMapper.MapAnswerDTOToAnswer(answerDTO, quizSubmissionId);
+                if (answer == null)
+                {
+                Console.WriteLine("Failed to map answer from DTO.");
+                throw new Exception("Failed to map answer from DTO.");
+                }
+                var addedAnswer = await _answerRepository.Add(answer);
+
+                if (addedAnswer == null)
+                {
+                Console.WriteLine("Failed to add answer.");
+                throw new Exception("Failed to add answer");
+                }
+
+                Console.WriteLine("Answer added successfully.");
+                continue;
+            }
+
+            // Update the existing answer if it exists
+            if (!string.Equals(existingAnswer.SelectedAnswer, answerDTO.SelectedAnswer, StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine("Existing answer found but selected answer is different. Updating answer...");
+                existingAnswer.SelectedAnswer = answerDTO.SelectedAnswer;
+                var updatedAnswer = await _answerRepository.Update(existingAnswer.Id, existingAnswer);
+                if (updatedAnswer == null)
+                {
+                Console.WriteLine("Failed to update answer.");
+                throw new Exception("Failed to update answer");
+                }
+                Console.WriteLine("Answer updated successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Existing answer found and selected answer is the same. No update needed.");
+            }
+            }
+
         }
 
-        private async Task<int> GetScoreAsync(QuizSubmissionDTO submission)
+        private async Task<int> GetScoreAsync(QuizSubmission submission)
         {
+            Console.WriteLine("Fetching quiz for submission...");
             var quiz = await _quizRepository.Get(submission.QuizId);
 
+            Console.WriteLine("Initializing correctAnswers counter...");
             int correctAnswers = 0;
 
-            // Get all questions for this quiz via the QuizQuestions navigation property
+            Console.WriteLine("Getting quiz questions...");
             var quizQuestions = quiz.QuizQuestions;
 
             if (quizQuestions == null || !quizQuestions.Any())
             {
+                Console.WriteLine("No questions found for this quiz.");
                 throw new Exception("No questions found for this quiz.");
             }
 
             var questions = quizQuestions.Select(qq => qq.Question).ToList();
 
+            Console.WriteLine("Iterating through submitted answers...");
             foreach (var answerDTO in submission.Answers)
             {
+                Console.WriteLine($"Checking answer for QuestionId: {answerDTO.QuestionId}");
                 var question = questions.FirstOrDefault(q => q.Id == answerDTO.QuestionId);
                 if (question == null)
                 {
+                    Console.WriteLine("Question not found, skipping...");
                     continue;
                 }
 
+                Console.WriteLine($"Selected answer: {answerDTO.SelectedAnswer}");
+                Console.WriteLine($"Correct answer: {question.CorrectAnswer}");
+
                 bool isCorrect = question.CorrectAnswer.Equals(answerDTO.SelectedAnswer, StringComparison.OrdinalIgnoreCase);
+                Console.WriteLine(isCorrect ? "Answer is correct." : "Answer is incorrect.");
                 if (isCorrect) correctAnswers++;
             }
 
             var totalQuestions = questions.Count;
+            Console.WriteLine($"Total correct answers: {correctAnswers} out of {totalQuestions}");
+
             int score = (int)((double)correctAnswers / totalQuestions * 100);
+
+            Console.WriteLine($"Calculated score: {score}");
 
             return score;
         }

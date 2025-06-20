@@ -5,7 +5,7 @@ namespace QuizupAPI.Misc.Mappers
 {
     public class QuestionMapper
     {
-        public Question? MapQuestionAddRequestQuestion( QuestionAddRequestDTO addRequestDto)
+        public virtual Question? MapQuestionAddRequestQuestion( QuestionAddRequestDTO addRequestDto)
         {
             Question question = new();
             question.Text = addRequestDto.Text;

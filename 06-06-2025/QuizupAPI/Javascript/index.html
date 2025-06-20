@@ -1,0 +1,102 @@
+<html>
+  <link rel="stylesheet" href="styles.css" />
+  <body>
+    <h2>Quiz up Notifications</h2>
+
+    <div id="notifs"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@8.0.7/dist/browser/signalr.min.js"></script>
+    <script>
+      const connection = new signalR.HubConnectionBuilder()
+        .withUrl("http://localhost:5166/quizNotificationHub", {
+          withCredentials: true,
+        })
+        .withAutomaticReconnect()
+        .build();
+
+      connection.on("NotifyStartQuiz", (quiz) => {
+        console.log(`Quiz started: ${quiz.title} by ${quiz.teacherName}`);
+        const notificationsContainer = document.getElementById("notifs");
+        const notificationCard = document.createElement("div");
+        notificationCard.className = "notification-card";
+
+        const quizStarted = document.createElement("h2");
+        quizStarted.textContent = `Quiz Started!!!`;
+
+        const title = document.createElement("h2");
+        title.textContent = `Title: ${quiz.title}`;
+
+        const description = document.createElement("p");
+        description.textContent = `Description: ${quiz.description}`;
+
+        const teacher = document.createElement("p");
+        teacher.textContent = `Created By: ${quiz.teacherName}`;
+
+        const createdAt = document.createElement("p");
+        createdAt.textContent = `Created At: ${new Date(
+          quiz.createdAt
+        ).toLocaleString()}`;
+
+        const dueDate = document.createElement("p");
+        dueDate.textContent = `Due Date: ${
+          quiz.dueDate ? new Date(quiz.dueDate).toLocaleString() : "N/A"
+        }`;
+
+        notificationCard.appendChild(quizStarted);
+        notificationCard.appendChild(title);
+        notificationCard.appendChild(description);
+        notificationCard.appendChild(teacher);
+        notificationCard.appendChild(createdAt);
+        notificationCard.appendChild(dueDate);
+
+        notificationsContainer.appendChild(notificationCard);
+      });
+
+      connection.on("NotifyEndQuiz", (quiz) => {
+        console.log(`Quiz ended: ${quiz.title} by ${quiz.teacherName}`);
+        const notificationsContainer = document.getElementById("notifs");
+        const notificationCard = document.createElement("div");
+        notificationCard.className = "notification-card";
+
+        const quizEnded = document.createElement("h2");
+        quizEnded.textContent = `Quiz Ended!!!`;
+
+        const title = document.createElement("h2");
+        title.textContent = `Title: ${quiz.title}`;
+
+        const description = document.createElement("p");
+        description.textContent = `Description: ${quiz.description}`;
+
+        const teacher = document.createElement("p");
+        teacher.textContent = `Created By: ${quiz.teacherName}`;
+
+        const createdAt = document.createElement("p");
+        createdAt.textContent = `Created At: ${new Date(
+          quiz.createdAt
+        ).toLocaleString()}`;
+
+        const dueDate = document.createElement("p");
+        dueDate.textContent = `Due Date: ${
+          quiz.dueDate ? new Date(quiz.dueDate).toLocaleString() : "N/A"
+        }`;
+
+        notificationCard.appendChild(quizEnded);
+        notificationCard.appendChild(title);
+        notificationCard.appendChild(description);
+        notificationCard.appendChild(teacher);
+        notificationCard.appendChild(createdAt);
+        notificationCard.appendChild(dueDate);
+
+        notificationsContainer.appendChild(notificationCard);
+      });
+
+      connection
+        .start()
+        .then(() => {
+          console.log("signalR connection established");
+        })
+        .catch((err) => {
+          console.log("signalR connection Failed");
+        });
+    </script>
+  </body>
+</html>

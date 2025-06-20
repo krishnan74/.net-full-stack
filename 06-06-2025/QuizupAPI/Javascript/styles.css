@@ -1,0 +1,44 @@
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;800;900&display=swap);
+
+body {
+  font-family: "Inter", sans-serif;
+  padding: 30px;
+}
+
+body > h2 {
+  margin-bottom: 20px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.notification-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s;
+}
+
+.notification-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.notification-card h2 {
+  margin: 8px 0 12px 0;
+  font-size: 1.25em;
+}
+
+.notification-card p {
+  margin: 2px 0;
+  font-size: 0.9em;
+  color: #444;
+  width: 100%;
+  text-align: left;
+}
