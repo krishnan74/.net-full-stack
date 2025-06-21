@@ -118,14 +118,12 @@ builder.Services.AddRateLimiter(
             // Logging the rate limit exceeded
             var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
             logger.LogWarning(
-                "Rate limit exceeded for user: {User}, IP: {IPAddress}, Path: {Path}, Method: {Method}",
-                user, ipAddress, context.HttpContext.Request.Path, context.HttpContext.Request.Method
+                $"Rate limit exceeded for user: {user}, IP: {ipAddress}, Path: {context.HttpContext.Request.Path}, Method: {context.HttpContext.Request.Method}"
             );
         };
     }
 );
 
-builder.Services.AddSignalR();
 
 // Register repositories
 builder.Services.AddTransient<IRepository<long, Student>, StudentRepository>();
@@ -170,12 +168,14 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins(builder.Configuration["AllowedOrigins"])
+        policy.WithOrigins("http://127.0.0.1:5500")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
     });
 });
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -185,6 +185,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors();
@@ -192,7 +194,7 @@ app.UseCors();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 
-// app.UseSerilogRequestLogging();
+app.UseSerilogRequestLogging();
 
 app.MapHub<QuizNotificationHub>("/quizNotificationHub");
 
@@ -202,5 +204,3 @@ app.UseRateLimiter();
 app.MapControllers().RequireRateLimiting("UserBasedPolicy");
 
 app.Run();
-
-// public partial class Program { }

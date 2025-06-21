@@ -4,6 +4,7 @@ using QuizupAPI.Models;
 using QuizupAPI.Models.DTOs.Quiz;
 using QuizupAPI.Models.DTOs.Question;
 using QuizupAPI.Models.DTOs.Response;
+using QuizupAPI.Models.SearchModels;
 using Microsoft.AspNetCore.Authorization;
 
 
@@ -107,11 +108,42 @@ namespace QuizupAPI.Controllers
         }
 
         /// <summary>
+        /// Search quizzes based on various criteria
+        /// </summary>
+        /// <param name="quizSearchModel">Search criteria</param>
+        /// <returns>List of quizzes matching the search criteria</returns>
+        [HttpGet("search")]
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<Quiz>>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 400)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 500)]
+        public async Task<IActionResult> SearchQuizzes([FromQuery] QuizSearchModel quizSearchModel)
+        {
+            try
+            {
+                if (quizSearchModel == null)
+                {
+                    return BadRequest(ApiResponse<object>.ErrorResponse("Search criteria cannot be null."));
+                }
+                var quizzes = await _quizService.SearchQuiz(quizSearchModel);
+                if (quizzes == null || !quizzes.Any())
+                {
+                    return Ok(ApiResponse<IEnumerable<Quiz>>.SuccessResponse(new List<Quiz>(), "No quizzes found matching the search criteria"));
+                }
+
+                return Ok(ApiResponse<IEnumerable<Quiz>>.SuccessResponse(quizzes, "Quizzes fetched successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while searching for quizzes. " + ex.Message));
+            }
+        }
+
+        /// <summary>
         /// Create a new quiz
         /// </summary>
-        /// <param name="quizDto">Quiz information</param>
-        /// <returns>Created quiz</returns>
-        [HttpPost]
+                    /// <param name="quizDto">Quiz information</param>
+                    /// <returns>Created quiz</returns>
+                    [HttpPost]
         [ProducesResponseType(typeof(ApiResponse<Quiz>), 201)]
         [ProducesResponseType(typeof(ApiResponse<object>), 400)]
         [ProducesResponseType(typeof(ApiResponse<object>), 500)]

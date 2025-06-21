@@ -82,7 +82,7 @@ namespace QuizupAPI.Controllers
                             kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray()
                         );
                     return BadRequest(ApiResponse<object>.ErrorResponse("Validation failed", errors));
-                }
+                }   
 
                 var response = await _authenticationService.RefreshTokenAsync(refreshTokenRequest);
                 return Ok(ApiResponse<UserLoginResponseDTO>.SuccessResponse(response, "Token refreshed successfully"));

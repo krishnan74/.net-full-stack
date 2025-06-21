@@ -289,14 +289,11 @@ namespace QuizupAPI.Services
             {
                 // Verify teacher exists
                 var teacher = await _teacherRepository.Get(teacherId);
-                
 
-                // Execute the PostgreSQL function
+                // Call the function, let EF Core handle nulls
                 var result = await _context.Set<TeacherSummaryDTO>()
                     .FromSqlRaw("SELECT * FROM get_teacher_quiz_summary({0}, {1}, {2})",
-                        teacherId,
-                        startDate.HasValue ? startDate.Value : DBNull.Value,
-                        endDate.HasValue ? endDate.Value : DBNull.Value)
+                        teacherId, startDate, endDate)
                     .FirstOrDefaultAsync();
 
                 if (result == null)

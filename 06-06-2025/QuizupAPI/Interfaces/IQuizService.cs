@@ -1,5 +1,6 @@
 using QuizupAPI.Models.DTOs.Quiz;
 using QuizupAPI.Models.DTOs.Question;
+using QuizupAPI.Models.SearchModels;
 using QuizupAPI.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -20,5 +21,9 @@ namespace QuizupAPI.Interfaces
             int pageNumber,
             int pageSize
             );
+
+        Task<IEnumerable<Quiz>> SearchQuiz(
+            QuizSearchModel quizSearchModel
+        );
     }
 }

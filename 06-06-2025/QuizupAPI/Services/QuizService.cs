@@ -3,6 +3,7 @@ using QuizupAPI.Models;
 using QuizupAPI.Repositories;
 using QuizupAPI.Models.DTOs.Quiz;
 using QuizupAPI.Models.DTOs.Question;
+using QuizupAPI.Models.SearchModels;
 using QuizupAPI.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using QuizupAPI.Misc.Mappers;
@@ -257,6 +258,103 @@ namespace QuizupAPI.Services
             {
                 throw new Exception($"An error occurred while retrieving quizzes: {ex.Message}");
             }
+        }
+
+        public async Task<IEnumerable<Quiz>> SearchQuiz(QuizSearchModel quizSearchModel)
+        {
+            try
+            {
+                var quizzes = await _quizRepository.GetAll();
+                quizzes = SearchByTitle(quizzes, quizSearchModel.Title);
+
+                Console.WriteLine($"Searching by title: {quizSearchModel.Title}");
+                Console.WriteLine($"Number of quizzes after title search: {quizzes.Count()}");  
+                // quizzes = SearchByTeacherName(quizzes, quizSearchModel.TeacherName);
+                // quizzes = SearchByCreatedAt(quizzes, quizSearchModel.CreatedAt);
+                // quizzes = SearchByDueDate(quizzes, quizSearchModel.DueDate);
+                // quizzes = SearchByIsActive(quizzes, quizSearchModel.IsActive);
+
+                return quizzes.ToList();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to search quiz", ex);
+            }
+        }
+
+        private IEnumerable<Quiz> SearchByTitle(
+            IEnumerable<Quiz> quizzes, string title
+        ) {
+            if (title == "" || title == null)
+            {
+                Console.WriteLine("No title provided, returning all quizzes.");
+                return quizzes;
+            }
+            else
+            {
+                Console.WriteLine($"Searching quizzes with title containing: {title}");
+                var filteredQuizzes = quizzes.Where(q => q.Title.ToLower().Contains(title.ToLower())).ToList();
+            }
+        }
+
+        private IEnumerable<Quiz> SearchByTeacherName(
+            IEnumerable<Quiz> quizzes, string teacherName
+        )
+        {
+            if (teacherName == "" || teacherName == null)
+            {
+                return quizzes;
+            }
+            else
+            {
+                return quizzes.Where(q => q.Teacher.FirstName.ToLower().Contains(teacherName.ToLower()
+                ) || q.Teacher.LastName.ToLower().Contains(teacherName.ToLower()
+                
+                )).ToList();
+            }
+        }
+
+        private IEnumerable<Quiz> SearchByCreatedAt(
+            IEnumerable<Quiz> quizzes, Range<DateTime>? createdAt
+        )
+        {
+            if (createdAt == null || (createdAt.Min == null && createdAt.Max == null))
+            {
+                return quizzes;
+            }
+
+            return quizzes.Where(q =>
+                (createdAt.Min == null || q.CreatedAt >= createdAt.Min) &&
+                (createdAt.Max == null || q.CreatedAt <= createdAt.Max)
+            ).ToList();
+        }
+
+        private IEnumerable<Quiz> SearchByDueDate(
+            IEnumerable<Quiz> quizzes, Range<DateTime>? dueDate
+        )
+        {
+            if (dueDate == null || (dueDate.Min == null && dueDate.Max == null))
+            {
+                return quizzes;
+            }
+
+            return quizzes.Where(q =>
+                (dueDate.Min == null || q.DueDate >= dueDate.Min) &&
+                (dueDate.Max == null || q.DueDate <= dueDate.Max)
+            ).ToList();
+        }
+
+        private IEnumerable<Quiz> SearchByIsActive(
+            IEnumerable<Quiz> quizzes, bool? isActive
+        )
+        {
+            if (isActive == null)
+            {
+                return quizzes;
+            }
+
+            return quizzes.Where(q => q.IsActive == isActive).ToList();
         }
 
         private async Task MapAndAddQuestionsAsync(long quizId, QuizAddRequestDTO quizAddRequestDTO)
