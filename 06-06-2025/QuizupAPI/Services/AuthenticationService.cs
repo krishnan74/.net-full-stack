@@ -49,6 +49,7 @@ namespace QuizupAPI.Services
             return new UserLoginResponseDTO
             {
                 Username = user.Username,
+                Role = dbUser.Role,
                 AccessToken = token,
                 RefreshToken = refreshToken,
             };
@@ -73,18 +74,19 @@ namespace QuizupAPI.Services
             };
         }
 
-        // public Task<bool> LogoutAsync(string username)
-        // {
-        //     try
-        //     {
-        //         return _tokenService.InvalidateRefreshTokenAsync(username);
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         _logger.LogError(e, "Error during logout for user {Username}", username);
-        //         throw new Exception("Logout failed");
-        //     }
-        // }
+        public Task<bool> LogoutAsync(string username)
+        {
+            try
+            {
+
+                return _tokenService.InvalidateRefreshTokenAsync(username);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error during logout for user {Username}", username);
+                throw new Exception("Logout failed");
+            }
+        }
         
 
     }

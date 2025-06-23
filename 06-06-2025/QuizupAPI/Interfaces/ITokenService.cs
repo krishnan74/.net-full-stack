@@ -8,5 +8,6 @@ namespace QuizupAPI.Interfaces
         public string GenerateRefreshToken();
         public Task<string> GenerateAndSaveRefreshTokenAsync(User user);
         public Task<User> ValidateRefreshTokenAsync(string username, string refreshToken);
+        public Task<bool> InvalidateRefreshTokenAsync(string username);
     }
 }
