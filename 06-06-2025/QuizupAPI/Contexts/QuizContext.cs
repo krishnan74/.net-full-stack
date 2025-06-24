@@ -1,5 +1,7 @@
 using QuizupAPI.Models;
 using QuizupAPI.Interfaces;
+using QuizupAPI.Models.DTOs.Teacher;
+using QuizupAPI.Models.DTOs.Student;
 using Microsoft.EntityFrameworkCore;
 
 namespace QuizupAPI.Contexts
@@ -18,6 +20,9 @@ namespace QuizupAPI.Contexts
         public DbSet<QuizSubmission> quizSubmissions { get; set; } = null!;
         public DbSet<Teacher> teachers { get; set; } = null!;
         public DbSet<Student> students { get; set; } = null!;
+        public DbSet<TeacherSummaryDTO> teacherSummary { get; set; }
+        public DbSet<StudentSummaryDTO> studentSummary { get; set; }
+
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
@@ -39,7 +44,7 @@ namespace QuizupAPI.Contexts
             modelBuilder.Entity<Teacher>().HasQueryFilter(t => !t.IsDeleted);
             modelBuilder.Entity<Student>().HasQueryFilter(s => !s.IsDeleted);
             modelBuilder.Entity<Quiz>().HasQueryFilter(q => !q.IsDeleted);
-            
+
             modelBuilder.Entity<Student>().HasOne(s => s.User)
                                         .WithOne(u => u.Student)
                                         .HasForeignKey<Student>(s => s.Email)
@@ -94,6 +99,9 @@ namespace QuizupAPI.Contexts
                                         .HasConstraintName("FK_Answer_QuizSubmission")
                                         .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<TeacherSummaryDTO>().HasNoKey();
+            modelBuilder.Entity<StudentSummaryDTO>().HasNoKey();
+            
         }
     }
 }

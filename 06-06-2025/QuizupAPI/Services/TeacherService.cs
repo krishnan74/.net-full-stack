@@ -287,14 +287,17 @@ namespace QuizupAPI.Services
         {
             try
             {
+
+                Console.WriteLine($"Retrieving quiz summary for teacher with ID {teacherId} from {startDate?.ToString("yyyy-MM-dd") ?? "start"} to {endDate?.ToString("yyyy-MM-dd") ?? "end"}.");
                 // Verify teacher exists
                 var teacher = await _teacherRepository.Get(teacherId);
 
-                // Call the function, let EF Core handle nulls
+                Console.WriteLine($"Teacher found");
+
                 var result = await _context.Set<TeacherSummaryDTO>()
-                    .FromSqlRaw("SELECT * FROM get_teacher_quiz_summary({0}, {1}, {2})",
-                        teacherId, startDate, endDate)
-                    .FirstOrDefaultAsync();
+                        .FromSqlInterpolated($"select * from get_teacher_quiz_summary({teacherId}, {startDate ?? (DateTime?)null}, {endDate ?? (DateTime?)null})").FirstOrDefaultAsync();
+
+                Console.WriteLine($"Result: {JsonSerializer.Serialize(result)}");
 
                 if (result == null)
                 {

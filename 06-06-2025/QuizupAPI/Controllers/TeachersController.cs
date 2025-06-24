@@ -296,6 +296,8 @@ namespace QuizupAPI.Controllers
         {
             try
             {
+
+                Console.WriteLine($"Fetching summary for Teacher ID: {id}, Start Date: {startDate}, End Date: {endDate}");
                 var summary = await _teacherService.GetTeacherQuizSummaryAsync(id, startDate, endDate);
                 return Ok(ApiResponse<TeacherSummaryDTO>.SuccessResponse(summary, "Teacher quiz summary fetched successfully"));
             }

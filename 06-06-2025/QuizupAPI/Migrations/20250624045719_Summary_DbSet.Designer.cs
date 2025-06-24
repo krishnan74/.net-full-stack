@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using QuizupAPI.Contexts;
@@ -13,9 +14,11 @@ using QuizupAPI.Contexts;
 namespace QuizupAPI.Migrations
 {
     [DbContext(typeof(QuizContext))]
-    partial class QuizContextModelSnapshot : ModelSnapshot
+    [Migration("20250624045719_Summary_DbSet")]
+    partial class Summary_DbSet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,6 +56,12 @@ namespace QuizupAPI.Migrations
 
             modelBuilder.Entity("QuizupAPI.Models.DTOs.Student.StudentSummaryDTO", b =>
                 {
+                    b.Property<long>("StudentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("StudentId"));
+
                     b.Property<decimal>("AccuracyPercentage")
                         .HasColumnType("numeric");
 
@@ -85,9 +94,6 @@ namespace QuizupAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long>("StudentId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("StudentName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -116,11 +122,19 @@ namespace QuizupAPI.Migrations
                     b.Property<int>("TotalTimeSpentMinutes")
                         .HasColumnType("integer");
 
+                    b.HasKey("StudentId");
+
                     b.ToTable("studentSummary");
                 });
 
             modelBuilder.Entity("QuizupAPI.Models.DTOs.Teacher.TeacherSummaryDTO", b =>
                 {
+                    b.Property<long>("TeacherId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("TeacherId"));
+
                     b.Property<decimal>("AverageCompletionRate")
                         .HasColumnType("numeric");
 
@@ -156,9 +170,6 @@ namespace QuizupAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long>("TeacherId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("TeacherName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -190,6 +201,8 @@ namespace QuizupAPI.Migrations
 
                     b.Property<long>("TotalStudentsParticipated")
                         .HasColumnType("bigint");
+
+                    b.HasKey("TeacherId");
 
                     b.ToTable("teacherSummary");
                 });
