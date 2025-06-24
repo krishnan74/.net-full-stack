@@ -3,6 +3,8 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as AuthActions from './auth.actions';
 import { AuthService } from '../auth.service';
 import { catchError, map, mergeMap, of } from 'rxjs';
+import { ApiResponse } from '../../../shared/models/api-response';
+import { User } from '../auth.model';
 
 @Injectable()
 export class AuthEffects {
@@ -13,7 +15,7 @@ export class AuthEffects {
       ofType(AuthActions.login),
       mergeMap(({ payload }) =>
         this.authService.login(payload).pipe(
-          map((user) => AuthActions.loginSuccess({ user })),
+          map((loginResponse: ApiResponse<User>) => AuthActions.loginSuccess({ user: loginResponse.data })),
           catchError((err) =>
             of(AuthActions.loginFailure({ error: err.message }))
           )

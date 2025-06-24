@@ -1,0 +1,18 @@
+header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 20px;
+}
+
+.logo-div{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.links-div{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}

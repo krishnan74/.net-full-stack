@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { TeacherList } from './features/teacher/components/teacher-list/teacher-list';
 import { LoginComponent } from './features/auth/login/login';
 import { RegisterComponent } from './features/auth/register/register';
+import { AuthComponent } from './features/auth/auth';
 
 export const routes: Routes = [
   {
@@ -9,7 +10,7 @@ export const routes: Routes = [
     component: TeacherList,
   },
   {
-    path: 'auth',
+    path: 'auth', component: AuthComponent,
     children: [
       { path: 'login', component: LoginComponent },
       {
@@ -18,4 +19,5 @@ export const routes: Routes = [
       },
     ],
   },
+
 ];

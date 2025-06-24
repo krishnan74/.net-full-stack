@@ -1,17 +1,21 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Teacher } from '../models/teacher';
-import { inject, Injectable } from '@angular/core';
+import { Inject, inject, Injectable } from '@angular/core';
 import { API_BASE_URL } from '../../../core/tokens/api-url.token';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class TeacherService {
-  private http = inject(HttpClient);
-  private apiBaseUrl = inject(API_BASE_URL);
 
   private teachersSubject = new BehaviorSubject<Teacher[]>([]);
   teachers$: Observable<Teacher[]> = this.teachersSubject.asObservable();
 
+  constructor(
+    private http: HttpClient,
+        @Inject(API_BASE_URL) private apiBaseUrl: string
+  ){
+
+  }
   getTeacherById(id: number) {
     const teacher = this.http.get<Teacher>(`${this.apiBaseUrl}/Teachers/${id}`);
     console.log('Teacher fetched:', teacher);

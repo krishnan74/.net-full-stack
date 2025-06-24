@@ -4,13 +4,13 @@
   <div class="form-group">
     <label>
       Email:
-      <input type="email" formControlName="email" class="form-control" />
+      <input type="email" formControlName="username" class="form-control" />
     </label>
-    @if(userForm.get('email')?.invalid && userForm.get('email')?.touched) {
+    @if(userForm.get('username')?.invalid && userForm.get('username')?.touched) {
     <div class="text-danger">
-      @if(userForm.get('email')?.errors?.['required']) {
+      @if(userForm.get('username')?.errors?.['required']) {
       <p>Email is required.</p>
-      } @if(userForm.get('email')?.errors?.['pattern']) {
+      } @if(userForm.get('username')?.errors?.['pattern']) {
       <p>Invalid email format.</p>
       }
     </div>
