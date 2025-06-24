@@ -102,6 +102,34 @@ namespace QuizupAPI.Controllers
         }
 
         /// <summary>
+        /// Logout user and invalidate access token
+        /// </summary>
+        /// <returns>Logout confirmation</returns>
+        [HttpPost("logout")]
+        [ProducesResponseType(typeof(ApiResponse<object>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 401)]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(username))
+                {
+                    return Unauthorized(ApiResponse<object>.ErrorResponse("User not authenticated."));
+                }
+
+                await _authenticationService.LogoutAsync(username);
+                return Ok(ApiResponse<object>.SuccessResponse(null, "Logout successful"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred during logout. " + ex.Message));
+            }
+        }
+
+        /// <summary>
         /// Get current user details
         /// </summary>
         /// <returns>Current user information</returns>

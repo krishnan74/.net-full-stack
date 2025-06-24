@@ -266,13 +266,10 @@ namespace QuizupAPI.Services
             {
                 var quizzes = await _quizRepository.GetAll();
                 quizzes = SearchByTitle(quizzes, quizSearchModel.Title);
-
-                Console.WriteLine($"Searching by title: {quizSearchModel.Title}");
-                Console.WriteLine($"Number of quizzes after title search: {quizzes.Count()}");  
-                // quizzes = SearchByTeacherName(quizzes, quizSearchModel.TeacherName);
-                // quizzes = SearchByCreatedAt(quizzes, quizSearchModel.CreatedAt);
-                // quizzes = SearchByDueDate(quizzes, quizSearchModel.DueDate);
-                // quizzes = SearchByIsActive(quizzes, quizSearchModel.IsActive);
+                quizzes = SearchByTeacherName(quizzes, quizSearchModel.TeacherName);
+                quizzes = SearchByCreatedAt(quizzes, quizSearchModel.CreatedAt);
+                quizzes = SearchByDueDate(quizzes, quizSearchModel.DueDate);
+                quizzes = SearchByIsActive(quizzes, quizSearchModel.IsActive);
 
                 return quizzes.ToList();
 
@@ -295,6 +292,7 @@ namespace QuizupAPI.Services
             {
                 Console.WriteLine($"Searching quizzes with title containing: {title}");
                 var filteredQuizzes = quizzes.Where(q => q.Title.ToLower().Contains(title.ToLower())).ToList();
+                return filteredQuizzes;
             }
         }
 
@@ -304,13 +302,15 @@ namespace QuizupAPI.Services
         {
             if (teacherName == "" || teacherName == null)
             {
+                Console.WriteLine("No teacher name provided, returning all quizzes.");
                 return quizzes;
             }
             else
             {
+                Console.WriteLine($"Searching quizzes with teacher name containing: {teacherName}");
                 return quizzes.Where(q => q.Teacher.FirstName.ToLower().Contains(teacherName.ToLower()
                 ) || q.Teacher.LastName.ToLower().Contains(teacherName.ToLower()
-                
+
                 )).ToList();
             }
         }
@@ -321,13 +321,24 @@ namespace QuizupAPI.Services
         {
             if (createdAt == null || (createdAt.Min == null && createdAt.Max == null))
             {
+                Console.WriteLine("No created date provided, returning all quizzes.");
+
                 return quizzes;
             }
+            else
+            {
+                Console.WriteLine($"Searching quizzes with created date containing: {createdAt.Min} to {createdAt.Max}");
+                var filteredQuizzes = quizzes.Where(q =>
 
-            return quizzes.Where(q =>
                 (createdAt.Min == null || q.CreatedAt >= createdAt.Min) &&
                 (createdAt.Max == null || q.CreatedAt <= createdAt.Max)
-            ).ToList();
+                ).ToList();
+                
+                return filteredQuizzes;
+                
+            }
+
+            
         }
 
         private IEnumerable<Quiz> SearchByDueDate(
@@ -336,13 +347,20 @@ namespace QuizupAPI.Services
         {
             if (dueDate == null || (dueDate.Min == null && dueDate.Max == null))
             {
+                Console.WriteLine("No due date provided, returning all quizzes.");
                 return quizzes;
             }
 
-            return quizzes.Where(q =>
+            else
+            {
+                Console.WriteLine($"Searching quizzes with due date containing: {dueDate.Min} to {dueDate.Max}");
+                  return quizzes.Where(q =>
                 (dueDate.Min == null || q.DueDate >= dueDate.Min) &&
                 (dueDate.Max == null || q.DueDate <= dueDate.Max)
             ).ToList();
+            }
+
+          
         }
 
         private IEnumerable<Quiz> SearchByIsActive(
