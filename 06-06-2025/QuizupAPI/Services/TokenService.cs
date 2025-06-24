@@ -66,5 +66,26 @@ namespace QuizupAPI.Services
             }
             return user;
         }
+
+        public async Task<bool> InvalidateRefreshTokenAsync(string username){
+
+            var user = await _userRepository.Get(username);
+            if (user == null)
+            {
+                return false; 
+            }
+            
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = DateTime.MinValue;
+            var loggedoutUser = await _userRepository.Update(username, user);
+
+            if (loggedoutUser == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
     }
 }
