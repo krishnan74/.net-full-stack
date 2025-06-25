@@ -1,0 +1,26 @@
+/* You can add global styles to this file, and also import other style files */
+/* You can add global styles to this file, and also import other style files */
+@import url('bootstrap-icons/font/bootstrap-icons.css');
+@import url('bootstrap/dist/css/bootstrap.css');
+
+body {
+    background-image: url('https://t4.ftcdn.net/jpg/08/76/86/11/360_F_876861114_p8H5Ndbrm1nwp0yFJ1yGtWkUe55OimtN.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    position: relative;
+
+}
+
+/* body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7); 
+    z-index: 0;
+    backdrop-filter: blur(5px);
+} */

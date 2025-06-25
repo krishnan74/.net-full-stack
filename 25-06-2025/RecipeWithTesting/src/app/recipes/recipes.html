@@ -1,0 +1,15 @@
+@if (recipes()) {
+    <div class="recipe-container">
+        <h2>List of Recipes you might enjoy</h2>
+        <div class="recipes-list">
+        @for (item of recipes(); track item.id) {
+            <app-recipe-card [recipe]="item"></app-recipe-card>
+        }
+    </div>
+    </div>
+}
+@else {
+    <div class="no-recipes">
+        <h2>No recipes available</h2>
+    </div>
+}
