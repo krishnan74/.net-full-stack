@@ -14,6 +14,8 @@ import { authReducer } from './store/auth/state/auth.reducer';
 import { AuthEffects } from './store/auth/state/auth.effects';
 import { AuthService } from './store/auth/auth.service';
 import { TeacherService } from './features/teacher/services/teacher.service';
+import { StudentService } from './features/student/services/student.service';
+import { AuthInterceptor } from './core/interceptors/auth-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,13 +23,19 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(),
-     {
-       provide: API_BASE_URL,
+    {
+      provide: API_BASE_URL,
       useValue: 'http://localhost:5166/api/v1',
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
     },
     provideStore({ auth: authReducer }),
     provideEffects([AuthEffects]),
     AuthService,
-    TeacherService
+    TeacherService,
+    StudentService,
   ],
 };

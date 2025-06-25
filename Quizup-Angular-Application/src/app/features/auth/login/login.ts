@@ -23,15 +23,12 @@ import { Subscription } from 'rxjs';
 export class LoginComponent {
   userForm: FormGroup;
   user$ = this.store.select(selectUser);
-  private userSubscription?: Subscription;
 
   constructor(private fb: FormBuilder, private store: Store) {
     this.userForm = this.fb.group({
       username: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
-
-    
   }
 
   onSubmit() {
@@ -39,9 +36,9 @@ export class LoginComponent {
     if (this.userForm.valid) {
       console.log('Form Submitted!', this.userForm.value);
       this.store.dispatch(login({ payload: this.userForm.value }));
-      this.user$.subscribe(user => {
-      console.log(user);
-    });
+      this.user$.subscribe((user) => {
+        console.log(user);
+      });
     } else {
       this.userForm.markAllAsTouched();
     }

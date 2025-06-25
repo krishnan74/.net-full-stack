@@ -9,6 +9,7 @@ import { Store } from '@ngrx/store';
 import { login } from '../../../store/auth/state/auth.actions';
 import { CommonModule } from '@angular/common';
 import { TeacherService } from '../../teacher/services/teacher.service';
+import { StudentService } from '../../student/services/student.service';
 
 @Component({
   selector: 'app-register',
@@ -19,24 +20,34 @@ import { TeacherService } from '../../teacher/services/teacher.service';
 export class RegisterComponent {
   userForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private teacherService: TeacherService) {
+  constructor(
+    private fb: FormBuilder,
+    private teacherService: TeacherService,
+    private studentService: StudentService
+  ) {
     this.userForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.minLength(3)]],
-      lastName: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
+      firstName: ['', [Validators.required, Validators.minLength(3)]],
+      lastName: ['', [Validators.required, Validators.minLength(3)]],
+      subject: ['', [Validators.required, Validators.minLength(3)]],
       role: ['', [Validators.required]],
     });
   }
 
   onSubmit() {
-      console.log("Before validation", this.userForm.value)
+    console.log('Form submitted:', this.userForm.value);
 
     if (this.userForm.valid) {
-      console.log("After validation", this.userForm.value)
-      const teacher = this.teacherService.createTeacher(this.userForm.value)
-      console.log(teacher)
+      console.log('Form is valid');
+      if (this.userForm.value.role === 'Teacher') {
+        this.teacherService.createTeacher(this.userForm.value).subscribe({
+          next: (response) => console.log('Teacher created:', response),
+          error: (err) => console.error('Error:', err),
+        });
+      }
     } else {
+      console.log('Form is invalid');
       this.userForm.markAllAsTouched();
     }
   }
