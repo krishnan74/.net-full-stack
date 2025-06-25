@@ -55,7 +55,7 @@ BEGIN
             q."TeacherId",
             COUNT(DISTINCT qs."Id") as total_submissions,
             COUNT(DISTINCT qs."StudentId") as total_students,
-            COUNT(DISTINCT CASE WHEN qs."SubmissionStatus" = 'Completed' THEN qs."QuizId" END) as completed_quizzes,
+            COUNT(DISTINCT CASE WHEN qs."SubmissionStatus" = 'Submitted' THEN qs."QuizId" END) as completed_quizzes,
             COUNT(DISTINCT qs."QuizId") as total_quizzes_with_submissions,
             AVG(qs."Score") as avg_student_score,
             MAX(qs."Score") as max_score,
@@ -121,7 +121,7 @@ BEGIN
                 AVG(qs."Score") AS average_score,
                 CASE 
                     WHEN COUNT(DISTINCT qs."QuizId") > 0 
-                    THEN COUNT(DISTINCT CASE WHEN qs."SubmissionStatus" = 'Completed' THEN qs."QuizId" END)::DECIMAL / COUNT(DISTINCT qs."QuizId") * 100
+                    THEN COUNT(DISTINCT CASE WHEN qs."SubmissionStatus" = 'Submitted' THEN qs."QuizId" END)::DECIMAL / COUNT(DISTINCT qs."QuizId") * 100
                     ELSE 0
                 END AS completion_rate
             FROM quizzes q
@@ -181,7 +181,7 @@ BEGIN
                 AVG(qs."Score") AS avg_score,
                 CASE 
                     WHEN COUNT(DISTINCT qs."QuizId") > 0 
-                    THEN COUNT(DISTINCT CASE WHEN qs."SubmissionStatus" = 'Completed' THEN qs."QuizId" END)::DECIMAL / COUNT(DISTINCT qs."QuizId") * 100
+                    THEN COUNT(DISTINCT CASE WHEN qs."SubmissionStatus" = 'Submitted' THEN qs."QuizId" END)::DECIMAL / COUNT(DISTINCT qs."QuizId") * 100
                     ELSE 0
                 END AS completion_rate
             FROM quizzes q

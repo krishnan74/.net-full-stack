@@ -136,6 +136,7 @@ namespace QuizupAPI.Controllers
         [HttpGet("me")]
         [ProducesResponseType(typeof(ApiResponse<object>), 200)]
         [ProducesResponseType(typeof(ApiResponse<object>), 401)]
+        [Authorize]
         public IActionResult GetCurrentUser()
         {
             try

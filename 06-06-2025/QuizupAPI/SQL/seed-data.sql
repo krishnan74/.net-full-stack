@@ -1,5 +1,3 @@
-  
-
 DELETE FROM answers;
 
 DELETE FROM "quizSubmissions";
@@ -58,42 +56,27 @@ SELECT setval(
 -- Teacher Users
 
 INSERT INTO users ("Username", "Role", "HashedPassword", "IsDeleted", "CreatedAt") VALUES
-
-('john.smith@school.edu', 'Teacher', '$2a$12$bZp4LcJYv4HSNAiM5rJ3Ju3r7cN0gN2HvYb1Ft8qz4dN5PlKXk49W', false, '2024-01-15 09:00:00'),
-
-('sarah.johnson@school.edu', 'Teacher', '$2a$12$b6iUGGte87qqw24.QyI7m.azUz21bJpRVwUqbfQagyjdn57xJa4Xy', false, '2024-01-16 10:30:00'),
-
-('michael.brown@school.edu', 'Teacher', '$2a$12$QQbRFnEbA9ITQYwe.10y0uHCo2NHkwOab.UtUeodq6hZG8h9rxWf2', false, '2024-01-17 11:15:00'),
-
-('emily.davis@school.edu', 'Teacher', '$2a$12$BVINySFI6qjRnCQsUzczW.WuqAv4evfuS/z0o767q49U4abqAuYEK', false, '2024-01-18 14:20:00'),
-
-('david.wilson@school.edu', 'Teacher', '$2a$12$PK5jFqB.GA70v/giaO7UQuW3xDBBVnKTYGhHMJUNbFa.DSLyFHRym', false, '2024-01-19 16:45:00');
+('john.smith@school.edu', 'Teacher', '$2a$12$bZp4LcJYv4HSNAiM5rJ3Ju3r7cN0gN2HvYb1Ft8qz4dN5PlKXk49W', false, '2025-01-15 09:00:00'),
+('sarah.johnson@school.edu', 'Teacher', '$2a$12$b6iUGGte87qqw24.QyI7m.azUz21bJpRVwUqbfQagyjdn57xJa4Xy', false, '2025-01-16 10:30:00'),
+('michael.brown@school.edu', 'Teacher', '$2a$12$QQbRFnEbA9ITQYwe.10y0uHCo2NHkwOab.UtUeodq6hZG8h9rxWf2', false, '2025-01-17 11:15:00'),
+('emily.davis@school.edu', 'Teacher', '$2a$12$BVINySFI6qjRnCQsUzczW.WuqAv4evfuS/z0o767q49U4abqAuYEK', false, '2025-01-18 14:20:00'),
+('david.wilson@school.edu', 'Teacher', '$2a$12$PK5jFqB.GA70v/giaO7UQuW3xDBBVnKTYGhHMJUNbFa.DSLyFHRym', false, '2025-01-19 16:45:00');
 
   
 
 -- Student Users
 
 INSERT INTO users ("Username", "Role", "HashedPassword", "IsDeleted", "CreatedAt") VALUES
-
-('alice.student@school.edu', 'Student', '$2a$12$PK5jFqB.GA70v/giaO7UQuW3xDBBVnKTYGhHMJUNbFa.DSLyFHRym', false, '2024-01-20 08:00:00'),
-
-('bob.student@school.edu', 'Student', '$2a$12$jOZ1CGxYsFrEVLFWGqdPl.f3E7atGecW4tsHWDG1qHHxo.07ydGpa', false, '2024-01-20 08:05:00'),
-
-('carol.student@school.edu', 'Student', '$2a$12$Y2taquKsCkwIkN0ClxEtluyEPxSCy46cbMKlh7VxQ8jmaCJ2mQaiy', false, '2024-01-20 08:10:00'),
-
-('dave.student@school.edu', 'Student', '$2a$12$t7zmnBquBeCNoAQwe5Es1ee0eKGIiqGFxuHvmwPP7ZJXYQ9J33RJS', false, '2024-01-20 08:15:00'),
-
-('eve.student@school.edu', 'Student', '$2a$12$Zojs1Wj47Uem1P9p73lzB.riLNWJyolzIEXJcFVK2LG0/H0lf/CY6', false, '2024-01-20 08:20:00'),
-
-('frank.student@school.edu', 'Student', '$2a$12$s6zFELEMzBQuSgChI6pN9ejNMsKqgi9EGEHX3Mc1GuxTBf3Dtc3jy', false, '2024-01-20 08:25:00'),
-
-('grace.student@school.edu', 'Student', '$2a$12$upmP5p02zhn6QNbmZemNzeZc7eG4gHLW3jJ.KXYGbyF1jq6YP7Dga', false, '2024-01-20 08:30:00'),
-
-('henry.student@school.edu', 'Student', '$2a$12$sHUazHgKP6UdwDXtpfBXCegcDcm2CUntJ5lfXdgkstB6GgWdGC4su', false, '2024-01-20 08:35:00'),
-
-('iris.student@school.edu', 'Student', '$2a$12$l6RixAtHyB2vc4//P8k61uRwzE03okBaXAhhzKj5Ko.6b.Znd5bFK', false, '2024-01-20 08:40:00'),
-
-('jack.student@school.edu', 'Student', '$2a$12$D.Ju5uo8o/d/4i.K1gz1.OWinggzjmXXM6penXQllcyeBInR6MfvO', false, '2024-01-20 08:45:00');
+('alice.student@school.edu', 'Student', '$2a$12$PK5jFqB.GA70v/giaO7UQuW3xDBBVnKTYGhHMJUNbFa.DSLyFHRym', false, '2025-01-20 08:00:00'),
+('bob.student@school.edu', 'Student', '$2a$12$jOZ1CGxYsFrEVLFWGqdPl.f3E7atGecW4tsHWDG1qHHxo.07ydGpa', false, '2025-01-20 08:05:00'),
+('carol.student@school.edu', 'Student', '$2a$12$Y2taquKsCkwIkN0ClxEtluyEPxSCy46cbMKlh7VxQ8jmaCJ2mQaiy', false, '2025-01-20 08:10:00'),
+('dave.student@school.edu', 'Student', '$2a$12$t7zmnBquBeCNoAQwe5Es1ee0eKGIiqGFxuHvmwPP7ZJXYQ9J33RJS', false, '2025-01-20 08:15:00'),
+('eve.student@school.edu', 'Student', '$2a$12$Zojs1Wj47Uem1P9p73lzB.riLNWJyolzIEXJcFVK2LG0/H0lf/CY6', false, '2025-01-20 08:20:00'),
+('frank.student@school.edu', 'Student', '$2a$12$s6zFELEMzBQuSgChI6pN9ejNMsKqgi9EGEHX3Mc1GuxTBf3Dtc3jy', false, '2025-01-20 08:25:00'),
+('grace.student@school.edu', 'Student', '$2a$12$upmP5p02zhn6QNbmZemNzeZc7eG4gHLW3jJ.KXYGbyF1jq6YP7Dga', false, '2025-01-20 08:30:00'),
+('henry.student@school.edu', 'Student', '$2a$12$sHUazHgKP6UdwDXtpfBXCegcDcm2CUntJ5lfXdgkstB6GgWdGC4su', false, '2025-01-20 08:35:00'),
+('iris.student@school.edu', 'Student', '$2a$12$l6RixAtHyB2vc4//P8k61uRwzE03okBaXAhhzKj5Ko.6b.Znd5bFK', false, '2025-01-20 08:40:00'),
+('jack.student@school.edu', 'Student', '$2a$12$D.Ju5uo8o/d/4i.K1gz1.OWinggzjmXXM6penXQllcyeBInR6MfvO', false, '2025-01-20 08:45:00');
 
   
 
@@ -106,16 +89,11 @@ INSERT INTO users ("Username", "Role", "HashedPassword", "IsDeleted", "CreatedAt
   
 
 INSERT INTO teachers ("Email", "FirstName", "LastName", "Subject", "IsDeleted", "CreatedAt") VALUES
-
-('john.smith@school.edu', 'John', 'Smith', 'Mathematics', false, '2024-01-15 09:00:00'),
-
-('sarah.johnson@school.edu', 'Sarah', 'Johnson', 'Science', false, '2024-01-16 10:30:00'),
-
-('michael.brown@school.edu', 'Michael', 'Brown', 'History', false, '2024-01-17 11:15:00'),
-
-('emily.davis@school.edu', 'Emily', 'Davis', 'English', false, '2024-01-18 14:20:00'),
-
-('david.wilson@school.edu', 'David', 'Wilson', 'Computer Science', false, '2024-01-19 16:45:00');
+('john.smith@school.edu', 'John', 'Smith', 'Mathematics', false, '2025-01-15 09:00:00'),
+('sarah.johnson@school.edu', 'Sarah', 'Johnson', 'Science', false, '2025-01-16 10:30:00'),
+('michael.brown@school.edu', 'Michael', 'Brown', 'History', false, '2025-01-17 11:15:00'),
+('emily.davis@school.edu', 'Emily', 'Davis', 'English', false, '2025-01-18 14:20:00'),
+('david.wilson@school.edu', 'David', 'Wilson', 'Computer Science', false, '2025-01-19 16:45:00');
 
   
 
@@ -128,26 +106,16 @@ INSERT INTO teachers ("Email", "FirstName", "LastName", "Subject", "IsDeleted", 
   
 
 INSERT INTO students ("Email", "FirstName", "LastName", "Class", "IsDeleted", "CreatedAt") VALUES
-
-('alice.student@school.edu', 'Alice', 'Anderson', 'Grade 10A', false, '2024-01-20 08:00:00'),
-
-('bob.student@school.edu', 'Bob', 'Baker', 'Grade 10A', false, '2024-01-20 08:05:00'),
-
-('carol.student@school.edu', 'Carol', 'Clark', 'Grade 10B', false, '2024-01-20 08:10:00'),
-
-('dave.student@school.edu', 'Dave', 'Davis', 'Grade 10B', false, '2024-01-20 08:15:00'),
-
-('eve.student@school.edu', 'Eve', 'Evans', 'Grade 11A', false, '2024-01-20 08:20:00'),
-
-('frank.student@school.edu', 'Frank', 'Fisher', 'Grade 11A', false, '2024-01-20 08:25:00'),
-
-('grace.student@school.edu', 'Grace', 'Garcia', 'Grade 11B', false, '2024-01-20 08:30:00'),
-
-('henry.student@school.edu', 'Henry', 'Harris', 'Grade 11B', false, '2024-01-20 08:35:00'),
-
-('iris.student@school.edu', 'Iris', 'Irwin', 'Grade 12A', false, '2024-01-20 08:40:00'),
-
-('jack.student@school.edu', 'Jack', 'Jackson', 'Grade 12A', false, '2024-01-20 08:45:00');
+('alice.student@school.edu', 'Alice', 'Anderson', 'Grade 10A', false, '2025-01-20 08:00:00'),
+('bob.student@school.edu', 'Bob', 'Baker', 'Grade 10A', false, '2025-01-20 08:05:00'),
+('carol.student@school.edu', 'Carol', 'Clark', 'Grade 10B', false, '2025-01-20 08:10:00'),
+('dave.student@school.edu', 'Dave', 'Davis', 'Grade 10B', false, '2025-01-20 08:15:00'),
+('eve.student@school.edu', 'Eve', 'Evans', 'Grade 11A', false, '2025-01-20 08:20:00'),
+('frank.student@school.edu', 'Frank', 'Fisher', 'Grade 11A', false, '2025-01-20 08:25:00'),
+('grace.student@school.edu', 'Grace', 'Garcia', 'Grade 11B', false, '2025-01-20 08:30:00'),
+('henry.student@school.edu', 'Henry', 'Harris', 'Grade 11B', false, '2025-01-20 08:35:00'),
+('iris.student@school.edu', 'Iris', 'Irwin', 'Grade 12A', false, '2025-01-20 08:40:00'),
+('jack.student@school.edu', 'Jack', 'Jackson', 'Grade 12A', false, '2025-01-20 08:45:00');
 
   
 
@@ -163,45 +131,45 @@ INSERT INTO quizzes ("Title", "Description", "TeacherId", "CreatedAt", "DueDate"
 
 -- Math Quizzes (Teacher ID 1)
 
-('Algebra Basics', 'Introduction to algebraic expressions and equations', 1, '2024-02-01 09:00:00', '2024-02-15 23:59:59', true, false),
+('Algebra Basics', 'Introduction to algebraic expressions and equations', 1, '2025-02-01 09:00:00', '2025-02-15 23:59:59', true, false),
 
-('Geometry Fundamentals', 'Basic geometric shapes and properties', 1, '2024-02-10 10:00:00', '2024-02-25 23:59:59', true, false),
+('Geometry Fundamentals', 'Basic geometric shapes and properties', 1, '2025-02-10 10:00:00', '2025-02-25 23:59:59', true, false),
 
-('Calculus Introduction', 'Limits and derivatives basics', 1, '2024-03-01 11:00:00', '2024-03-15 23:59:59', false, false),
+('Calculus Introduction', 'Limits and derivatives basics', 1, '2025-03-01 11:00:00', '2025-03-15 23:59:59', false, false),
 
   
 
 -- Science Quizzes (Teacher ID 2)
 
-('Chemistry Basics', 'Introduction to atoms and molecules', 2, '2024-02-05 14:00:00', '2024-02-20 23:59:59', true, false),
+('Chemistry Basics', 'Introduction to atoms and molecules', 2, '2025-02-05 14:00:00', '2025-02-20 23:59:59', true, false),
 
-('Physics Fundamentals', 'Basic physics concepts and formulas', 2, '2024-02-15 15:00:00', '2024-03-01 23:59:59', true, false),
+('Physics Fundamentals', 'Basic physics concepts and formulas', 2, '2025-02-15 15:00:00', '2025-03-01 23:59:59', true, false),
 
-('Biology Essentials', 'Cell structure and function', 2, '2024-03-05 16:00:00', '2024-03-20 23:59:59', true, false),
+('Biology Essentials', 'Cell structure and function', 2, '2025-03-05 16:00:00', '2025-03-20 23:59:59', true, false),
 
   
 
 -- History Quizzes (Teacher ID 3)
 
-('Ancient Civilizations', 'Egypt, Greece, and Rome', 3, '2024-02-08 13:00:00', '2024-02-23 23:59:59', true, false),
+('Ancient Civilizations', 'Egypt, Greece, and Rome', 3, '2025-02-08 13:00:00', '2025-02-23 23:59:59', true, false),
 
-('World War II', 'Major events and figures of WWII', 3, '2024-02-20 14:00:00', '2024-03-05 23:59:59', true, false),
+('World War II', 'Major events and figures of WWII', 3, '2025-02-20 14:00:00', '2025-03-05 23:59:59', true, false),
 
   
 
 -- English Quizzes (Teacher ID 4)
 
-('Shakespeare Literature', 'Hamlet and Macbeth analysis', 4, '2024-02-12 12:00:00', '2024-02-27 23:59:59', true, false),
+('Shakespeare Literature', 'Hamlet and Macbeth analysis', 4, '2025-02-12 12:00:00', '2025-02-27 23:59:59', true, false),
 
-('Grammar Fundamentals', 'Parts of speech and sentence structure', 4, '2024-03-02 13:00:00', '2024-03-17 23:59:59', true, false),
+('Grammar Fundamentals', 'Parts of speech and sentence structure', 4, '2025-03-02 13:00:00', '2025-03-17 23:59:59', true, false),
 
   
 
 -- Computer Science Quizzes (Teacher ID 5)
 
-('Programming Basics', 'Introduction to programming concepts', 5, '2024-02-18 16:00:00', '2024-03-03 23:59:59', true, false),
+('Programming Basics', 'Introduction to programming concepts', 5, '2025-02-18 16:00:00', '2025-03-03 23:59:59', true, false),
 
-('Database Design', 'SQL and database fundamentals', 5, '2024-03-08 17:00:00', '2024-03-23 23:59:59', true, false);
+('Database Design', 'SQL and database fundamentals', 5, '2025-03-08 17:00:00', '2025-03-23 23:59:59', true, false);
 
   
 
@@ -333,13 +301,13 @@ INSERT INTO "quizQuestions" ("QuizId", "QuestionId") VALUES
 
 INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "SubmissionStatus", "Score") VALUES
 
-(1, 1, '2024-02-10 14:30:00', 'Submitted', 80),
+(1, 1, '2025-02-10 14:30:00', 'Submitted', 80),
 
-(2, 1, '2024-02-20 15:45:00', 'Submitted', 90),
+(2, 1, '2025-02-20 15:45:00', 'Submitted', 90),
 
-(4, 1, '2024-02-12 16:20:00', 'Submitted', 85),
+(4, 1, '2025-02-12 16:20:00', 'Submitted', 85),
 
-(7, 1, '2024-02-15 13:10:00', 'Submitted', 75);
+(7, 1, '2025-02-15 13:10:00', 'Submitted', 75);
 
   
 
@@ -347,13 +315,13 @@ INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "Submiss
 
 INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "SubmissionStatus", "Score") VALUES
 
-(1, 2, '2024-02-11 10:15:00', 'Submitted', 70),
+(1, 2, '2025-02-11 10:15:00', 'Submitted', 70),
 
-(2, 2, '2024-02-21 11:30:00', 'InProgress', NULL),
+(2, 2, '2025-02-21 11:30:00', 'InProgress', NULL),
 
-(4, 2, '2024-02-13 14:45:00', 'Submitted', 80),
+(4, 2, '2025-02-13 14:45:00', 'Submitted', 80),
 
-(5, 2, '2024-02-25 16:00:00', 'Saved', NULL);
+(5, 2, '2025-02-25 16:00:00', 'Saved', NULL);
 
   
 
@@ -361,13 +329,13 @@ INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "Submiss
 
 INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "SubmissionStatus", "Score") VALUES
 
-(1, 3, '2024-02-09 09:20:00', 'Submitted', 95),
+(1, 3, '2025-02-09 09:20:00', 'Submitted', 95),
 
-(2, 3, '2024-02-19 10:35:00', 'Submitted', 88),
+(2, 3, '2025-02-19 10:35:00', 'Submitted', 88),
 
-(4, 3, '2024-02-11 12:50:00', 'Submitted', 92),
+(4, 3, '2025-02-11 12:50:00', 'Submitted', 92),
 
-(7, 3, '2024-02-14 15:25:00', 'Submitted', 85);
+(7, 3, '2025-02-14 15:25:00', 'Submitted', 85);
 
   
 
@@ -375,11 +343,11 @@ INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "Submiss
 
 INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "SubmissionStatus", "Score") VALUES
 
-(1, 4, '2024-02-12 13:40:00', 'Submitted', 60),
+(1, 4, '2025-02-12 13:40:00', 'Submitted', 60),
 
-(2, 4, '2024-02-22 14:55:00', 'Submitted', 75),
+(2, 4, '2025-02-22 14:55:00', 'Submitted', 75),
 
-(4, 4, '2024-02-14 16:10:00', 'InProgress', NULL);
+(4, 4, '2025-02-14 16:10:00', 'InProgress', NULL);
 
   
 
@@ -387,13 +355,13 @@ INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "Submiss
 
 INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "SubmissionStatus", "Score") VALUES
 
-(1, 5, '2024-02-08 08:30:00', 'Submitted', 100),
+(1, 5, '2025-02-08 08:30:00', 'Submitted', 100),
 
-(2, 5, '2024-02-18 09:45:00', 'Submitted', 95),
+(2, 5, '2025-02-18 09:45:00', 'Submitted', 95),
 
-(4, 5, '2024-02-10 11:00:00', 'Submitted', 98),
+(4, 5, '2025-02-10 11:00:00', 'Submitted', 98),
 
-(7, 5, '2024-02-13 13:15:00', 'Submitted', 90);
+(7, 5, '2025-02-13 13:15:00', 'Submitted', 90);
 
   
 
@@ -401,11 +369,11 @@ INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "Submiss
 
 INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "SubmissionStatus", "Score") VALUES
 
-(1, 6, '2024-02-13 15:20:00', 'Submitted', 75),
+(1, 6, '2025-02-13 15:20:00', 'Submitted', 75),
 
-(2, 6, '2024-02-23 16:35:00', 'Submitted', 80),
+(2, 6, '2025-02-23 16:35:00', 'Submitted', 80),
 
-(4, 6, '2024-02-15 17:50:00', 'Submitted', 78);
+(4, 6, '2025-02-15 17:50:00', 'Submitted', 78);
 
   
 
@@ -413,9 +381,9 @@ INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "Submiss
 
 INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "SubmissionStatus", "Score") VALUES
 
-(1, 7, '2024-02-14 10:25:00', 'Submitted', 85),
+(1, 7, '2025-02-14 10:25:00', 'Submitted', 85),
 
-(4, 7, '2024-02-16 12:40:00', 'Submitted', 88);
+(4, 7, '2025-02-16 12:40:00', 'Submitted', 88);
 
   
 
@@ -423,9 +391,9 @@ INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "Submiss
 
 INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "SubmissionStatus", "Score") VALUES
 
-(1, 8, '2024-02-15 14:55:00', 'Submitted', 70),
+(1, 8, '2025-02-15 14:55:00', 'Submitted', 70),
 
-(2, 8, '2024-02-25 16:10:00', 'InProgress', NULL);
+(2, 8, '2025-02-25 16:10:00', 'InProgress', NULL);
 
   
 
@@ -433,11 +401,11 @@ INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "Submiss
 
 INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "SubmissionStatus", "Score") VALUES
 
-(1, 9, '2024-02-16 09:15:00', 'Submitted', 90),
+(1, 9, '2025-02-16 09:15:00', 'Submitted', 90),
 
-(2, 9, '2024-02-26 10:30:00', 'Submitted', 85),
+(2, 9, '2025-02-26 10:30:00', 'Submitted', 85),
 
-(4, 9, '2024-02-18 12:45:00', 'Submitted', 92);
+(4, 9, '2025-02-18 12:45:00', 'Submitted', 92);
 
   
 
@@ -445,11 +413,11 @@ INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "Submiss
 
 INSERT INTO "quizSubmissions" ("QuizId", "StudentId", "SubmissionDate", "SubmissionStatus", "Score") VALUES
 
-(1, 10, '2024-02-17 11:20:00', 'Submitted', 65),
+(1, 10, '2025-02-17 11:20:00', 'Submitted', 65),
 
-(2, 10, '2024-02-27 12:35:00', 'Submitted', 80),
+(2, 10, '2025-02-27 12:35:00', 'Submitted', 80),
 
-(4, 10, '2024-02-19 14:50:00', 'Saved', NULL);
+(4, 10, '2025-02-19 14:50:00', 'Saved', NULL);
 
   
 
@@ -519,4 +487,3 @@ INSERT INTO answers ("QuestionId", "QuizSubmissionId", "SelectedAnswer") VALUES
 (4, 5, '3'),
 (5, 5, '(x + 2)(x - 2)');
 
-  

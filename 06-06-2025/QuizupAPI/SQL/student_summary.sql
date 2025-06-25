@@ -116,7 +116,7 @@ BEGIN
                 COUNT(DISTINCT qs."QuizId") as quiz_count
             FROM "quizSubmissions" qs
             WHERE qs."StudentId" = p_student_id 
-            AND qs."SubmissionStatus" = 'Completed'
+            AND qs."SubmissionStatus" = 'Submitted'
             AND qs."SubmissionDate" >= CURRENT_DATE - INTERVAL '6 months'
             GROUP BY qs."StudentId", DATE_TRUNC('month', qs."SubmissionDate")
         ) t

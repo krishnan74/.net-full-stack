@@ -185,6 +185,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation($"QuizupAPI server is starting on {DateTime.UtcNow} in {app.Environment.EnvironmentName} mode.");
 
 
 app.UseAuthentication();
@@ -204,3 +206,5 @@ app.UseRateLimiter();
 app.MapControllers().RequireRateLimiting("UserBasedPolicy");
 
 app.Run();
+
+
