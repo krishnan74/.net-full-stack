@@ -3,6 +3,7 @@ import { TeacherService } from '../../services/teacher.service';
 import { Teacher } from '../../models/teacher';
 import { CommonModule } from '@angular/common';
 import { TeacherCard } from '../teacher-card/teacher-card';
+import { ApiResponse } from '../../../../shared/models/api-response';
 
 @Component({
   selector: 'app-teacher-list',
@@ -20,10 +21,10 @@ export class TeacherList implements OnInit {
   }
 
   getAllTeachers() {
-    this.teacherService.getAllTeachers().subscribe((data: any[]) => {
-      //@ts-expect-error
-      console.log('Teachers fetched:', data.data.$);
-      this.teachers = data;
-    });
+    this.teacherService
+      .getAllTeachers()
+      .subscribe((response: ApiResponse<Teacher[]>) => {
+        this.teachers = response.data;
+      });
   }
 }
