@@ -1,0 +1,43 @@
+Questions:
+
+1. You have a file with permissions -rw-r--r--, and you run chmod +x file.sh. What happens?
+    Execute (x) permission is added for owner, group, and others.
+
+
+2. What is the difference between chmod 744 file.txt and chmod u=rwx,go=r file.txt?
+    Both of them set the same permissions for file.txt which is
+        - Owner : All ( Read, Write, Execute )
+        - Group : Read
+        - Others: Read
+
+
+3. What is the sticky bit, and when should you use it?
+    It is a special permission which allows only the owner of the file to delete its content in a directory shared by others.
+    eg: chmod +t /dir
+
+
+4. You are told to give the owner full access, group only execute, and others no permissions. What symbolic command achieves this?
+    chmod 710
+
+
+5. What is umask, and why is it important?
+    umask is used to set default permission bits for files and directories, it prevents files / directories from being created with unexpected permissions.
+
+
+6. If the umask is 022, what are the default permissions for a new file and a new directory?
+    The changed permissions after umask is calculated using subtraction as follows, 
+        - Default permission for directories: 777
+            umask = 022, then final permission = 777 - 022 = 755
+
+        - Default permissions for files: 666
+            umask = 022, then final permission = 666 - 022 = 644
+
+
+7. Why is umask often set to 002 in development environments but 027 or 077 in production?
+    In development environments, umask is set to 002 to allow group members to read and write files for better collaboration. 
+    In production, umask is set to 027 or 077 to enhance security by limiting access to files and directories, ensuring that only the owner or specific groups can access them.
+
+
+8. useradd vs adduser
+    useradd is a basic, low-level command for creating a new user account. It does not perform extra setup by default.
+    adduser is a more user-friendly, higher-level command that guides you through the process and automatically sets up things like the user's home directory, group, and initial configuration.
