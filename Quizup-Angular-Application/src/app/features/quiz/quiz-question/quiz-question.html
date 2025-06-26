@@ -1,0 +1,25 @@
+<div
+  *ngIf="question; else loading"
+  class="flex-col gap-10 items-center justify-center text-center"
+>
+  <p class="text-4xl font-bold text-gray-800 tracking-wide">
+    {{ question?.id }}) {{ question?.questionText }}
+  </p>
+  <div class="grid grid-cols-2 mt-10 gap-8 w-[800px] mx-auto text-xl">
+    <button
+      *ngFor="let option of question?.options; let i = index"
+      [ngClass]="{
+        'bg-[#11d875] text-white font-semibold border-[#ffffffd6] border-2 rounded-lg p-14': i === 0,
+        'bg-[#ff3855] text-white font-semibold border-[#ffffffd6] border-2 rounded-lg': i === 1,
+        'border border-[#bfbdc2] bg-[#eeecf3] rounded-lg p-14': i === 2,
+        'border border-[#c6c4ca] bg-[#eeecf3] rounded-lg': i === 3
+      }"
+    >
+      {{ option }}
+    </button>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="text-center text-gray-500 text-xl">Loading question...</div>
+</ng-template>

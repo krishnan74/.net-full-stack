@@ -1,20 +1,25 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Quiz } from '../models/quiz';
-import { inject, Injectable } from '@angular/core';
+import { Inject, inject, Injectable } from '@angular/core';
 import { API_BASE_URL } from '../../../core/tokens/api-url.token';
 import { HttpClient } from '@angular/common/http';
+import { ApiResponse } from '../../../shared/models/api-response';
 
 @Injectable()
 export class QuizService {
-  private http = inject(HttpClient);
-  private apiBaseUrl = inject(API_BASE_URL);
+  constructor(
+    private http: HttpClient,
+
+    @Inject(API_BASE_URL) private apiBaseUrl: string
+  ) {}
 
   private quizzesSubject = new BehaviorSubject<Quiz[]>([]);
   quizzes$: Observable<Quiz[]> = this.quizzesSubject.asObservable();
 
-  getQuizById(id: number) {
-    const quiz = this.http.get<Quiz>(`${this.apiBaseUrl}/quizzes/${id}`);
-    console.log('Quiz fetched:', quiz);
+  getQuizById(id: number): Observable<ApiResponse<Quiz>> {
+    const quiz = this.http.get<ApiResponse<Quiz>>(
+      `${this.apiBaseUrl}/Quizzes/${id}`
+    );
     return quiz;
   }
 

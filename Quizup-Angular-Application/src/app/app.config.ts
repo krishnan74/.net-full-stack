@@ -16,6 +16,7 @@ import { AuthService } from './store/auth/auth.service';
 import { TeacherService } from './features/teacher/services/teacher.service';
 import { StudentService } from './features/student/services/student.service';
 import { AuthInterceptor } from './core/interceptors/auth-interceptor';
+import { QuizService } from './features/quiz/services/quiz.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -37,5 +38,6 @@ export const appConfig: ApplicationConfig = {
     AuthService,
     TeacherService,
     StudentService,
+    QuizService
   ],
 };
