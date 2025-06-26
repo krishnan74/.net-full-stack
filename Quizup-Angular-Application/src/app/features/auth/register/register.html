@@ -70,8 +70,7 @@
     }
   </div>
 
-
-    <div class="form-group">
+  <div class="form-group">
     <label>
       Role:
       <select name="role" formControlName="role" class="form-control">
@@ -84,6 +83,23 @@
     <div class="text-danger">
       @if(userForm.get('role')?.errors?.['required']) {
       <p>Role is required.</p>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="form-group">
+    <label>
+      Subject:
+      <input type="text" formControlName="subject" class="form-control" />
+    </label>
+
+    @if(userForm.get('subject')?.invalid && userForm.get('subject')?.touched) {
+    <div class="text-danger">
+      @if(userForm.get('subject')?.errors?.['required']) {
+      <p>Subject is required.</p>
+      } @if(userForm.get('subject')?.errors?.['minlength']) {
+      <p>Subject must be at least 3 characters long.</p>
       }
     </div>
     }
