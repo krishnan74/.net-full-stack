@@ -1,20 +1,22 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Question } from '../models/question';
+import { QuestionModel } from '../models/question.model';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-quiz-question',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './quiz-question.html',
   styleUrl: './quiz-question.css',
 })
 export class QuizQuestion implements OnInit {
-  @Input() question: Question | null = new Question();
+  @Input() question: QuestionModel | null = null;
+
+  ngOnChanges() {
+    console.log('QuizQuestion input updated:', this.question);
+  }
 
   ngOnInit() {
-    console.log(
-      'QuizQuestion component initialized with question:',
-      this.question
-    );
+    // Optional: use only for non-@Input setup
   }
 }

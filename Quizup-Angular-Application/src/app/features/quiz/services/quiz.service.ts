@@ -1,5 +1,5 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Quiz } from '../models/quiz';
+import { QuizModel } from '../models/quiz.model';
 import { Inject, inject, Injectable } from '@angular/core';
 import { API_BASE_URL } from '../../../core/tokens/api-url.token';
 import { HttpClient } from '@angular/common/http';
@@ -13,20 +13,20 @@ export class QuizService {
     @Inject(API_BASE_URL) private apiBaseUrl: string
   ) {}
 
-  private quizzesSubject = new BehaviorSubject<Quiz[]>([]);
-  quizzes$: Observable<Quiz[]> = this.quizzesSubject.asObservable();
+  private quizzesSubject = new BehaviorSubject<QuizModel[]>([]);
+  quizzes$: Observable<QuizModel[]> = this.quizzesSubject.asObservable();
 
-  getQuizById(id: number): Observable<ApiResponse<Quiz>> {
-    const quiz = this.http.get<ApiResponse<Quiz>>(
+  getQuizById(id: number): Observable<ApiResponse<QuizModel>> {
+    const quiz = this.http.get<ApiResponse<QuizModel>>(
       `${this.apiBaseUrl}/Quizzes/${id}`
     );
     return quiz;
   }
 
   createQuiz(
-    quiz: Omit<Quiz, 'id' | 'createdAt' | 'createdBy' | 'isActive'>
-  ): Observable<Quiz> {
-    const createdQuiz = this.http.post<Quiz>(
+    quiz: Omit<QuizModel, 'id' | 'createdAt' | 'createdBy' | 'isActive'>
+  ): Observable<QuizModel> {
+    const createdQuiz = this.http.post<QuizModel>(
       `${this.apiBaseUrl}/quizzes`,
       quiz
     );
@@ -41,8 +41,8 @@ export class QuizService {
     dueDateMin?: Date,
     dueDateMax?: Date,
     isActive?: boolean
-  ): Observable<Quiz[]> {
-    const quizzes = this.http.get<Quiz[]>(`
+  ): Observable<QuizModel[]> {
+    const quizzes = this.http.get<QuizModel[]>(`
         
         ${this.apiBaseUrl}/Quizzes/search
         ?Title=${searchTerm}&Description=${searchTerm}&TeacherName=${searchTerm}

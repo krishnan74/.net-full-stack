@@ -1,4 +1,4 @@
-import { QuizSubmission } from '../../quiz/models/quizSubmission';
+import { QuizSubmission } from '../../quiz/models/quizSubmission.model';
 
 export class Student {
   constructor(

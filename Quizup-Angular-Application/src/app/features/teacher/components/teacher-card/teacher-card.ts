@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Teacher } from '../../models/teacher';
-import { Quiz } from '../../../quiz/models/quiz';
+import { QuizModel } from '../../../quiz/models/quiz.model';
 
 @Component({
   selector: 'app-teacher-card',

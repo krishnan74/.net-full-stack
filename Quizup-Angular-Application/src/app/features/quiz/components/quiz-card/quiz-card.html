@@ -22,7 +22,8 @@
     </p>
 
     <p class="text-gray-600 mb-4">
-      <strong>Number of Questions: </strong> {{ quiz?.questions?.length }}
+      <strong>Number of Questions: </strong> {{ quiz?.quizQuestions?.length || 0
+      }}
     </p>
 
     @if( showAttempt ){

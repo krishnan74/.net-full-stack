@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Quiz } from '../../models/quiz';
+import { QuizModel } from '../../models/quiz.model';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './quiz-card.css',
 })
 export class QuizCard {
-  @Input() quiz: Quiz | null = new Quiz();
+  @Input() quiz: QuizModel | null = new QuizModel();
   @Input() showAttempt: boolean = true;
 
   viewResults() {}

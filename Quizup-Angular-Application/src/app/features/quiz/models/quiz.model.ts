@@ -1,11 +1,10 @@
-import { Question } from './question';
-
-export class Quiz {
+import { QuizQuestionModel } from './quizQuestion.model';
+export class QuizModel {
   constructor(
-    public id: string = '',
+    public id: number = 0,
     public title: string = '',
     public description: string = '',
-    public questions?: Question[],
+    public quizQuestions?: QuizQuestionModel[],
     public teacherId: string = '',
     public createdBy: string = '',
     public createdAt: Date = new Date(),

@@ -1,7 +1,7 @@
-export class Question {
+export class QuestionModel {
   constructor(
-    public id: string = '',
-    public questionText: string = '',
+    public id: number = 0,
+    public text: string = '',
     public options: string[] = [],
     public correctAnswer: string = ''
   ) {}

@@ -1,11 +1,11 @@
-import { Answer } from './answer';
+import { AnswerModel } from './answer.model';
 
 export class QuizSubmission {
   constructor(
-    public id: string = '',
+    public id: number = 0,
     public quizId: string = '',
     public studentId: string = '',
-    public answers: Answer[],
+    public answers: AnswerModel[],
     public submissionDate: Date = new Date(),
     public savedDate: Date = new Date(),
     public score: number = 0,

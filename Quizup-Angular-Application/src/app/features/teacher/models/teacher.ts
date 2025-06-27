@@ -1,4 +1,4 @@
-import { Quiz } from '../../quiz/models/quiz';
+import { QuizModel } from '../../quiz/models/quiz.model';
 
 export class Teacher {
   constructor(
@@ -8,6 +8,6 @@ export class Teacher {
     public lastName: string = '',
     public subject: string = '',
     public createdAt: Date = new Date(),
-    public quizzes?: Quiz[]
+    public quizzes?: QuizModel[]
   ) {}
 }
