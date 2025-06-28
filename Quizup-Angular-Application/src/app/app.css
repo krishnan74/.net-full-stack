@@ -1,3 +1,17 @@
+.get-started-button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: 1px solid #c6c4ca;
+  color: #2e2932;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.get-started-button:hover {
+  border: 1px solid #2d2431;
+}
+
 .first {
   top: -200px;
   left: -10px;

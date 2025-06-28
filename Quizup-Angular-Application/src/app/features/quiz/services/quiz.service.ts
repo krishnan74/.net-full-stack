@@ -44,15 +44,7 @@ export class QuizService {
   ): Observable<QuizModel[]> {
     const quizzes = this.http.get<QuizModel[]>(`
         
-        ${this.apiBaseUrl}/Quizzes/search
-        ?Title=${searchTerm}&Description=${searchTerm}&TeacherName=${searchTerm}
-        &CreatedAtMin=${createdAtMin?.toISOString() || ''}&CreatedAtMax=${
-      createdAtMax?.toISOString() || ''
-    }
-        &DueDateMin=${dueDateMin?.toISOString() || ''}&DueDateMax=${
-      dueDateMax?.toISOString() || ''
-    }
-        &IsActive=${isActive !== undefined ? isActive : ''}`);
+        ${this.apiBaseUrl}/Quizzes/search?Title=${searchTerm}&Description=${searchTerm}&TeacherName=${searchTerm}&CreatedAtMin=${createdAtMin?.toISOString() || ''}&CreatedAtMax=${createdAtMax?.toISOString() || ''}&DueDateMin=${dueDateMin?.toISOString() || ''}&DueDateMax=${dueDateMax?.toISOString() || ''}&IsActive=${isActive !== undefined ? isActive : ''}`);
 
     return quizzes;
   }
