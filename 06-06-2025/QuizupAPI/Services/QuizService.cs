@@ -265,24 +265,34 @@ namespace QuizupAPI.Services
             try
             {
                 var quizzes = await _quizRepository.GetAll();
+                var oneQuiz = await _quizRepository.Get(1);
+                Console.WriteLine($"One quiz teacher name: {oneQuiz.Teacher.FirstName} {oneQuiz.Teacher.LastName}");
+
                 quizzes = SearchByTitle(quizzes, quizSearchModel.Title);
+                quizzes = SearchByDescription(quizzes, quizSearchModel.Description);
                 quizzes = SearchByTeacherName(quizzes, quizSearchModel.TeacherName);
                 quizzes = SearchByCreatedAt(quizzes, quizSearchModel.CreatedAt);
                 quizzes = SearchByDueDate(quizzes, quizSearchModel.DueDate);
                 quizzes = SearchByIsActive(quizzes, quizSearchModel.IsActive);
 
-                return quizzes.ToList();
+                if (quizzes != null && quizzes.Count() > 0)
+                {
+                    return quizzes.ToList();
+                }
 
             }
             catch (Exception ex)
             {
                 throw new Exception("Failed to search quiz", ex);
             }
+            return null;
+
         }
 
         private IEnumerable<Quiz> SearchByTitle(
             IEnumerable<Quiz> quizzes, string title
-        ) {
+        )
+        {
             if (title == "" || title == null)
             {
                 Console.WriteLine("No title provided, returning all quizzes.");
@@ -292,6 +302,28 @@ namespace QuizupAPI.Services
             {
                 Console.WriteLine($"Searching quizzes with title containing: {title}");
                 var filteredQuizzes = quizzes.Where(q => q.Title.ToLower().Contains(title.ToLower())).ToList();
+
+              
+
+                return filteredQuizzes;
+            }
+        }
+        
+        private IEnumerable<Quiz> SearchByDescription(
+            IEnumerable<Quiz> quizzes, string description
+        )
+        {
+            if (description == "" || description == null)
+            {
+                Console.WriteLine("No description provided, returning all quizzes.");
+                return quizzes;
+            }
+            else
+            {
+                Console.WriteLine($"Searching quizzes with description containing: {description}");
+                var filteredQuizzes = quizzes.Where(q => q.Description.ToLower().Contains(description.ToLower())).ToList();
+
+               
                 return filteredQuizzes;
             }
         }
@@ -308,10 +340,15 @@ namespace QuizupAPI.Services
             else
             {
                 Console.WriteLine($"Searching quizzes with teacher name containing: {teacherName}");
-                return quizzes.Where(q => q.Teacher.FirstName.ToLower().Contains(teacherName.ToLower()
-                ) || q.Teacher.LastName.ToLower().Contains(teacherName.ToLower()
 
-                )).ToList();
+                var filteredQuizzes = quizzes.Where(
+
+                    q => q.Teacher.FirstName.ToLower().Contains(teacherName.ToLower()) || 
+                    q.Teacher.LastName.ToLower().Contains(teacherName.ToLower()) 
+
+                    ).ToList();
+
+                return filteredQuizzes;
             }
         }
 

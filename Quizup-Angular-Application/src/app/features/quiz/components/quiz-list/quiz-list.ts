@@ -9,10 +9,12 @@ import {
 } from 'rxjs';
 import { QuizModel } from '../../models/quiz.model';
 import { QuizCard } from '../quiz-card/quiz-card';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-quiz-list',
-  imports: [QuizCard],
+  imports: [QuizCard, CommonModule, FormsModule],
   templateUrl: './quiz-list.html',
   styleUrl: './quiz-list.css',
 })
@@ -38,10 +40,10 @@ export class QuizList implements OnInit {
         switchMap((query) =>
           this.quizService.searchQuizzes(
             query,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
+            new Date('2024-12-31'),
+            new Date('2024-12-31'),
+            new Date('2024-12-31'),
+            new Date('2024-12-31'),
             false
           )
         ),

@@ -46,6 +46,7 @@ export class QuizService {
         
         ${this.apiBaseUrl}/Quizzes/search?Title=${searchTerm}&Description=${searchTerm}&TeacherName=${searchTerm}&CreatedAtMin=${createdAtMin?.toISOString() || ''}&CreatedAtMax=${createdAtMax?.toISOString() || ''}&DueDateMin=${dueDateMin?.toISOString() || ''}&DueDateMax=${dueDateMax?.toISOString() || ''}&IsActive=${isActive !== undefined ? isActive : ''}`);
 
+      console.log('Quizzes fetched:', quizzes);
     return quizzes;
   }
 }
