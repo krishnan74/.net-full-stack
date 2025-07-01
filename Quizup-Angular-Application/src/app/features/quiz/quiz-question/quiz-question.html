@@ -1,0 +1,18 @@
+@if(!question) {
+<div class="text-center text-gray-500 text-xl">Loading question...</div>
+}
+
+<div class="flex-col gap-10 items-center justify-center text-center">
+  <p class="text-4xl font-bold text-gray-800 tracking-wide">
+    {{ question?.id }}) {{ question?.text }}
+  </p>
+  <div class="grid grid-cols-2 mt-10 gap-8 w-[800px] mx-auto text-xl">
+    @for(option of question?.options; track $index) {
+    <button
+      class="text-black font-semibold border-[#bfbdc2] border-2 rounded-lg p-14"
+    >
+      {{ option }}
+    </button>
+    }
+  </div>
+</div>

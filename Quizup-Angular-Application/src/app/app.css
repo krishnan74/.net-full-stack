@@ -1,0 +1,79 @@
+.get-started-button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: 1px solid #c6c4ca;
+  color: #2e2932;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.get-started-button:hover {
+  border: 1px solid #2d2431;
+}
+
+.first {
+  top: -200px;
+  left: -10px;
+}
+
+.second {
+  bottom: 0;
+  right: 0;
+}
+
+.radial-bg {
+  position: absolute;
+  bottom: -100px;
+  right: -100px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+
+  transform: scale(1.8);
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    #fc99f5 0%,
+    #ff98e6 15%,
+    #ff99d8 30%,
+    #ff9acc 45%,
+    #ff9dc0 60%,
+    #fca0b7 75%,
+    #fca8a7 90%,
+    #f2be90 100%
+  );
+
+  filter: blur(35px);
+  opacity: 0.8;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.radial-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+
+  background-image: url("./assets/grainy.png");
+  background-repeat: repeat;
+  background-size: 180px 180px;
+  background-position: 0 0;
+
+  mix-blend-mode: overlay;
+  opacity: 0.65;
+
+  z-index: 1;
+}
+
+.radial-bg::after {
+  content: "";
+  position: absolute;
+  inset: -40px;
+  border-radius: 50%;
+  filter: blur(60px);
+  background: inherit;
+  opacity: 0.45;
+  mix-blend-mode: screen;
+  z-index: 0;
+}

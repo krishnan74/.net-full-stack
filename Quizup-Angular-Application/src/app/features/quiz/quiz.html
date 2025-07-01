@@ -1,0 +1,28 @@
+<div
+  class="w-full h-full flex items-center justify-center absolute top-0 left-0 z-10"
+>
+  <button
+    (click)="prevQuestion()"
+    class="absolute left-[5vw] scale-150 cursor-pointer"
+  >
+    <span aria-label="Previous question" title="Previous question"
+      >&#8592;</span
+    >
+  </button>
+
+  <button
+    (click)="nextQuestion()"
+    class="absolute right-[5vw] scale-150 cursor-pointer"
+  >
+    <span aria-label="Next question" title="Next question">&#8594;</span>
+  </button>
+
+  <app-quiz-question
+    [question]="questions[currentQuestionIndex]"
+  ></app-quiz-question>
+
+  <app-quiz-timer
+    class="absolute bottom-[10px] h-20 w-full px-10"
+    [progress]="progress"
+  ></app-quiz-timer>
+</div>
