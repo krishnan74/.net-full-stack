@@ -11,7 +11,6 @@ namespace QuizupAPI.Misc.Mappers
             teacher.FirstName = addRequestDto.FirstName;
             teacher.LastName = addRequestDto.LastName;
             teacher.Email = addRequestDto.Email;
-            teacher.Subject = addRequestDto.Subject;
 
             return teacher;
         }
@@ -20,7 +19,6 @@ namespace QuizupAPI.Misc.Mappers
         {
             existingTeacher.FirstName = updateRequestDto.FirstName;
             existingTeacher.LastName = updateRequestDto.LastName;
-            existingTeacher.Subject = updateRequestDto.Subject;
 
             return existingTeacher;
         }
