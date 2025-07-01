@@ -1,7 +1,8 @@
 using QuizupAPI.Models;
+using QuizupAPI.Interfaces;
 
 namespace QuizupAPI.Models{
-    public class Subject
+    public class Subject: ISoftDeletable
     {
         public long Id { get; set; }
         public string Code { get; set; } = string.Empty;

@@ -1,8 +1,9 @@
 using QuizupAPI.Models;
+using QuizupAPI.Interfaces;
 
 namespace QuizupAPI.Models
 {
-    public class Class
+    public class Class: ISoftDeletable
     {
         public long Id { get; set; }
         public string Name { get; set; } = string.Empty;
