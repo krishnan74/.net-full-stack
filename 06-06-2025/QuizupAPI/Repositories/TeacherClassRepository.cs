@@ -13,17 +13,20 @@ namespace QuizupAPI.Repositories
 
         public override async Task<TeacherClass> Get(long key)
         {
-            var quizQuestion = await _quizContext.quizQuestions.SingleOrDefaultAsync(p => p.Id == key);
+            var teacherClass = await _quizContext.teacherClasses.Include(tc => tc.Class)
+                .Include(tc => tc.Teacher)
+                .SingleOrDefaultAsync(p => p.Id == key);
 
-            return quizQuestion??throw new KeyNotFoundException($"No quizQuestion with the given ID: {key}");
+            return teacherClass??throw new KeyNotFoundException($"No teacherClass with the given ID: {key}");
         }
 
         public override async Task<IEnumerable<TeacherClass>> GetAll()
         {
-            var quizQuestions = _quizContext.quizQuestions;
-            if (quizQuestions.Count() == 0)
+            var teacherClasses = _quizContext.teacherClasses.Include(tc => tc.Class)
+                .Include(tc => tc.Teacher);
+            if (teacherClasses.Count() == 0)
                 return Enumerable.Empty<TeacherClass>();
-            return (await quizQuestions.ToListAsync());
+            return (await teacherClasses.ToListAsync());
         }
     }
 }
