@@ -11,6 +11,7 @@ namespace QuizupAPI.Misc.Mappers
             student.FirstName = addRequestDto.FirstName;
             student.LastName = addRequestDto.LastName;
             student.Email = addRequestDto.Email;
+            student.ClassId = addRequestDto.ClassId ?? 0;
 
             return student;
         }
