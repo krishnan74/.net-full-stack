@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace QuizupAPI.Models.DTOs.Teacher
+namespace QuizupAPI.Models.DTOs.Student
 {
-    public class TeacherAddRequestDTO
+    public class StudentAddRequestDTO
     {
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email format")]
@@ -17,8 +17,6 @@ namespace QuizupAPI.Models.DTOs.Teacher
 
         [Required(ErrorMessage = "Last name is required")]
         public string LastName { get; set; } = string.Empty;
-
-        public long SubjectId { get; set; }
-        public long ClassId { get; set; }
+        public long? ClassId { get; set; }
     }
 }
