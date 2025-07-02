@@ -486,11 +486,11 @@ namespace QuizupAPI.Services
 
                 // Execute the PostgreSQL function
                 var result = await _context.Set<StudentSummaryDTO>()
-                    .FromSqlRaw("SELECT * FROM get_student_quiz_summary({0}, {1}, {2})",
-                        studentId,
-                        startDate.HasValue ? startDate.Value : DBNull.Value,
-                        endDate.HasValue ? endDate.Value : DBNull.Value)
-                    .FirstOrDefaultAsync();
+                        .FromSqlRaw(
+                            "select * from get_student_quiz_summary({0}, {1}::timestamp, {2}::timestamp)",
+                            studentId, startDate, endDate
+                        )
+                        .FirstOrDefaultAsync();
 
                 if (result == null)
                 {

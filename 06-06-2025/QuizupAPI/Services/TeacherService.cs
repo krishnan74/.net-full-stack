@@ -320,7 +320,11 @@ namespace QuizupAPI.Services
                 Console.WriteLine($"Teacher found");
 
                 var result = await _context.Set<TeacherSummaryDTO>()
-                        .FromSqlInterpolated($"select * from get_teacher_quiz_summary({teacherId}, {startDate ?? (DateTime?)null}, {endDate ?? (DateTime?)null})").FirstOrDefaultAsync();
+                        .FromSqlRaw(
+                            "select * from get_teacher_quiz_summary({0}, {1}::timestamp, {2}::timestamp)",
+                            teacherId, startDate, endDate
+                        )
+                        .FirstOrDefaultAsync();
 
                 Console.WriteLine($"Result: {JsonSerializer.Serialize(result)}");
 
