@@ -1,0 +1,11 @@
+<h2>Dashboard</h2>
+<div *ngIf="userType === 'student'">
+  <h3>Student Summary</h3>
+  <p>Quizzes Taken: {{ summary.quizzesTaken }}</p>
+  <p>Average Score: {{ summary.averageScore }}</p>
+</div>
+<div *ngIf="userType === 'teacher'">
+  <h3>Teacher Summary</h3>
+  <p>Quizzes Created: {{ summary.quizzesCreated }}</p>
+  <p>Students Managed: {{ summary.studentsManaged }}</p>
+</div>
