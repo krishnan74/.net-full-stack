@@ -126,25 +126,30 @@ builder.Services.AddRateLimiter(
 
 
 // Register repositories
-builder.Services.AddTransient<IRepository<long, Student>, StudentRepository>();
-builder.Services.AddTransient<IRepository<long, Teacher>, TeacherRepository>();
-builder.Services.AddTransient<IRepository<string, User>, UserRepository>();
-builder.Services.AddTransient<IRepository<long, Quiz>, QuizRepository>();
+builder.Services.AddTransient<IRepository<long, Answer>, AnswerRepository>();
+builder.Services.AddTransient<IRepository<long, Class>, ClassRepository>();
+builder.Services.AddTransient<IRepository<long, ClassSubject>, ClassSubjectRepository>();
 builder.Services.AddTransient<IRepository<long, Question>, QuestionRepository>();
 builder.Services.AddTransient<IRepository<long, QuizQuestion>, QuizQuestionRepository>();
+builder.Services.AddTransient<IRepository<long, Quiz>, QuizRepository>();
 builder.Services.AddTransient<IRepository<long, QuizSubmission>, QuizSubmissionRepository>();
-builder.Services.AddTransient<IRepository<long, Answer>, AnswerRepository>();
+builder.Services.AddTransient<IRepository<long, Student>, StudentRepository>();
+builder.Services.AddTransient<IRepository<long, Subject>, SubjectRepository>();
+builder.Services.AddTransient<IRepository<long, TeacherClass>, TeacherClassRepository>();
+builder.Services.AddTransient<IRepository<long, Teacher>, TeacherRepository>();
+builder.Services.AddTransient<IRepository<long, TeacherSubject>, TeacherSubjectRepository>();
+builder.Services.AddTransient<IRepository<string, User>, UserRepository>();
 
 // Register services
-builder.Services.AddTransient<IStudentService, StudentService>();
-builder.Services.AddTransient<ITeacherService, TeacherService>();
-builder.Services.AddTransient<IQuizService, QuizService>();
 builder.Services.AddTransient<IAuthenticationService, AuthenticationService>();
-builder.Services.AddTransient<ITokenService, TokenService>();
+builder.Services.AddTransient<IClassService, ClassService>();
 builder.Services.AddTransient<IEncryptionService, EncryptionService>();
-
 builder.Services.AddSingleton<IPerformanceMonitoringService, PerformanceMonitoringService>();
-
+builder.Services.AddTransient<IQuizService, QuizService>();
+builder.Services.AddTransient<IStudentService, StudentService>();
+builder.Services.AddTransient<ISubjectService, SubjectService>();
+builder.Services.AddTransient<ITeacherService, TeacherService>();
+builder.Services.AddTransient<ITokenService, TokenService>();
 
 // Add JWT Authentication
 builder.Services.AddAuthentication(options =>
