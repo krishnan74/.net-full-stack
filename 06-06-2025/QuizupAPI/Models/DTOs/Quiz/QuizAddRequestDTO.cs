@@ -13,9 +13,16 @@ namespace QuizupAPI.Models.DTOs.Quiz
         [Required]
         public string Description { get; set; } = string.Empty;
         public DateTime? DueDate { get; set; }
+        public ICollection<string>? Tags { get; set; }
 
         [Required]
         public long TeacherId { get; set; }
+
+        [Required]
+        public long ClassId { get; set; }
+
+        [Required]
+        public long SubjectId { get; set; }
 
         [Required]
         public List<QuestionAddRequestDTO> Questions { get; set; } = new List<QuestionAddRequestDTO>();

@@ -235,7 +235,8 @@ namespace QuizupAPI.Services
                     DueDate = quiz.DueDate,
                     TeacherName = quiz.Teacher.FirstName + " " + quiz.Teacher.LastName
                 };
-                await _hubContext.Clients.All.SendAsync("NotifyStartQuiz", quizNotificationDTO);
+                string classGroupName = $"class_{quiz.ClassId}";
+                await _hubContext.Clients.Group(classGroupName).SendAsync("NotifyStartQuiz", quizNotificationDTO);
 
                 return await _quizRepository.Update(quizId, quiz);
             }
@@ -283,7 +284,8 @@ namespace QuizupAPI.Services
                     TeacherName = quiz.Teacher.FirstName + " " + quiz.Teacher.LastName
                 };
 
-                await _hubContext.Clients.All.SendAsync("NotifyEndQuiz", quizNotificationDTO);
+                string classGroupName = $"class_{quiz.ClassId}";
+                await _hubContext.Clients.Group(classGroupName).SendAsync("NotifyEndQuiz", quizNotificationDTO);
 
                 return await _quizRepository.Update(quizId, quiz);
             }
@@ -320,7 +322,11 @@ namespace QuizupAPI.Services
                 Console.WriteLine($"Teacher found");
 
                 var result = await _context.Set<TeacherSummaryDTO>()
-                        .FromSqlInterpolated($"select * from get_teacher_quiz_summary({teacherId}, {startDate ?? (DateTime?)null}, {endDate ?? (DateTime?)null})").FirstOrDefaultAsync();
+                        .FromSqlRaw(
+                            "select * from get_teacher_quiz_summary({0}, {1}::timestamp, {2}::timestamp)",
+                            teacherId, startDate, endDate
+                        )
+                        .FirstOrDefaultAsync();
 
                 Console.WriteLine($"Result: {JsonSerializer.Serialize(result)}");
 

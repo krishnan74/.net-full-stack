@@ -1,31 +1,30 @@
-
 CREATE OR REPLACE FUNCTION get_teacher_quiz_summary(
     p_teacher_id BIGINT,
     p_start_date TIMESTAMP DEFAULT NULL,
     p_end_date TIMESTAMP DEFAULT NULL
 )
 RETURNS TABLE (
-    teacher_id BIGINT,
-    teacher_name TEXT,
-    teacher_email TEXT,
-    teacher_subject VARCHAR(100),
-    total_quizzes_created BIGINT,
-    total_active_quizzes BIGINT,
-    total_inactive_quizzes BIGINT,
-    total_questions_created BIGINT,
-    total_student_submissions BIGINT,
-    total_students_participated BIGINT,
-    average_completion_rate DECIMAL(5,2),
-    average_student_score DECIMAL(5,2),
-    highest_quiz_score INTEGER,
-    lowest_quiz_score INTEGER,
-    total_questions_answered BIGINT,
-    total_correct_answers BIGINT,
-    overall_accuracy_percentage DECIMAL(5,2),
-    quizzes_by_status JSON,
-    student_performance_summary JSON,
-    recent_quiz_activity JSON,
-    quiz_performance_trend JSON
+    "TeacherId" BIGINT,
+    "TeacherName" TEXT,
+    "TeacherEmail" TEXT,
+    "TeacherSubjects" JSON,
+    "TotalQuizzesCreated" BIGINT,
+    "TotalActiveQuizzes" BIGINT,
+    "TotalInactiveQuizzes" BIGINT,
+    "TotalQuestionsCreated" BIGINT,
+    "TotalStudentSubmissions" BIGINT,
+    "TotalStudentsParticipated" BIGINT,
+    "AverageCompletionRate" DECIMAL(5,2),
+    "AverageStudentScore" DECIMAL(5,2),
+    "HighestQuizScore" INTEGER,
+    "LowestQuizScore" INTEGER,
+    "TotalQuestionsAnswered" BIGINT,
+    "TotalCorrectAnswers" BIGINT,
+    "OverallAccuracyPercentage" DECIMAL(5,2),
+    "QuizzesByStatus" JSON,
+    "StudentPerformanceSummary" JSON,
+    "RecentQuizActivity" JSON,
+    "QuizPerformanceTrend" JSON
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -33,10 +32,16 @@ BEGIN
         SELECT 
             t."Id",
             CONCAT(t."FirstName", ' ', t."LastName") as full_name,
-            t."Email",
-            t."Subject"
+            t."Email"
         FROM teachers t
         WHERE t."Id" = p_teacher_id 
+    ),
+    teacher_subjects_json AS (
+        SELECT ts."TeacherId", json_agg(s."Name") as subjects
+        FROM "teacherSubjects" ts
+        JOIN subjects s ON ts."SubjectId" = s."Id"
+        WHERE ts."TeacherId" = p_teacher_id
+        GROUP BY ts."TeacherId"
     ),
     quiz_stats AS (
         SELECT 
@@ -104,7 +109,7 @@ BEGIN
                     'student_id', t."StudentId",
                     'student_name', t.student_name,
                     'student_email', t."Email",
-                    'student_class', t."Class",
+                    'student_class', c."Name",
                     'total_quizzes_taken', t.total_quizzes_taken,
                     'average_score', t.average_score,
                     'completion_rate', t.completion_rate
@@ -116,7 +121,7 @@ BEGIN
                 s."Id" AS "StudentId",
                 CONCAT(s."FirstName", ' ', s."LastName") AS student_name,
                 s."Email",
-                s."Class",
+                s."ClassId",
                 COUNT(DISTINCT qs."QuizId") AS total_quizzes_taken,
                 AVG(qs."Score") AS average_score,
                 CASE 
@@ -128,8 +133,9 @@ BEGIN
             JOIN "quizSubmissions" qs ON q."Id" = qs."QuizId"
             JOIN students s ON qs."StudentId" = s."Id"
             WHERE q."TeacherId" = p_teacher_id 
-            GROUP BY q."TeacherId", s."Id", s."FirstName", s."LastName", s."Email", s."Class"
+            GROUP BY q."TeacherId", s."Id", s."FirstName", s."LastName", s."Email", s."ClassId"
         ) t
+        LEFT JOIN classes c ON t."ClassId" = c."Id"
         GROUP BY t."TeacherId"
     ),
     recent_quiz_activity_detail AS (
@@ -193,36 +199,37 @@ BEGIN
         GROUP BY t."TeacherId"
     )
     SELECT 
-        ti."Id" as teacher_id,
-        ti.full_name as teacher_name,
-        ti."Email" as teacher_email,
-        ti."Subject" as teacher_subject,
-        COALESCE(qs.total_created, 0) as total_quizzes_created,
-        COALESCE(qs.total_active, 0) as total_active_quizzes,
-        COALESCE(qs.total_inactive, 0) as total_inactive_quizzes,
-        COALESCE(qs.total_questions_created, 0) as total_questions_created,
-        COALESCE(ss.total_submissions, 0) as total_student_submissions,
-        COALESCE(ss.total_students, 0) as total_students_participated,
+        ti."Id" as "TeacherId",
+        ti.full_name as "TeacherName",
+        ti."Email" as "TeacherEmail",
+        COALESCE(tsj.subjects, '[]'::json) as "TeacherSubjects",
+        COALESCE(qs.total_created, 0) as "TotalQuizzesCreated",
+        COALESCE(qs.total_active, 0) as "TotalActiveQuizzes",
+        COALESCE(qs.total_inactive, 0) as "TotalInactiveQuizzes",
+        COALESCE(qs.total_questions_created, 0) as "TotalQuestionsCreated",
+        COALESCE(ss.total_submissions, 0) as "TotalStudentSubmissions",
+        COALESCE(ss.total_students, 0) as "TotalStudentsParticipated",
         CASE 
             WHEN ss.total_quizzes_with_submissions > 0 
             THEN ROUND((ss.completed_quizzes::DECIMAL / ss.total_quizzes_with_submissions) * 100, 2)
             ELSE 0 
-        END as average_completion_rate,
-        ROUND(COALESCE(ss.avg_student_score, 0), 2) as average_student_score,
-        COALESCE(ss.max_score, 0) as highest_quiz_score,
-        COALESCE(ss.min_score, 0) as lowest_quiz_score,
-        COALESCE(qp.total_questions_answered, 0) as total_questions_answered,
-        COALESCE(qp.total_correct_answers, 0) as total_correct_answers,
+        END as "AverageCompletionRate",
+        ROUND(COALESCE(ss.avg_student_score, 0), 2) as "AverageStudentScore",
+        COALESCE(ss.max_score, 0) as "HighestQuizScore",
+        COALESCE(ss.min_score, 0) as "LowestQuizScore",
+        COALESCE(qp.total_questions_answered, 0) as "TotalQuestionsAnswered",
+        COALESCE(qp.total_correct_answers, 0) as "TotalCorrectAnswers",
         CASE 
             WHEN qp.total_questions_answered > 0 
             THEN ROUND((qp.total_correct_answers::DECIMAL / qp.total_questions_answered) * 100, 2)
             ELSE 0 
-        END as overall_accuracy_percentage,
-        COALESCE(qbsd.status_breakdown, '{}'::json) as quizzes_by_status,
-        COALESCE(spd.student_summary, '[]'::json) as student_performance_summary,
-        COALESCE(raqd.recent_activities, '[]'::json) as recent_quiz_activity,
-        COALESCE(qptd.monthly_trend, '[]'::json) as quiz_performance_trend
+        END as "OverallAccuracyPercentage",
+        COALESCE(qbsd.status_breakdown, '{}'::json) as "QuizzesByStatus",
+        COALESCE(spd.student_summary, '[]'::json) as "StudentPerformanceSummary",
+        COALESCE(raqd.recent_activities, '[]'::json) as "RecentQuizActivity",
+        COALESCE(qptd.monthly_trend, '[]'::json) as "QuizPerformanceTrend"
     FROM teacher_info ti
+    LEFT JOIN teacher_subjects_json tsj ON ti."Id" = tsj."TeacherId"
     LEFT JOIN quiz_stats qs ON ti."Id" = qs."TeacherId"
     LEFT JOIN submission_stats ss ON ti."Id" = ss."TeacherId"
     LEFT JOIN question_performance qp ON ti."Id" = qp."TeacherId"
@@ -232,9 +239,6 @@ BEGIN
     LEFT JOIN quiz_performance_trend_detail qptd ON ti."Id" = qptd."TeacherId";
 END;
 $$ LANGUAGE plpgsql;
-
-
-
 
 SELECT * FROM get_teacher_quiz_summary(2);
 

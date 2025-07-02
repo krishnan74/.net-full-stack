@@ -8,7 +8,7 @@ namespace QuizupAPI.Models.DTOs.Teacher
         public long TeacherId { get; set; }
         public string TeacherName { get; set; } = string.Empty;
         public string TeacherEmail { get; set; } = string.Empty;
-        public string TeacherSubject { get; set; } = string.Empty;
+        public JsonDocument TeacherSubjects { get; set; } = JsonDocument.Parse("[]");
         public long TotalQuizzesCreated { get; set; }
         public long TotalActiveQuizzes { get; set; }
         public long TotalInactiveQuizzes { get; set; }
@@ -27,4 +27,4 @@ namespace QuizupAPI.Models.DTOs.Teacher
         public JsonDocument RecentQuizActivity { get; set; } = JsonDocument.Parse("[]");
         public JsonDocument QuizPerformanceTrend { get; set; } = JsonDocument.Parse("[]");
     }
-} 
+}
