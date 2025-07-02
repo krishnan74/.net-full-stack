@@ -31,7 +31,7 @@ namespace QuizupAPI.Services
 
         public UserMapper userMapper;
         public TeacherMapper teacherMapper;
-        public TeacherService(IRepository<long, Teacher> teacherRepository, IRepository<long, Quiz> quizRepository, IHubContext<QuizNotificationHub> hubContext, IEncryptionService encryptionService, IRepository<string, User> userRepository, IRepository<long, TeacherSubject> teacherSubjectRepository, IRepository<long, TeacherClass> teacherClassRepository, QuizContext context)
+        public TeacherService(IRepository<long, Teacher> teacherRepository, IRepository<long, Quiz> quizRepository, IHubContext<QuizNotificationHub> hubContext, IEncryptionService encryptionService, IRepository<string, User> userRepository, IRepository<long, TeacherSubject> teacherSubjectRepository, IRepository<long, TeacherClass> teacherClassRepository, IRepository<long, Class> classRepository, IRepository<long, Subject> subjectRepository, QuizContext context)
         {
             _quizRepository = quizRepository;
             _hubContext = hubContext;
@@ -40,6 +40,8 @@ namespace QuizupAPI.Services
             _userRepository = userRepository;
             _teacherSubjectRepository = teacherSubjectRepository;
             _teacherClassRepository = teacherClassRepository;
+            _classRepository = classRepository;
+            _subjectRepository = subjectRepository;
             _context = context;
             teacherMapper = new TeacherMapper();
             userMapper = new UserMapper();
@@ -93,16 +95,18 @@ namespace QuizupAPI.Services
                     throw new Exception("Failed to map TeacherAddRequestDTO to Teacher.");
                 }
 
+                var addedTeacher = await _teacherRepository.Add(teacher);
+
                 if (teacherDTO.ClassIds != null && teacherDTO.ClassIds.Any())
                 {
-                    await AddClassesForTeacher(teacherDTO.ClassIds, teacher.Id);
+                    await AddClassesForTeacher(teacherDTO.ClassIds, addedTeacher.Id);
                 }
                 if (teacherDTO.SubjectIds != null && teacherDTO.SubjectIds.Any())
                 {
-                    await AddSubjectsForTeacher(teacherDTO.SubjectIds, teacher.Id);
+                    await AddSubjectsForTeacher(teacherDTO.SubjectIds, addedTeacher.Id);
                 }
 
-                return await _teacherRepository.Add(teacher);
+                return addedTeacher;
             }
             catch (KeyNotFoundException ex)
             {
@@ -386,14 +390,14 @@ namespace QuizupAPI.Services
 
             foreach (var classId in classIds)
             {
-                var existingClass = await _classRepository.Get(classId);
+            var existingClass = await _classRepository.Get(classId);
 
-                var teacherClass = new TeacherClass
-                {
-                    TeacherId = teacherId,
-                    ClassId = classId
-                };
-                await _teacherClassRepository.Add(teacherClass);
+            var teacherClass = new TeacherClass
+            {
+                TeacherId = teacherId,
+                ClassId = classId
+            };
+            await _teacherClassRepository.Add(teacherClass);
             }
         }
 
@@ -402,14 +406,14 @@ namespace QuizupAPI.Services
 
             foreach (var subjectId in subjectIds)
             {
-                var existingSubject = await _subjectRepository.Get(subjectId);
+            var existingSubject = await _subjectRepository.Get(subjectId);
 
-                var teacherSubject = new TeacherSubject
-                {
-                    TeacherId = teacherId,
-                    SubjectId = subjectId
-                };
-                await _teacherSubjectRepository.Add(teacherSubject);
+            var teacherSubject = new TeacherSubject
+            {
+                TeacherId = teacherId,
+                SubjectId = subjectId
+            };
+            await _teacherSubjectRepository.Add(teacherSubject);
             }
 
         }
