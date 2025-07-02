@@ -73,7 +73,7 @@
   <div class="form-group">
     <label>
       Role:
-      <select name="role" formControlName="role" class="form-control">
+      <select name="role" formControlName="role" class="form-control" id="role-select" >  
         <option value="Admin">Admin</option>
         <option value="Teacher">Teacher</option>
         <option value="Student">Student</option>
@@ -88,22 +88,82 @@
     }
   </div>
 
-  <div class="form-group">
-    <label>
-      Subject:
-      <input type="text" formControlName="subject" class="form-control" />
-    </label>
+  @if(userForm.get('role')?.value === 'Student' || userForm.get('role')?.value === 'Teacher') {
+  
+    @if(userForm.get('role')?.value === 'Student' ) {
+      <div class="form-group">
+        <label>Class:</label>
+        <select class="form-control">
+          <option value="" disabled selected>Select class</option>
+          @for( c of availableClasses; track $index ) {
+            <option [value]="c">{{ c }}</option>
+          }
+        </select>
 
-    @if(userForm.get('subject')?.invalid && userForm.get('subject')?.touched) {
-    <div class="text-danger">
-      @if(userForm.get('subject')?.errors?.['required']) {
-      <p>Subject is required.</p>
-      } @if(userForm.get('subject')?.errors?.['minlength']) {
-      <p>Subject must be at least 3 characters long.</p>
-      }
-    </div>
+        @if(userForm.get('classes')?.invalid && userForm.get('classes')?.touched) {
+        <div class="text-danger">
+          @if(userForm.get('classes')?.errors?.['required']) {
+          <p>Class is required.</p>
+          }
+        </div>
+        }
+      </div>
     }
-  </div>
+    @else{
+      <div class="form-group">
+        <label>Classes:</label>
+        <select (change)="addClass($event)" class="form-control">
+          <option value="" disabled selected>Select class</option>
+          @for( c of availableClasses; track $index ) {
+            <option [value]="c.id">{{ c.name }}</option>
+          }
+        </select>
+        <div class="selected-list">
+
+          @for( c of classesArray.controls; track $index ) {
+            <span class="badge badge-primary">
+              {{ getClassName(c.value) }}
+              <button type="button" (click)="removeClass($index)" class="btn btn-sm btn-danger">&times;</button>
+            </span>
+          }
+        
+        </div>
+
+        @if(userForm.get('classes')?.invalid && userForm.get('classes')?.touched) {
+        <div class="text-danger">
+          @if(userForm.get('classes')?.errors?.['required']) {
+          <p>Classes are required.</p>
+          }
+        </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Subjects:</label>
+        <select (change)="addSubject($event)" class="form-control">
+          <option value="" disabled selected>Select subject</option>
+          @for( s of availableSubjects; track $index ) {
+            <option [value]="s.id">{{ s.name }}</option>
+          }
+        </select>
+        <div class="selected-list">
+          @for( s of subjectsArray.controls; track $index ) {
+            <span class="badge badge-success">
+              {{ getSubjectName(s.value) }}
+              <button type="button" (click)="removeSubject($index)" class="btn btn-sm btn-danger">&times;</button>
+            </span>
+          }
+        </div>
+        @if(userForm.get('subjects')?.invalid && userForm.get('subjects')?.touched) {
+        <div class="text-danger">
+          @if(userForm.get('subjects')?.errors?.['required']) {
+          <p>Subjects are required.</p>
+          }
+        </div>
+        }
+      </div>
+    }
+  }
 
   <button type="submit">Submit</button>
 </form>

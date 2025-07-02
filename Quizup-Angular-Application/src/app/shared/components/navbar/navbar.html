@@ -18,8 +18,14 @@
     </div>
 
     <div class="flex gap-2">
-      <span class="user-name">{{ username }}</span>
-      <button class="logout-button">Logout</button>
+      @if(username){
+      <button class="logout-button" (click)="onLogout()">Logout</button>
+      }
+      @else{
+      <button  class="login-button" routerLink="/auth/login">Login</button>
+      }
     </div>
   </div>
 </header>
+
+

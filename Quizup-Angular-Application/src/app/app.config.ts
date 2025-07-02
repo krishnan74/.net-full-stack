@@ -17,6 +17,7 @@ import { TeacherService } from './features/teacher/services/teacher.service';
 import { StudentService } from './features/student/services/student.service';
 import { AuthInterceptor } from './core/interceptors/auth-interceptor';
 import { QuizService } from './features/quiz/services/quiz.service';
+import { localStorageMetaReducer } from './store/auth/state/meta.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -33,7 +34,9 @@ export const appConfig: ApplicationConfig = {
       useClass: AuthInterceptor,
       multi: true,
     },
-    provideStore({ auth: authReducer }),
+    provideStore({ auth: authReducer }, 
+      {metaReducers: [localStorageMetaReducer]}
+    ),
     provideEffects([AuthEffects]),
     AuthService,
     TeacherService,

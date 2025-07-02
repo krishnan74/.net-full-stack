@@ -4,6 +4,7 @@ import {
   FormBuilder,
   Validators,
   ReactiveFormsModule,
+  FormArray,
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { login } from '../../../store/auth/state/auth.actions';
@@ -20,6 +21,40 @@ import { StudentService } from '../../student/services/student.service';
 export class RegisterComponent {
   userForm: FormGroup;
 
+  availableSubjects = [{
+    id: 1,
+    name: 'Mathematics',
+  },
+  {
+    id: 2,
+    name: 'Science',
+  },
+  {
+    id: 3,
+    name: 'History',
+  },
+  {
+    id: 4,
+    name: 'Geography',
+  }
+];
+  availableClasses = [{
+    id: 1,
+    name: 'X - C',
+  },
+  {
+    id: 2,
+    name: 'X - D',
+  },
+  {
+    id: 3,
+    name: 'VII - A',
+  },
+  {
+    id: 4,
+    name: 'VII - B',
+  }];
+
   constructor(
     private fb: FormBuilder,
     private teacherService: TeacherService,
@@ -30,9 +65,43 @@ export class RegisterComponent {
       password: ['', [Validators.required, Validators.minLength(6)]],
       firstName: ['', [Validators.required, Validators.minLength(3)]],
       lastName: ['', [Validators.required, Validators.minLength(3)]],
-      subject: ['', [Validators.required, Validators.minLength(3)]],
+      subjectIds: this.fb.array([], [Validators.required]),
+      classIds: this.fb.array([], [Validators.required]),
       role: ['', [Validators.required]],
     });
+  }
+
+  get subjectsArray() {
+    return this.userForm.get('subjectIds') as FormArray;
+  }
+
+  get classesArray() {
+    return this.userForm.get('classIds') as FormArray;
+  }
+
+  addSubject(event: Event) {
+    console.log("Adding subject");
+    const value = (event.target as HTMLSelectElement).value;
+    if (value && !this.subjectsArray.value.includes(value)) {
+      this.subjectsArray.push(this.fb.control(value));
+    }
+    console.log(this.subjectsArray.value);
+
+  }
+
+  removeSubject(index: number) {
+    this.subjectsArray.removeAt(index);
+  }
+
+  addClass(event: Event) {
+    const value = (event.target as HTMLSelectElement).value;
+    if (value && !this.classesArray.value.includes(value)) {
+      this.classesArray.push(this.fb.control(value));
+    }
+  }
+
+  removeClass(index: number) {
+    this.classesArray.removeAt(index);
   }
 
   onSubmit() {
@@ -50,5 +119,15 @@ export class RegisterComponent {
       console.log('Form is invalid');
       this.userForm.markAllAsTouched();
     }
+  }
+
+  getClassName(id: number): string {
+    const found = this.availableClasses.find(c => c.id == id);
+    return found ? found.name : '';
+  }
+
+  getSubjectName(id: number): string {
+    const found = this.availableSubjects.find(s => s.id == id);
+    return found ? found.name : '';
   }
 }
