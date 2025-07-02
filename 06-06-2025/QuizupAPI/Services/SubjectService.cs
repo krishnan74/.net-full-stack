@@ -15,6 +15,7 @@ namespace QuizupAPI.Services
         public SubjectService(IRepository<long, Subject> subjectRepository, QuizContext context)
         {
             _subjectRepository = subjectRepository;
+            subjectMapper = new SubjectMapper();
             _context = context;
         }
 

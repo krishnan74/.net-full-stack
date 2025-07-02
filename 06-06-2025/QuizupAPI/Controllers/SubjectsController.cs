@@ -26,7 +26,6 @@ namespace QuizupAPI.Controllers
         /// <returns>List of subjects</returns>
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<Subject>>), 200)]
-        [Authorize(Roles = "Admin, Teacher, Student")]
         public async Task<IActionResult> GetAllSubjects()
         {
             try
@@ -96,7 +95,7 @@ namespace QuizupAPI.Controllers
 
 
            
-                var subject = await _subjectService.AddSubjectAsync(subjectDto);
+            var subject = await _subjectService.AddSubjectAsync(subjectDto);
                 return CreatedAtAction(nameof(GetSubjectById), new { id = subject.Id }, ApiResponse<Subject>.SuccessResponse(subject, "Subject created successfully"));
             }
             catch (ArgumentNullException ex)

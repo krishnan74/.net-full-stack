@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using QuizupAPI.Interfaces;
 using QuizupAPI.Models;
 using QuizupAPI.Models.DTOs.Response;
+using QuizupAPI.Models.DTOs.Class;
 using Microsoft.AspNetCore.Authorization;
 
 namespace QuizupAPI.Controllers
@@ -23,7 +24,6 @@ namespace QuizupAPI.Controllers
         /// <returns>List of classes</returns>
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<Class>>), 200)]
-        [Authorize(Roles = "Admin, Teacher, Student")]
         public async Task<IActionResult> GetAllClasses()
         {
             try
@@ -75,15 +75,15 @@ namespace QuizupAPI.Controllers
         [ProducesResponseType(typeof(ApiResponse<object>), 409)]
         [ProducesResponseType(typeof(ApiResponse<object>), 500)]
         [Authorize(Roles = "Admin, Teacher")]
-        public async Task<IActionResult> CreateClass([FromBody] string className, [FromQuery] ICollection<long>? subjectIds = null)
+        public async Task<IActionResult> CreateClass([FromBody] ClassDTO classDto)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(className))
+                if (string.IsNullOrWhiteSpace(classDto.ClassName))
                 {
                     return BadRequest(ApiResponse<object>.ErrorResponse("Class name is required."));
                 }
-                var classObj = await _classService.AddClassAsync(className, subjectIds);
+                var classObj = await _classService.AddClassAsync(classDto.ClassName, classDto.SubjectIds);
                 return CreatedAtAction(nameof(GetClassById), new { id = classObj.Id }, ApiResponse<Class>.SuccessResponse(classObj, "Class created successfully"));
             }
             catch (ArgumentNullException ex)

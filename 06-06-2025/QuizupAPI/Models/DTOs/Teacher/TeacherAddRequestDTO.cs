@@ -18,7 +18,6 @@ namespace QuizupAPI.Models.DTOs.Teacher
         [Required(ErrorMessage = "Last name is required")]
         public string LastName { get; set; } = string.Empty;
 
-        public long SubjectId { get; set; }
         public ICollection<long>? ClassIds { get; set; } = new List<long>();
         public ICollection<long>? SubjectIds { get; set; } = new List<long>();
     }
