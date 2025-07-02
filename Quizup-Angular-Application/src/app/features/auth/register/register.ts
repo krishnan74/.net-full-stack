@@ -11,6 +11,10 @@ import { login } from '../../../store/auth/state/auth.actions';
 import { CommonModule } from '@angular/common';
 import { TeacherService } from '../../teacher/services/teacher.service';
 import { StudentService } from '../../student/services/student.service';
+import { SubjectService } from '../../subject/services/subject.service';
+import { SubjectModel } from '../../subject/models/subject';
+import { ClassService } from '../../class/services/class.service';
+import { ClassModel } from '../../class/models/class';
 
 @Component({
   selector: 'app-register',
@@ -21,44 +25,15 @@ import { StudentService } from '../../student/services/student.service';
 export class RegisterComponent {
   userForm: FormGroup;
 
-  availableSubjects = [{
-    id: 1,
-    name: 'Mathematics',
-  },
-  {
-    id: 2,
-    name: 'Science',
-  },
-  {
-    id: 3,
-    name: 'History',
-  },
-  {
-    id: 4,
-    name: 'Geography',
-  }
-];
-  availableClasses = [{
-    id: 1,
-    name: 'X - C',
-  },
-  {
-    id: 2,
-    name: 'X - D',
-  },
-  {
-    id: 3,
-    name: 'VII - A',
-  },
-  {
-    id: 4,
-    name: 'VII - B',
-  }];
-
+  availableSubjects: SubjectModel[] = [];
+  availableClasses: ClassModel[] = [];
+    
   constructor(
     private fb: FormBuilder,
     private teacherService: TeacherService,
-    private studentService: StudentService
+    private studentService: StudentService,
+    private subjectService: SubjectService,
+    private classService: ClassService
   ) {
     this.userForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -68,6 +43,29 @@ export class RegisterComponent {
       subjectIds: this.fb.array([], [Validators.required]),
       classIds: this.fb.array([], [Validators.required]),
       role: ['', [Validators.required]],
+    });
+
+    this.loadAvailableSubjects();
+    this.loadAvailableClasses();
+  }
+
+  loadAvailableSubjects() {
+    this.subjectService.getAllSubjects().subscribe({
+      next: (response) => {
+        this.availableSubjects = response.data;
+        console.log('Available subjects:', this.availableSubjects);
+      },
+      error: (err) => console.error('Error loading subjects:', err),
+    });
+  }
+
+  loadAvailableClasses() {
+    this.classService.getAllClasses().subscribe({
+      next: (response) => {
+        this.availableClasses = response.data;
+        console.log('Available classes:', this.availableClasses);
+      },
+      error: (err) => console.error('Error loading classes:', err),
     });
   }
 

@@ -1,6 +1,6 @@
 import { QuizModel } from '../../quiz/models/quiz.model';
 
-export class Teacher {
+export class TeacherModel {
   constructor(
     public id: string = '',
     public email: string = '',

@@ -7,7 +7,7 @@ import { provideRouter } from '@angular/router';
 import { API_BASE_URL } from './core/tokens/api-url.token';
 
 import { routes } from './app.routes';
-import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { authReducer } from './store/auth/state/auth.reducer';
@@ -15,16 +15,18 @@ import { AuthEffects } from './store/auth/state/auth.effects';
 import { AuthService } from './store/auth/auth.service';
 import { TeacherService } from './features/teacher/services/teacher.service';
 import { StudentService } from './features/student/services/student.service';
+import { SubjectService } from './features/subject/services/subject.service';
 import { AuthInterceptor } from './core/interceptors/auth-interceptor';
 import { QuizService } from './features/quiz/services/quiz.service';
 import { localStorageMetaReducer } from './store/auth/state/meta.reducer';
+import { ClassService } from './features/class/services/class.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(withInterceptorsFromDi()),
     {
       provide: API_BASE_URL,
       useValue: 'http://localhost:5166/api/v1',
@@ -41,6 +43,8 @@ export const appConfig: ApplicationConfig = {
     AuthService,
     TeacherService,
     StudentService,
-    QuizService
+    QuizService,
+    SubjectService,
+    ClassService
   ],
 };

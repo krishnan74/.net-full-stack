@@ -96,7 +96,7 @@
         <select class="form-control">
           <option value="" disabled selected>Select class</option>
           @for( c of availableClasses; track $index ) {
-            <option [value]="c">{{ c }}</option>
+            <option [value]="c.id">{{ c.name }}</option>
           }
         </select>
 
