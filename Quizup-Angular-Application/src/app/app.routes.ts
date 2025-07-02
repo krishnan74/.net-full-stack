@@ -8,6 +8,7 @@ import { Landing } from './features/landing/landing';
 import { QuizList } from './features/quiz/components/quiz-list/quiz-list';
 import { ProfileComponent } from './features/profile/profile';
 import { DashboardComponent } from './features/dashboard/dashboard';
+import { NotificationComponent } from './features/notification/notification';
 
 export const routes: Routes = [
   {
@@ -39,4 +40,5 @@ export const routes: Routes = [
   },
   { path: 'profile', component: ProfileComponent },
   { path: 'dashboard', component: DashboardComponent },
+  { path: 'notifications', component: NotificationComponent },
 ];

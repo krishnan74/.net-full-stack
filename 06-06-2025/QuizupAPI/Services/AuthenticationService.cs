@@ -53,15 +53,18 @@ namespace QuizupAPI.Services
             }
 
             long? Id = null;
+            string? ClassGroupName = null;
             if (dbUser.Role == "Teacher")
             {
                 var teachers = await _teacherRepository.GetAll();
                 Id = teachers.FirstOrDefault(t => t.Email == dbUser.Username)?.Id;
             }
-            if( dbUser.Role == "Student")
+            if (dbUser.Role == "Student")
             {
                 var students = await _studentRepository.GetAll();
-                Id = students.FirstOrDefault(s => s.Email == dbUser.Username)?.Id;
+                var student = students.FirstOrDefault(s => s.Email == dbUser.Username);
+                Id = student?.Id;
+                ClassGroupName = $"class_{student?.ClassId}";
             }
             
             var token = await _tokenService.GenerateToken(dbUser);
@@ -73,6 +76,7 @@ namespace QuizupAPI.Services
                 Role = dbUser.Role,
                 AccessToken = token,
                 RefreshToken = refreshToken,
+                ClassGroupName = ClassGroupName
             };
         }
 

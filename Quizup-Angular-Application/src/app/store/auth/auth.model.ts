@@ -6,6 +6,7 @@ export interface User {
   role: string;
   accessToken: string;
   refreshToken: string;
+  classGroupName?: string;
 }
 
 export interface AuthPayload {

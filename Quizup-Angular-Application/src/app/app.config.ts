@@ -25,6 +25,7 @@ import { QuizService } from './features/quiz/services/quiz.service';
 import { localStorageMetaReducer } from './store/auth/state/meta.reducer';
 import { ClassService } from './features/class/services/class.service';
 import { DashboardService } from './features/dashboard/dashboard.service';
+import { SignalRService } from './features/notification/services/signalr.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -54,5 +55,6 @@ export const appConfig: ApplicationConfig = {
     SubjectService,
     ClassService,
     DashboardService,
+    SignalRService,
   ],
 };
