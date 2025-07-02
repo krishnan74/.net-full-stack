@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { selectUser } from '../../../store/auth/state/auth.selectors';
 import { Store } from '@ngrx/store';
 import { RouterLink } from '@angular/router';
+import * as AuthActions from '../../../store/auth/state/auth.actions';
 
 @Component({
   selector: 'app-navbar',
@@ -17,11 +18,14 @@ export class Navbar {
   ngOnInit() {
     this.user$.subscribe((user) => {
       if (user) {
-        console.log('User data:', user);
         this.username = user.username;
       } else {
         this.username = null;
       }
     });
+  }
+
+  onLogout() {
+    this.store.dispatch(AuthActions.logout());
   }
 }
