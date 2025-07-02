@@ -2,7 +2,7 @@ export interface TeacherSummary {
   teacherId: number;
   teacherName: string;
   teacherEmail: string;
-  teacherSubject: string;
+  teacherSubjects: any;
   totalQuizzesCreated: number;
   totalActiveQuizzes: number;
   totalInactiveQuizzes: number;

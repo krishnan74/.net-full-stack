@@ -1,138 +1,135 @@
-<h2>Dashboard</h2>
+<h2 class="dashboard-title">Dashboard</h2>
 
-@if( user?.role === 'student' || user?.role === 'teacher' ) {
-<div>
-  <h3>Welcome, {{ user?.username }}!</h3>
-</div>
-} @if( user?.role === 'student' && studentSummary ) {
-
-<div>
-  <h3>Student Summary</h3>
-  <ul>
-    <li><b>Name:</b> {{ studentSummary?.studentName }}</li>
-    <li><b>Email:</b> {{ studentSummary?.studentEmail }}</li>
-    <li><b>Class:</b> {{ studentSummary?.studentClass }}</li>
-    <li>
-      <b>Total Quizzes Available:</b> {{ studentSummary?.totalQuizzesAvailable
-      }}
-    </li>
-    <li>
-      <b>Total Quizzes Started:</b> {{ studentSummary?.totalQuizzesStarted }}
-    </li>
-    <li>
-      <b>Total Quizzes Completed:</b> {{ studentSummary?.totalQuizzesCompleted
-      }}
-    </li>
-    <li>
-      <b>Total Quizzes In Progress:</b> {{
-      studentSummary?.totalQuizzesInProgress }}
-    </li>
-    <li><b>Total Quizzes Saved:</b> {{ studentSummary?.totalQuizzesSaved }}</li>
-    <li><b>Average Score:</b> {{ studentSummary?.averageScore }}</li>
-    <li><b>Highest Score:</b> {{ studentSummary?.highestScore }}</li>
-    <li><b>Lowest Score:</b> {{ studentSummary?.lowestScore }}</li>
-    <li>
-      <b>Total Questions Attempted:</b> {{
-      studentSummary?.totalQuestionsAttempted }}
-    </li>
-    <li>
-      <b>Total Correct Answers:</b> {{ studentSummary?.totalCorrectAnswers }}
-    </li>
-    <li>
-      <b>Accuracy Percentage:</b> {{ studentSummary?.accuracyPercentage }}%
-    </li>
-    <li>
-      <b>Total Time Spent (min):</b> {{ studentSummary?.totalTimeSpentMinutes }}
-    </li>
-  </ul>
-  <!-- Example chart for quizzes by status -->
-  <!-- <div *ngIf="studentSummary.quizzesByStatus">
-    <h4>Quizzes by Status</h4>
-    <canvas
-      baseChart
-      [data]="studentSummary.quizzesByStatus.data"
-      [labels]="studentSummary.quizzesByStatus.labels"
-      [chartType]="'pie'"
-    >
-    </canvas>
+<ng-container *ngIf="user$ | async as user">
+  <div class="welcome-card">
+    <h3>Welcome, {{ user.username }}!</h3>
   </div>
-  <div *ngIf="studentSummary.performanceTrend">
-    <h4>Performance Trend</h4>
-    <canvas
-      baseChart
-      [data]="studentSummary.performanceTrend.data"
-      [labels]="studentSummary.performanceTrend.labels"
-      [chartType]="'line'"
-    >
-    </canvas>
-  </div> -->
-</div>
-} @if( user?.role === 'teacher' && teacherSummary ) {
-<div>
-  <h3>Teacher Summary</h3>
-  <ul>
-    <li><b>Name:</b> {{ teacherSummary?.teacherName }}</li>
-    <li><b>Email:</b> {{ teacherSummary?.teacherEmail }}</li>
-    <li><b>Subject:</b> {{ teacherSummary?.teacherSubject }}</li>
-    <li>
-      <b>Total Quizzes Created:</b> {{ teacherSummary?.totalQuizzesCreated }}
-    </li>
-    <li>
-      <b>Total Active Quizzes:</b> {{ teacherSummary?.totalActiveQuizzes }}
-    </li>
-    <li>
-      <b>Total Inactive Quizzes:</b> {{ teacherSummary?.totalInactiveQuizzes }}
-    </li>
-    <li>
-      <b>Total Questions Created:</b> {{ teacherSummary?.totalQuestionsCreated
-      }}
-    </li>
-    <li>
-      <b>Total Student Submissions:</b> {{
-      teacherSummary?.totalStudentSubmissions }}
-    </li>
-    <li>
-      <b>Total Students Participated:</b> {{
-      teacherSummary?.totalStudentsParticipated }}
-    </li>
-    <li>
-      <b>Average Completion Rate:</b> {{ teacherSummary?.averageCompletionRate
-      }}%
-    </li>
-    <li>
-      <b>Average Student Score:</b> {{ teacherSummary?.averageStudentScore }}
-    </li>
-    <li><b>Highest Quiz Score:</b> {{ teacherSummary?.highestQuizScore }}</li>
-    <li><b>Lowest Quiz Score:</b> {{ teacherSummary?.lowestQuizScore }}</li>
-    <li>
-      <b>Total Questions Answered:</b> {{ teacherSummary?.totalQuestionsAnswered
-      }}
-    </li>
-    <li>
-      <b>Total Correct Answers:</b> {{ teacherSummary?.totalCorrectAnswers }}
-    </li>
-  </ul>
-  <!-- Example chart for quizzes by status
-  <div *ngIf="teacherSummary.quizzesByStatus">
-    <h4>Quizzes by Status</h4>
-    <canvas
-      baseChart
-      [data]="teacherSummary.quizzesByStatus.data"
-      [labels]="teacherSummary.quizzesByStatus.labels"
-      [chartType]="'pie'"
-    >
-    </canvas>
-  </div>
-  <div *ngIf="teacherSummary.quizPerformanceTrend">
-    <h4>Quiz Performance Trend</h4>
-    <canvas
-      baseChart
-      [data]="teacherSummary.quizPerformanceTrend.data"
-      [labels]="teacherSummary.quizPerformanceTrend.labels"
-      [chartType]="'line'"
-    >
-    </canvas>
-  </div> -->
-</div>
 
-}
+  <!-- Student Summary -->
+  <ng-container *ngIf="user.role === 'Student'">
+    <ng-container *ngIf="studentSummary$ | async as studentSummary">
+      <div class="summary-section">
+        <h3 class="section-title">Student Summary</h3>
+        <div class="summary-grid">
+          <div class="summary-card">
+            <b>Name:</b> {{ studentSummary.studentName }}
+          </div>
+          <div class="summary-card">
+            <b>Email:</b> {{ studentSummary.studentEmail }}
+          </div>
+          <div class="summary-card">
+            <b>Class:</b> {{ studentSummary.studentClass }}
+          </div>
+          <div class="summary-card">
+            <b>Total Quizzes Available:</b> {{
+            studentSummary.totalQuizzesAvailable }}
+          </div>
+          <div class="summary-card">
+            <b>Total Quizzes Started:</b> {{ studentSummary.totalQuizzesStarted
+            }}
+          </div>
+          <div class="summary-card">
+            <b>Total Quizzes Completed:</b> {{
+            studentSummary.totalQuizzesCompleted }}
+          </div>
+          <div class="summary-card">
+            <b>Total Quizzes In Progress:</b> {{
+            studentSummary.totalQuizzesInProgress }}
+          </div>
+          <div class="summary-card">
+            <b>Total Quizzes Saved:</b> {{ studentSummary.totalQuizzesSaved }}
+          </div>
+          <div class="summary-card">
+            <b>Average Score:</b> {{ studentSummary.averageScore }}
+          </div>
+          <div class="summary-card">
+            <b>Highest Score:</b> {{ studentSummary.highestScore }}
+          </div>
+          <div class="summary-card">
+            <b>Lowest Score:</b> {{ studentSummary.lowestScore }}
+          </div>
+          <div class="summary-card">
+            <b>Total Questions Attempted:</b> {{
+            studentSummary.totalQuestionsAttempted }}
+          </div>
+          <div class="summary-card">
+            <b>Total Correct Answers:</b> {{ studentSummary.totalCorrectAnswers
+            }}
+          </div>
+          <div class="summary-card">
+            <b>Accuracy Percentage:</b> {{ studentSummary.accuracyPercentage }}%
+          </div>
+          <div class="summary-card">
+            <b>Total Time Spent (min):</b> {{
+            studentSummary.totalTimeSpentMinutes }}
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <!-- Teacher Summary -->
+  <ng-container *ngIf="user.role === 'Teacher'">
+    <ng-container *ngIf="teacherSummary$ | async as teacherSummary">
+      <div class="summary-section">
+        <h3 class="section-title">Teacher Summary</h3>
+        <div class="summary-grid">
+          <div class="summary-card">
+            <b>Name:</b> {{ teacherSummary.teacherName }}
+          </div>
+          <div class="summary-card">
+            <b>Email:</b> {{ teacherSummary.teacherEmail }}
+          </div>
+          <div class="summary-card">
+            <b>Subjects:</b> {{ teacherSummary.teacherSubjects }}
+          </div>
+          <div class="summary-card">
+            <b>Total Quizzes Created:</b> {{ teacherSummary.totalQuizzesCreated
+            }}
+          </div>
+          <div class="summary-card">
+            <b>Total Active Quizzes:</b> {{ teacherSummary.totalActiveQuizzes }}
+          </div>
+          <div class="summary-card">
+            <b>Total Inactive Quizzes:</b> {{
+            teacherSummary.totalInactiveQuizzes }}
+          </div>
+          <div class="summary-card">
+            <b>Total Questions Created:</b> {{
+            teacherSummary.totalQuestionsCreated }}
+          </div>
+          <div class="summary-card">
+            <b>Total Student Submissions:</b> {{
+            teacherSummary.totalStudentSubmissions }}
+          </div>
+          <div class="summary-card">
+            <b>Total Students Participated:</b> {{
+            teacherSummary.totalStudentsParticipated }}
+          </div>
+          <div class="summary-card">
+            <b>Average Completion Rate:</b> {{
+            teacherSummary.averageCompletionRate }}%
+          </div>
+          <div class="summary-card">
+            <b>Average Student Score:</b> {{ teacherSummary.averageStudentScore
+            }}
+          </div>
+          <div class="summary-card">
+            <b>Highest Quiz Score:</b> {{ teacherSummary.highestQuizScore }}
+          </div>
+          <div class="summary-card">
+            <b>Lowest Quiz Score:</b> {{ teacherSummary.lowestQuizScore }}
+          </div>
+          <div class="summary-card">
+            <b>Total Questions Answered:</b> {{
+            teacherSummary.totalQuestionsAnswered }}
+          </div>
+          <div class="summary-card">
+            <b>Total Correct Answers:</b> {{ teacherSummary.totalCorrectAnswers
+            }}
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-container>
