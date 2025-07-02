@@ -235,7 +235,8 @@ namespace QuizupAPI.Services
                     DueDate = quiz.DueDate,
                     TeacherName = quiz.Teacher.FirstName + " " + quiz.Teacher.LastName
                 };
-                await _hubContext.Clients.All.SendAsync("NotifyStartQuiz", quizNotificationDTO);
+                string classGroupName = $"class_{quiz.ClassId}";
+                await _hubContext.Clients.Group(classGroupName).SendAsync("NotifyStartQuiz", quizNotificationDTO);
 
                 return await _quizRepository.Update(quizId, quiz);
             }
@@ -283,7 +284,8 @@ namespace QuizupAPI.Services
                     TeacherName = quiz.Teacher.FirstName + " " + quiz.Teacher.LastName
                 };
 
-                await _hubContext.Clients.All.SendAsync("NotifyEndQuiz", quizNotificationDTO);
+                string classGroupName = $"class_{quiz.ClassId}";
+                await _hubContext.Clients.Group(classGroupName).SendAsync("NotifyEndQuiz", quizNotificationDTO);
 
                 return await _quizRepository.Update(quizId, quiz);
             }

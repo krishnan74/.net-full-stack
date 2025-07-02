@@ -1,24 +1,27 @@
-
 CREATE OR REPLACE FUNCTION get_system_quiz_summary(
     p_start_date TIMESTAMP DEFAULT NULL,
     p_end_date TIMESTAMP DEFAULT NULL
 )
 RETURNS TABLE (
-    total_teachers INTEGER,
-    total_students INTEGER,
-    total_quizzes INTEGER,
-    total_questions INTEGER,
-    total_submissions INTEGER,
-    total_completed_submissions INTEGER,
-    total_in_progress_submissions INTEGER,
-    total_saved_submissions INTEGER,
-    average_completion_rate DECIMAL(5,2),
-    average_student_score DECIMAL(5,2),
-    system_accuracy_percentage DECIMAL(5,2),
-    most_active_teachers JSON,
-    most_active_students JSON,
-    quiz_activity_by_month JSON,
-    top_performing_quizzes JSON
+    "TotalTeachers" INTEGER,
+    "TotalStudents" INTEGER,
+    "TotalClasses" INTEGER,
+    "TotalSubjects" INTEGER,
+    "TotalQuizzes" INTEGER,
+    "TotalQuestions" INTEGER,
+    "TotalSubmissions" INTEGER,
+    "TotalCompletedSubmissions" INTEGER,
+    "TotalInProgressSubmissions" INTEGER,
+    "TotalSavedSubmissions" INTEGER,
+    "AverageCompletionRate" DECIMAL(5,2),
+    "AverageStudentScore" DECIMAL(5,2),
+    "SystemAccuracyPercentage" DECIMAL(5,2),
+    "MostActiveTeachers" JSON,
+    "MostActiveStudents" JSON,
+    "QuizActivityByMonth" JSON,
+    "TopPerformingQuizzes" JSON,
+    "ClassSummary" JSON,
+    "SubjectSummary" JSON
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -30,6 +33,16 @@ BEGIN
     student_count AS (
         SELECT COUNT(*) as total_students
         FROM students
+        WHERE "IsDeleted" = false
+    ),
+    class_count AS (
+        SELECT COUNT(*) as total_classes
+        FROM classes
+        WHERE "IsDeleted" = false
+    ),
+    subject_count AS (
+        SELECT COUNT(*) as total_subjects
+        FROM subjects
         WHERE "IsDeleted" = false
     ),
     quiz_count AS (
@@ -59,7 +72,9 @@ BEGIN
     ),
     most_active_teachers_detail AS (
         SELECT 
-            json_agg(
+            json_agg(top_teacher) as top_teachers
+        FROM (
+            SELECT 
                 json_build_object(
                     'teacher_id', t."Id",
                     'teacher_name', CONCAT(t."FirstName", ' ', t."LastName"),
@@ -67,33 +82,38 @@ BEGIN
                     'quiz_count', COUNT(DISTINCT q."Id"),
                     'submission_count', COUNT(qs."Id"),
                     'avg_score', AVG(qs."Score")
-                ) ORDER BY COUNT(qs."Id") DESC
-                LIMIT 10
-            ) as top_teachers
-        FROM teachers t
-        JOIN quizzes q ON t."Id" = q."TeacherId"
-        LEFT JOIN quizSubmission qs ON q."Id" = qs."QuizId"
-        WHERE t."IsDeleted" = false AND q."IsDeleted" = false
-        GROUP BY t."Id", t."FirstName", t."LastName", t."Email"
+                ) as top_teacher
+            FROM teachers t
+            JOIN quizzes q ON t."Id" = q."TeacherId"
+            LEFT JOIN quizSubmission qs ON q."Id" = qs."QuizId"
+            WHERE t."IsDeleted" = false AND q."IsDeleted" = false
+            GROUP BY t."Id", t."FirstName", t."LastName", t."Email"
+            ORDER BY COUNT(qs."Id") DESC
+            LIMIT 10
+        ) sub
     ),
     most_active_students_detail AS (
         SELECT 
-            json_agg(
+            json_agg(top_student) as top_students
+        FROM (
+            SELECT 
                 json_build_object(
                     'student_id', s."Id",
                     'student_name', CONCAT(s."FirstName", ' ', s."LastName"),
                     'student_email', s."Email",
-                    'student_class', s."Class",
+                    'student_class', c."Name",
                     'quiz_count', COUNT(DISTINCT qs."QuizId"),
                     'avg_score', AVG(qs."Score"),
-                    'completion_rate', COUNT(DISTINCT CASE WHEN qs."SubmissionStatus" = 'Completed' THEN qs."QuizId" END)::DECIMAL / COUNT(DISTINCT qs."QuizId") * 100
-                ) ORDER BY COUNT(DISTINCT qs."QuizId") DESC
-                LIMIT 10
-            ) as top_students
-        FROM students s
-        JOIN quizSubmission qs ON s."Id" = qs."StudentId"
-        WHERE s."IsDeleted" = false
-        GROUP BY s."Id", s."FirstName", s."LastName", s."Email", s."Class"
+                    'completion_rate', COUNT(DISTINCT CASE WHEN qs."SubmissionStatus" = 'Completed' THEN qs."QuizId" END)::DECIMAL / NULLIF(COUNT(DISTINCT qs."QuizId"),0) * 100
+                ) as top_student
+            FROM students s
+            LEFT JOIN classes c ON s."ClassId" = c."Id"
+            JOIN quizSubmission qs ON s."Id" = qs."StudentId"
+            WHERE s."IsDeleted" = false
+            GROUP BY s."Id", s."FirstName", s."LastName", s."Email", c."Name"
+            ORDER BY COUNT(DISTINCT qs."QuizId") DESC
+            LIMIT 10
+        ) sub
     ),
     monthly_activity AS (
         SELECT 
@@ -119,7 +139,7 @@ BEGIN
                     'teacher_name', CONCAT(t."FirstName", ' ', t."LastName"),
                     'submission_count', COUNT(qs."Id"),
                     'avg_score', AVG(qs."Score"),
-                    'completion_rate', COUNT(DISTINCT CASE WHEN qs."SubmissionStatus" = 'Completed' THEN qs."StudentId" END)::DECIMAL / COUNT(DISTINCT qs."StudentId") * 100
+                    'completion_rate', COUNT(DISTINCT CASE WHEN qs."SubmissionStatus" = 'Completed' THEN qs."StudentId" END)::DECIMAL / NULLIF(COUNT(DISTINCT qs."StudentId"),0) * 100
                 ) ORDER BY COUNT(qs."Id") DESC
                 LIMIT 10
             ) as top_performing
@@ -128,10 +148,46 @@ BEGIN
         LEFT JOIN quizSubmission qs ON q."Id" = qs."QuizId"
         WHERE q."IsDeleted" = false AND t."IsDeleted" = false
         GROUP BY q."Id", q."Title", t."FirstName", t."LastName"
+    ),
+    class_summary_detail AS (
+        SELECT json_agg(
+            json_build_object(
+                'class_id', c."Id",
+                'class_name', c."Name",
+                'student_count', COUNT(s."Id"),
+                'quiz_count', COUNT(DISTINCT q."Id"),
+                'avg_score', AVG(qs."Score")
+            ) ORDER BY c."Name"
+        ) as class_summary
+        FROM classes c
+        LEFT JOIN students s ON c."Id" = s."ClassId" AND s."IsDeleted" = false
+        LEFT JOIN quizSubmission qs ON s."Id" = qs."StudentId"
+        LEFT JOIN quizzes q ON qs."QuizId" = q."Id" AND q."IsDeleted" = false
+        WHERE c."IsDeleted" = false
+        GROUP BY c."Id", c."Name"
+    ),
+    subject_summary_detail AS (
+        SELECT json_agg(
+            json_build_object(
+                'subject_id', s."Id",
+                'subject_name', s."Name",
+                'teacher_count', COUNT(DISTINCT ts."TeacherId"),
+                'quiz_count', COUNT(DISTINCT q."Id"),
+                'avg_score', AVG(qs."Score")
+            ) ORDER BY s."Name"
+        ) as subject_summary
+        FROM subjects s
+        LEFT JOIN teacherSubjects ts ON s."Id" = ts."SubjectId"
+        LEFT JOIN quizzes q ON ts."TeacherId" = q."TeacherId" AND q."IsDeleted" = false
+        LEFT JOIN quizSubmission qs ON q."Id" = qs."QuizId"
+        WHERE s."IsDeleted" = false
+        GROUP BY s."Id", s."Name"
     )
     SELECT 
         tc.total_teachers,
         sc.total_students,
+        cc.total_classes,
+        suc.total_subjects,
         qc.total_quizzes,
         quc.total_questions,
         ss.total_submissions,
@@ -152,9 +208,13 @@ BEGIN
         COALESCE(matd.top_teachers, '[]'::json) as most_active_teachers,
         COALESCE(masd.top_students, '[]'::json) as most_active_students,
         COALESCE(ma.monthly_trend, '[]'::json) as quiz_activity_by_month,
-        COALESCE(tq.top_performing, '[]'::json) as top_performing_quizzes
+        COALESCE(tq.top_performing, '[]'::json) as top_performing_quizzes,
+        COALESCE(csd.class_summary, '[]'::json) as class_summary,
+        COALESCE(ssd.subject_summary, '[]'::json) as subject_summary
     FROM teacher_count tc
     CROSS JOIN student_count sc
+    CROSS JOIN class_count cc
+    CROSS JOIN subject_count suc
     CROSS JOIN quiz_count qc
     CROSS JOIN question_count quc
     CROSS JOIN submission_stats ss
@@ -162,7 +222,9 @@ BEGIN
     CROSS JOIN most_active_teachers_detail matd
     CROSS JOIN most_active_students_detail masd
     CROSS JOIN monthly_activity ma
-    CROSS JOIN top_quizzes tq;
+    CROSS JOIN top_quizzes tq
+    CROSS JOIN class_summary_detail csd
+    CROSS JOIN subject_summary_detail ssd;
 END;
 $$ LANGUAGE plpgsql;
 
