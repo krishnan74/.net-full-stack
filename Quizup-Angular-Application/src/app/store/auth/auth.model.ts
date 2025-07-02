@@ -1,7 +1,7 @@
 // src/app/store/auth/auth.models.ts
 
 export interface User {
-  id: string;
+  id: number;
   username: string;
   role: string;
   accessToken: string;
