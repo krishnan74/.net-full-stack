@@ -11,3 +11,4 @@ import { Navbar } from './shared/components/navbar/navbar';
 export class App {
   protected title = 'Quizup-Angular-Application';
 }
+

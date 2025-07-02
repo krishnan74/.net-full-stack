@@ -6,6 +6,8 @@ import { AuthComponent } from './features/auth/auth';
 import { Quiz } from './features/quiz/quiz';
 import { Landing } from './features/landing/landing';
 import { QuizList } from './features/quiz/components/quiz-list/quiz-list';
+import { ProfileComponent } from './features/profile/profile';
+import { DashboardComponent } from './features/dashboard/dashboard';
 
 export const routes: Routes = [
   {
@@ -35,4 +37,6 @@ export const routes: Routes = [
       },
     ],
   },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'dashboard', component: DashboardComponent },
 ];
