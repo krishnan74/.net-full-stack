@@ -1,4 +1,4 @@
-import {  map, Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Inject, inject, Injectable } from '@angular/core';
 import { API_BASE_URL } from '../../../core/tokens/api-url.token';
 import { HttpClient } from '@angular/common/http';
@@ -14,7 +14,9 @@ export class ClassService {
   ) {}
 
   getClassById(id: number) {
-    const classe = this.http.get<ClassModel>(`${this.apiBaseUrl}/Classes/${id}`);
+    const classe = this.http.get<ClassModel>(
+      `${this.apiBaseUrl}/Classes/${id}`
+    );
     console.log('Class fetched:', classe);
     return classe;
   }
@@ -44,5 +46,17 @@ export class ClassService {
 
     console.log('All classes fetched:', classes);
     return classes;
+  }
+
+  deleteClass(id: number): Observable<ApiResponse<ClassModel>> {
+    console.log('Deleting class with ID:', id);
+    return this.http
+      .delete<ApiResponse<ClassModel>>(`${this.apiBaseUrl}/Classes/${id}`)
+      .pipe(
+        map((response) => {
+          console.log('Class deleted successfully:', response);
+          return response;
+        })
+      );
   }
 }
