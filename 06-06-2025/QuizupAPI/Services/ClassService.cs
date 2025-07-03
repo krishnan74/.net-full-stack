@@ -1,7 +1,7 @@
 using QuizupAPI.Interfaces;
 using QuizupAPI.Models;
 using QuizupAPI.Contexts;
-
+using QuizupAPI.Models.DTOs.Classe;
 
 namespace QuizupAPI.Services
 {
@@ -36,10 +36,7 @@ namespace QuizupAPI.Services
 
                 if (subjectIds != null && subjectIds.Any())
                 {
-                    foreach (var subjectId in subjectIds)
-                    {
-                        await AddSubjectToClassAsync(addedClass.Id, subjectId);
-                    }
+                    await AddSubjectsToClassAsync(addedClass.Id, subjectIds);
                 }
                 return addedClass;
             }
@@ -54,11 +51,11 @@ namespace QuizupAPI.Services
             }
         }
 
-        public async Task<Classe> UpdateClassAsync(long id, string className)
+        public async Task<Classe> UpdateClassAsync(long id, ClassUpdateDTO classUpdateDTO)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(className))
+                if (classUpdateDTO == null || string.IsNullOrWhiteSpace(classUpdateDTO.ClassName))
                 {
                     throw new ArgumentException("Class name cannot be null or empty.");
                 }
@@ -67,10 +64,29 @@ namespace QuizupAPI.Services
                 {
                     throw new ArgumentException("Class not found.");
                 }
-                classe.Name = className;
+                classe.Name = classUpdateDTO.ClassName;
                 classe.UpdatedAt = DateTime.UtcNow;
 
-                return await _classeRepository.Update(id, classe);
+                var updatedClass = await _classeRepository.Update(id, classe);
+
+                if (updatedClass == null)
+                {
+                    throw new Exception($"Failed to update class:");
+                }
+
+                if (classUpdateDTO.RemoveSubjectIds != null && classUpdateDTO.RemoveSubjectIds.Any())
+                {
+                    await RemoveSubjectsFromClassAsync(updatedClass.Id, classUpdateDTO.RemoveSubjectIds);
+                }
+
+                if (classUpdateDTO.AddSubjectIds != null && classUpdateDTO.AddSubjectIds.Any())
+                {
+                    await AddSubjectsToClassAsync(updatedClass.Id, classUpdateDTO.AddSubjectIds);
+                }
+
+               
+
+                return updatedClass;
             }
             catch (ArgumentException ex)
             {
@@ -151,25 +167,23 @@ namespace QuizupAPI.Services
             }
         }
 
-        public async Task<Classe> AddSubjectToClassAsync(long classId, long subjectId)
+        public async Task<Classe> AddSubjectsToClassAsync(long classId, ICollection<long> subjectIds)
         {
             try
             {
                 var classe = await _classeRepository.Get(classId);
 
-                var existingSubject = await _subjectRepository.Get(subjectId);
-
-                var classSubject = new ClassSubject
+                foreach (var subjectId in subjectIds)
                 {
-                    ClassId = classId,
-                    SubjectId = subjectId
-                };
+                    var existingSubject = await _subjectRepository.Get(subjectId);
 
-                var createdClassSubject = await _classSubjectRepository.Add(classSubject);
+                    var classSubject = new ClassSubject
+                    {
+                        ClassId = classId,
+                        SubjectId = subjectId
+                    };
 
-                if (createdClassSubject == null)
-                {
-                    throw new Exception("Failed to add subject to class.");
+                    await _classSubjectRepository.Add(classSubject);
                 }
 
                 return classe;
@@ -180,10 +194,37 @@ namespace QuizupAPI.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while adding the subject to the class.", ex);
+                throw new Exception("An error occurred while adding subjects to the class.", ex);
             }
         }
+        
+        public async Task<Classe> RemoveSubjectsFromClassAsync(long classId, ICollection<long> subjectIds)
+        {
+            try
+            {
+                var classe = await _classeRepository.Get(classId);
 
-      
+                foreach (var subjectId in subjectIds)
+                {
+                    var classSubject = await _classSubjectRepository.GetAll();
+                    var existingClassSubject = classSubject.FirstOrDefault(cs => cs.ClassId == classId && cs.SubjectId == subjectId);
+                    if (existingClassSubject != null)
+                    {
+                        await _classSubjectRepository.Delete(existingClassSubject.Id);
+                    }
+                }
+
+                return classe;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while removing subjects from the class.", ex);
+            }
+        }
+     
     }
 }

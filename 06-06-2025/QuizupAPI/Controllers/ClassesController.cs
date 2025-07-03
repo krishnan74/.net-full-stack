@@ -116,15 +116,15 @@ namespace QuizupAPI.Controllers
         [ProducesResponseType(typeof(ApiResponse<object>), 404)]
         [ProducesResponseType(typeof(ApiResponse<object>), 500)]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateClass(long id, [FromBody] string className)
+        public async Task<IActionResult> UpdateClass(long id, [FromBody] ClassUpdateDTO classUpdateDTO)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(className))
+                if (classUpdateDTO == null || string.IsNullOrWhiteSpace(classUpdateDTO.ClassName))
                 {
                     return BadRequest(ApiResponse<object>.ErrorResponse("Classe name is required."));
                 }
-                var updatedClass = await _classService.UpdateClassAsync(id, className);
+                var updatedClass = await _classService.UpdateClassAsync(id, classUpdateDTO);
                 return Ok(ApiResponse<Classe>.SuccessResponse(updatedClass, "Classe updated successfully"));
             }
             catch (ArgumentNullException ex)
@@ -207,12 +207,12 @@ namespace QuizupAPI.Controllers
         [ProducesResponseType(typeof(ApiResponse<object>), 404)]
         [ProducesResponseType(typeof(ApiResponse<object>), 500)]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddSubjectToClass(long classId, long subjectId)
+        public async Task<IActionResult> AddSubjectsToClass(long classId, ICollection<long> subjectIds)
         {
             try
             {
-                var updatedClass = await _classService.AddSubjectToClassAsync(classId, subjectId);
-                return Ok(ApiResponse<Classe>.SuccessResponse(updatedClass, "Subject added to class successfully"));
+                var updatedClass = await _classService.AddSubjectsToClassAsync(classId, subjectIds);
+                return Ok(ApiResponse<Classe>.SuccessResponse(updatedClass, "Subjects added to class successfully"));
             }
             catch (KeyNotFoundException ex)
             {
@@ -221,6 +221,35 @@ namespace QuizupAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while adding subject to class. " + ex.Message));
+            }
+        }
+
+        /// <summary>
+        /// Remove a subject from a class
+        /// </summary>
+        /// <param name="classId">Classe ID</param>
+        /// <param name="subjectId">Subject ID</param>
+        /// <returns>Updated class</returns>
+        [HttpDelete("{classId}/subjects/{subjectId}")]
+        [ProducesResponseType(typeof(ApiResponse<Classe>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 500)]
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RemoveSubjectsFromClass(long classId, ICollection<long> subjectIds)
+        {
+            try
+            {
+                var updatedClass = await _classService.RemoveSubjectsFromClassAsync(classId, subjectIds);
+                return Ok(ApiResponse<Classe>.SuccessResponse(updatedClass, "Subjects removed from class successfully"));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ApiResponse<object>.ErrorResponse(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while removing subject from class. " + ex.Message));
             }
         }
     }
