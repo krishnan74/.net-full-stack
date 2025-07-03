@@ -1,11 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Welcome Page</title>
+  <title>Frontend with API Call</title>
+  <script>
+    async function loadData() {
+      const res = await fetch('/api');
+      const data = await res.json();
+      document.getElementById('apiResponse').innerText = data.message;
+    }
+    window.onload = loadData;
+  </script>
 </head>
 <body>
-  <h1>Hello from index.html!</h1>
-  <p>This is a simple static page served by your Node.js server.</p>
+  <h1>Docker Swarm Network Example</h1>
+  <p>API says: <span id="apiResponse">Loading...</span></p>
 </body>
 </html>

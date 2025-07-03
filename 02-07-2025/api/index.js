@@ -1,14 +1,8 @@
-const express = require('express');
-const path = require('path');
+const express = require("express");
 const app = express();
-const PORT = 3000;
 
-app.use(express.static(path.join(__dirname, '../web')));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../web/index.html'));
+app.get("/api", (req, res) => {
+  res.json({ message: "Hello from the API!" });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+app.listen(3000, () => console.log("API running on port 3000"));
