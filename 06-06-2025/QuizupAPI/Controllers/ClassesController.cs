@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using QuizupAPI.Interfaces;
 using QuizupAPI.Models;
 using QuizupAPI.Models.DTOs.Response;
-using QuizupAPI.Models.DTOs.Class;
+using QuizupAPI.Models.DTOs.Classe;
 using Microsoft.AspNetCore.Authorization;
 
 namespace QuizupAPI.Controllers
@@ -23,13 +23,13 @@ namespace QuizupAPI.Controllers
         /// </summary>
         /// <returns>List of classes</returns>
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse<IEnumerable<Class>>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<Classe>>), 200)]
         public async Task<IActionResult> GetAllClasses()
         {
             try
             {
                 var classes = await _classService.GetAllClassesAsync();
-                return Ok(ApiResponse<IEnumerable<Class>>.SuccessResponse(classes, "Classes fetched successfully"));
+                return Ok(ApiResponse<IEnumerable<Classe>>.SuccessResponse(classes, "Classes fetched successfully"));
             }
             catch (Exception ex)
             {
@@ -40,10 +40,10 @@ namespace QuizupAPI.Controllers
         /// <summary>
         /// Get a class by ID
         /// </summary>
-        /// <param name="id">Class ID</param>
-        /// <returns>Class information</returns>
+        /// <param name="id">Classe ID</param>
+        /// <returns>Classe information</returns>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ApiResponse<Class>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<Classe>), 200)]
         [ProducesResponseType(typeof(ApiResponse<object>), 404)]
         [ProducesResponseType(typeof(ApiResponse<object>), 500)]
         public async Task<IActionResult> GetClassById(long id)
@@ -51,7 +51,7 @@ namespace QuizupAPI.Controllers
             try
             {
                 var classObj = await _classService.GetClassByIdAsync(id);
-                return Ok(ApiResponse<Class>.SuccessResponse(classObj, "Class fetched successfully"));
+                return Ok(ApiResponse<Classe>.SuccessResponse(classObj, "Classe fetched successfully"));
             }
             catch (KeyNotFoundException ex)
             {
@@ -70,7 +70,7 @@ namespace QuizupAPI.Controllers
         /// <param name="subjectIds">List of subject IDs ( optional )</param>
         /// <returns>Created class</returns>
         [HttpPost]
-        [ProducesResponseType(typeof(ApiResponse<Class>), 201)]
+        [ProducesResponseType(typeof(ApiResponse<Classe>), 201)]
         [ProducesResponseType(typeof(ApiResponse<object>), 400)]
         [ProducesResponseType(typeof(ApiResponse<object>), 409)]
         [ProducesResponseType(typeof(ApiResponse<object>), 500)]
@@ -81,10 +81,10 @@ namespace QuizupAPI.Controllers
             {
                 if (string.IsNullOrWhiteSpace(classDto.ClassName))
                 {
-                    return BadRequest(ApiResponse<object>.ErrorResponse("Class name is required."));
+                    return BadRequest(ApiResponse<object>.ErrorResponse("Classe name is required."));
                 }
                 var classObj = await _classService.AddClassAsync(classDto.ClassName, classDto.SubjectIds);
-                return CreatedAtAction(nameof(GetClassById), new { id = classObj.Id }, ApiResponse<Class>.SuccessResponse(classObj, "Class created successfully"));
+                return CreatedAtAction(nameof(GetClassById), new { id = classObj.Id }, ApiResponse<Classe>.SuccessResponse(classObj, "Classe created successfully"));
             }
             catch (ArgumentNullException ex)
             {
@@ -107,11 +107,11 @@ namespace QuizupAPI.Controllers
         /// <summary>
         /// Update class information
         /// </summary>
-        /// <param name="id">Class ID</param>
+        /// <param name="id">Classe ID</param>
         /// <param name="className">New class name</param>
         /// <returns>Updated class</returns>
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(ApiResponse<Class>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<Classe>), 200)]
         [ProducesResponseType(typeof(ApiResponse<object>), 400)]
         [ProducesResponseType(typeof(ApiResponse<object>), 404)]
         [ProducesResponseType(typeof(ApiResponse<object>), 500)]
@@ -122,10 +122,10 @@ namespace QuizupAPI.Controllers
             {
                 if (string.IsNullOrWhiteSpace(className))
                 {
-                    return BadRequest(ApiResponse<object>.ErrorResponse("Class name is required."));
+                    return BadRequest(ApiResponse<object>.ErrorResponse("Classe name is required."));
                 }
                 var updatedClass = await _classService.UpdateClassAsync(id, className);
-                return Ok(ApiResponse<Class>.SuccessResponse(updatedClass, "Class updated successfully"));
+                return Ok(ApiResponse<Classe>.SuccessResponse(updatedClass, "Classe updated successfully"));
             }
             catch (ArgumentNullException ex)
             {
@@ -148,10 +148,10 @@ namespace QuizupAPI.Controllers
         /// <summary>
         /// Delete a class by ID
         /// </summary>
-        /// <param name="id">Class ID</param>
+        /// <param name="id">Classe ID</param>
         /// <returns>Deleted class</returns>
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(ApiResponse<Class>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<Classe>), 200)]
         [ProducesResponseType(typeof(ApiResponse<object>), 404)]
         [ProducesResponseType(typeof(ApiResponse<object>), 500)]
         [Authorize(Roles = "Admin")]
@@ -160,7 +160,7 @@ namespace QuizupAPI.Controllers
             try
             {
                 var deletedClass = await _classService.DeleteClassAsync(id);
-                return Ok(ApiResponse<Class>.SuccessResponse(deletedClass, "Class deleted successfully"));
+                return Ok(ApiResponse<Classe>.SuccessResponse(deletedClass, "Classe deleted successfully"));
             }
             catch (KeyNotFoundException ex)
             {
@@ -175,7 +175,7 @@ namespace QuizupAPI.Controllers
         /// <summary>
         /// Get subjects by class ID
         /// </summary>
-        /// <param name="classId">Class ID</param>
+        /// <param name="classId">Classe ID</param>
         /// <returns>List of subjects associated with the class</returns>
         [HttpGet("{classId}/subjects")]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<Subject>>), 200)]
@@ -203,7 +203,7 @@ namespace QuizupAPI.Controllers
         /// Add a subject to a class
         /// </summary>
         [HttpPost("{classId}/subjects/{subjectId}")]
-        [ProducesResponseType(typeof(ApiResponse<Class>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<Classe>), 200)]
         [ProducesResponseType(typeof(ApiResponse<object>), 404)]
         [ProducesResponseType(typeof(ApiResponse<object>), 500)]
         [Authorize(Roles = "Admin")]
@@ -212,7 +212,7 @@ namespace QuizupAPI.Controllers
             try
             {
                 var updatedClass = await _classService.AddSubjectToClassAsync(classId, subjectId);
-                return Ok(ApiResponse<Class>.SuccessResponse(updatedClass, "Subject added to class successfully"));
+                return Ok(ApiResponse<Classe>.SuccessResponse(updatedClass, "Subject added to class successfully"));
             }
             catch (KeyNotFoundException ex)
             {

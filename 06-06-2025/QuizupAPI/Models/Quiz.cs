@@ -8,7 +8,7 @@ namespace QuizupAPI.Models
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public long ClassId { get; set; }
-        public Class? Class { get; set; }
+        public Classe? Classe { get; set; }
         public long SubjectId { get; set; }
         public Subject? Subject { get; set; }
         public ICollection<string>? Tags { get; set; }

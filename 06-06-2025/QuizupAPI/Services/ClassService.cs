@@ -7,12 +7,12 @@ namespace QuizupAPI.Services
 {
     public class ClassService : IClassService
     {
-        private readonly IRepository<long, Class> _classeRepository;
+        private readonly IRepository<long, Classe> _classeRepository;
 
         private readonly IRepository<long, ClassSubject> _classSubjectRepository;
         private readonly IRepository<long, Subject> _subjectRepository;
         private readonly QuizContext _context;
-        public ClassService(IRepository<long, Class> classeRepository, IRepository<long, ClassSubject> classSubjectRepository, IRepository<long, Subject> subjectRepository, QuizContext context)
+        public ClassService(IRepository<long, Classe> classeRepository, IRepository<long, ClassSubject> classSubjectRepository, IRepository<long, Subject> subjectRepository, QuizContext context)
         {
             _classeRepository = classeRepository;
             _classSubjectRepository = classSubjectRepository;
@@ -20,7 +20,7 @@ namespace QuizupAPI.Services
             _context = context;
         }
 
-        public async Task<Class> AddClassAsync(string className, ICollection<long>? subjectIds = null)
+        public async Task<Classe> AddClassAsync(string className, ICollection<long>? subjectIds = null)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace QuizupAPI.Services
                     throw new ArgumentException("Class name cannot be null or empty.");
                 }
 
-                var mappedClass = new Class { Name = className, UpdatedAt = DateTime.UtcNow };
+                var mappedClass = new Classe { Name = className, UpdatedAt = DateTime.UtcNow };
 
                 var addedClass = await _classeRepository.Add(mappedClass);
 
@@ -54,7 +54,7 @@ namespace QuizupAPI.Services
             }
         }
 
-        public async Task<Class> UpdateClassAsync(long id, string className)
+        public async Task<Classe> UpdateClassAsync(long id, string className)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace QuizupAPI.Services
             }
         }
 
-        public async Task<Class> DeleteClassAsync(long id)
+        public async Task<Classe> DeleteClassAsync(long id)
         {
             try
             {
@@ -102,7 +102,7 @@ namespace QuizupAPI.Services
             }
         }
 
-        public async Task<Class> GetClassByIdAsync(long id)
+        public async Task<Classe> GetClassByIdAsync(long id)
         {
             try
             {
@@ -118,7 +118,7 @@ namespace QuizupAPI.Services
             }
         }
 
-        public async Task<IEnumerable<Class>> GetAllClassesAsync()
+        public async Task<IEnumerable<Classe>> GetAllClassesAsync()
         {
             try
             {
@@ -151,7 +151,7 @@ namespace QuizupAPI.Services
             }
         }
 
-        public async Task<Class> AddSubjectToClassAsync(long classId, long subjectId)
+        public async Task<Classe> AddSubjectToClassAsync(long classId, long subjectId)
         {
             try
             {

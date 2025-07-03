@@ -15,7 +15,7 @@ namespace QuizupAPI.Models
         [Required]
         public string LastName { get; set; } = string.Empty;
 
-        public Class? Class { get; set; }
+        public Classe? Classe { get; set; }
         public long ClassId { get; set; }
 
         public bool IsDeleted { get; set; } = false;

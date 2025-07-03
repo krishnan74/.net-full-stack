@@ -127,7 +127,7 @@ builder.Services.AddRateLimiter(
 
 // Register repositories
 builder.Services.AddTransient<IRepository<long, Answer>, AnswerRepository>();
-builder.Services.AddTransient<IRepository<long, Class>, ClassRepository>();
+builder.Services.AddTransient<IRepository<long, Classe>, ClassRepository>();
 builder.Services.AddTransient<IRepository<long, ClassSubject>, ClassSubjectRepository>();
 builder.Services.AddTransient<IRepository<long, Question>, QuestionRepository>();
 builder.Services.AddTransient<IRepository<long, QuizQuestion>, QuizQuestionRepository>();

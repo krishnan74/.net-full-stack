@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace QuizupAPI.Models.DTOs.Class
+namespace QuizupAPI.Models.DTOs.Classe
 {
     public class ClassDTO
     {

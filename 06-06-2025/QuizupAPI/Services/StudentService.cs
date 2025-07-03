@@ -137,9 +137,9 @@ namespace QuizupAPI.Services
                     throw new ArgumentNullException(nameof(studentDTO), "Student data cannot be null.");
                 }
 
-                if (string.IsNullOrWhiteSpace(studentDTO.FirstName) || string.IsNullOrWhiteSpace(studentDTO.LastName) || string.IsNullOrWhiteSpace(studentDTO.Class))
+                if (string.IsNullOrWhiteSpace(studentDTO.FirstName) || string.IsNullOrWhiteSpace(studentDTO.LastName) )
                 {
-                    throw new ArgumentException("First name, last name and class are required fields.");
+                    throw new ArgumentException("First name, last name are required fields.");
                 }
 
                 var existingStudent = await _studentRepository.Get(id);

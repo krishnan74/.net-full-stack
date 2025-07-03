@@ -15,6 +15,7 @@ namespace QuizupAPI.Repositories
         {
             var teacher = await _quizContext.teachers
                 .Include(t => t.Quizzes)
+          
                 .SingleOrDefaultAsync(p => p.Id == key);
 
             return teacher ?? throw new KeyNotFoundException($"No teacher with the given ID: {key}");
@@ -22,7 +23,8 @@ namespace QuizupAPI.Repositories
 
         public override async Task<IEnumerable<Teacher>> GetAll()
         {
-            var teachers = _quizContext.teachers;
+            var teachers = _quizContext.teachers.Include(t => t.TeacherClasses).ThenInclude(tc => tc.Classe)
+                .Include(t => t.TeacherSubjects).ThenInclude(ts => ts.Subject);
             if (!teachers.Any())
                 return Enumerable.Empty<Teacher>();
             return (await teachers.ToListAsync());
