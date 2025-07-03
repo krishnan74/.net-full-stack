@@ -9,6 +9,11 @@ import { QuizList } from './features/quiz/components/quiz-list/quiz-list';
 import { ProfileComponent } from './features/profile/profile';
 import { DashboardComponent } from './features/dashboard/dashboard';
 import { NotificationComponent } from './features/notification/notification';
+import { AdminDashboardComponent } from './features/admin/admin-dashboard/admin-dashboard.component';
+import { StudentsListComponent } from './features/admin/students-list/students-list.component';
+import { TeachersListComponent } from './features/admin/teachers-list/teachers-list.component';
+import { SubjectsListComponent } from './features/admin/subjects-list/subjects-list.component';
+import { ClassesListComponent } from './features/admin/classes-list/classes-list.component';
 
 export const routes: Routes = [
   {
@@ -41,4 +46,14 @@ export const routes: Routes = [
   { path: 'profile', component: ProfileComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'notifications', component: NotificationComponent },
+  {
+    path: 'admin',
+    children: [
+      { path: '', component: AdminDashboardComponent },
+      { path: 'students', component: StudentsListComponent },
+      { path: 'teachers', component: TeachersListComponent },
+      { path: 'subjects', component: SubjectsListComponent },
+      { path: 'classes', component: ClassesListComponent },
+    ],
+  },
 ];

@@ -1,0 +1,22 @@
+<div class="table-list-container">
+    <h2>Subjects List</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Subject Name</th>
+          <th>Code</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let subject of subjects">
+          <td>{{ subject.name }}</td>
+          <td>{{ subject.code }}</td>
+          <td>
+            <button (click)="addOrUpdateSubject(subject)">Update</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button (click)="addOrUpdateSubject(null)">Add New Subject</button>
+</div>
