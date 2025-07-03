@@ -1,3 +1,49 @@
-h2 { margin-bottom: 16px; }
-h3 { margin-top: 24px; }
-p { margin: 4px 0; }
+.dashboard-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.welcome-card {
+  background: #f0f4ff;
+  padding: 1rem 2rem;
+  margin: 0 auto 2rem;
+  border-radius: 12px;
+  max-width: 600px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.summary-section {
+  margin: 2rem auto;
+  padding: 1rem;
+  max-width: 1000px;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  margin-bottom: 1.2rem;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 0.5rem;
+  color: #444;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.summary-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+b {
+  font-weight: 600;
+}

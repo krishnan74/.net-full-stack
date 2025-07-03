@@ -15,8 +15,10 @@ namespace QuizupAPI.Repositories
         {
             var quiz = await _quizContext.quizzes
                                 .Include(q => q.Teacher)
-                                .Include(q => q.QuizQuestions)
-                                .ThenInclude(q => q.Question).SingleOrDefaultAsync(p => p.Id == key );
+                                .Include(q => q.QuizQuestions).ThenInclude(q => q.Question)
+                                .Include(q => q.Subject)
+                                .Include(q => q.Class)
+                                .SingleOrDefaultAsync(p => p.Id == key );
 
             return quiz??throw new KeyNotFoundException($"No Quiz with the given ID: {key}");
         }

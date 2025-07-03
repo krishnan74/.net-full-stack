@@ -233,7 +233,11 @@ namespace QuizupAPI.Services
                     Description = quiz.Description,
                     CreatedAt = DateTime.UtcNow,
                     DueDate = quiz.DueDate,
-                    TeacherName = quiz.Teacher.FirstName + " " + quiz.Teacher.LastName
+                    TeacherName = quiz.Teacher.FirstName + " " + quiz.Teacher.LastName,
+                    SubjectName = quiz.Subject?.Name ?? "No Subject",
+                    SubjectCode = quiz.Subject?.Code ?? "No Code",
+                    ClassName = quiz.Class?.Name ?? "No Class",
+                    Type = "start"
                 };
                 string classGroupName = $"class_{quiz.ClassId}";
                 await _hubContext.Clients.Group(classGroupName).SendAsync("NotifyStartQuiz", quizNotificationDTO);
@@ -281,7 +285,11 @@ namespace QuizupAPI.Services
                     Description = quiz.Description,
                     CreatedAt = DateTime.UtcNow,
                     DueDate = quiz.DueDate,
-                    TeacherName = quiz.Teacher.FirstName + " " + quiz.Teacher.LastName
+                    TeacherName = quiz.Teacher.FirstName + " " + quiz.Teacher.LastName,
+                    SubjectName = quiz.Subject?.Name ?? "No Subject",
+                    SubjectCode = quiz.Subject?.Code ?? "No Code",
+                    ClassName = quiz.Class?.Name ?? "No Class",
+                    Type = "end"
                 };
 
                 string classGroupName = $"class_{quiz.ClassId}";

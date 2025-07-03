@@ -13,7 +13,9 @@ export class TeacherService {
     @Inject(API_BASE_URL) private apiBaseUrl: string
   ) {}
   getTeacherById(id: number) {
-    const teacher = this.http.get<TeacherModel>(`${this.apiBaseUrl}/Teachers/${id}`);
+    const teacher = this.http.get<TeacherModel>(
+      `${this.apiBaseUrl}/Teachers/${id}`
+    );
     console.log('Teacher fetched:', teacher);
     return teacher;
   }
@@ -46,5 +48,17 @@ export class TeacherService {
 
     console.log('All teachers fetched:', teachers);
     return teachers;
+  }
+
+  deleteTeacher(id: number): Observable<ApiResponse<TeacherModel>> {
+    console.log('Deleting teacher with ID:', id);
+    return this.http
+      .delete<ApiResponse<TeacherModel>>(`${this.apiBaseUrl}/Teachers/${id}`)
+      .pipe(
+        map((response) => {
+          console.log('Teacher deleted successfully:', response);
+          return response;
+        })
+      );
   }
 }
