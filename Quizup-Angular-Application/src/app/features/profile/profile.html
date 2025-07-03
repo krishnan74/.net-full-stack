@@ -1,0 +1,15 @@
+<h2>Profile</h2>
+<form (ngSubmit)="updateDetails()">
+  <label>Name: <input [(ngModel)]="userDetails.name" name="name"></label><br>
+  <label>Email: <input [(ngModel)]="userDetails.email" name="email"></label><br>
+  <button type="submit">Update Details</button>
+</form>
+
+<h3>Change Password</h3>
+<form (ngSubmit)="changePassword()">
+  <label>Current Password: <input type="password" [(ngModel)]="passwordData.currentPassword" name="currentPassword"></label><br>
+  <label>New Password: <input type="password" [(ngModel)]="passwordData.newPassword" name="newPassword"></label><br>
+  <button type="submit">Change Password</button>
+</form>
+
+<div *ngIf="message">{{ message }}</div>

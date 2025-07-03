@@ -51,6 +51,55 @@ namespace QuizupAPI.Migrations
                     b.ToTable("answers");
                 });
 
+            modelBuilder.Entity("QuizupAPI.Models.Class", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("classes");
+                });
+
+            modelBuilder.Entity("QuizupAPI.Models.ClassSubject", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("ClassId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("SubjectId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("classSubjects");
+                });
+
             modelBuilder.Entity("QuizupAPI.Models.DTOs.Student.StudentSummaryDTO", b =>
                 {
                     b.Property<decimal>("AccuracyPercentage")
@@ -227,6 +276,9 @@ namespace QuizupAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<long>("ClassId")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -243,6 +295,12 @@ namespace QuizupAPI.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
+                    b.Property<long>("SubjectId")
+                        .HasColumnType("bigint");
+
+                    b.PrimitiveCollection<string[]>("Tags")
+                        .HasColumnType("text[]");
+
                     b.Property<long>("TeacherId")
                         .HasColumnType("bigint");
 
@@ -254,6 +312,10 @@ namespace QuizupAPI.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClassId");
+
+                    b.HasIndex("SubjectId");
 
                     b.HasIndex("TeacherId");
 
@@ -327,10 +389,8 @@ namespace QuizupAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("Class")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                    b.Property<long>("ClassId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -355,10 +415,42 @@ namespace QuizupAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClassId");
+
                     b.HasIndex("Email")
                         .IsUnique();
 
                     b.ToTable("students");
+                });
+
+            modelBuilder.Entity("QuizupAPI.Models.Subject", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("subjects");
                 });
 
             modelBuilder.Entity("QuizupAPI.Models.Teacher", b =>
@@ -387,11 +479,6 @@ namespace QuizupAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Subject")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -401,6 +488,52 @@ namespace QuizupAPI.Migrations
                         .IsUnique();
 
                     b.ToTable("teachers");
+                });
+
+            modelBuilder.Entity("QuizupAPI.Models.TeacherClass", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("ClassId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TeacherId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("teacherClasses");
+                });
+
+            modelBuilder.Entity("QuizupAPI.Models.TeacherSubject", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("SubjectId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TeacherId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubjectId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("teacherSubjects");
                 });
 
             modelBuilder.Entity("QuizupAPI.Models.User", b =>
@@ -457,14 +590,53 @@ namespace QuizupAPI.Migrations
                     b.Navigation("QuizSubmission");
                 });
 
+            modelBuilder.Entity("QuizupAPI.Models.ClassSubject", b =>
+                {
+                    b.HasOne("QuizupAPI.Models.Class", "Class")
+                        .WithMany("ClassSubjects")
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_ClassSubject_Class");
+
+                    b.HasOne("QuizupAPI.Models.Subject", "Subject")
+                        .WithMany("ClassSubjects")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_ClassSubject_Subject");
+
+                    b.Navigation("Class");
+
+                    b.Navigation("Subject");
+                });
+
             modelBuilder.Entity("QuizupAPI.Models.Quiz", b =>
                 {
+                    b.HasOne("QuizupAPI.Models.Class", "Class")
+                        .WithMany("Quizzes")
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Quiz_Class");
+
+                    b.HasOne("QuizupAPI.Models.Subject", "Subject")
+                        .WithMany("Quizzes")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Quiz_Subject");
+
                     b.HasOne("QuizupAPI.Models.Teacher", "Teacher")
                         .WithMany("Quizzes")
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_Quiz_Teacher");
+
+                    b.Navigation("Class");
+
+                    b.Navigation("Subject");
 
                     b.Navigation("Teacher");
                 });
@@ -513,12 +685,21 @@ namespace QuizupAPI.Migrations
 
             modelBuilder.Entity("QuizupAPI.Models.Student", b =>
                 {
+                    b.HasOne("QuizupAPI.Models.Class", "Class")
+                        .WithMany("Students")
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Student_Class");
+
                     b.HasOne("QuizupAPI.Models.User", "User")
                         .WithOne("Student")
                         .HasForeignKey("QuizupAPI.Models.Student", "Email")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_User_Student");
+
+                    b.Navigation("Class");
 
                     b.Navigation("User");
                 });
@@ -533,6 +714,59 @@ namespace QuizupAPI.Migrations
                         .HasConstraintName("FK_User_Teacher");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("QuizupAPI.Models.TeacherClass", b =>
+                {
+                    b.HasOne("QuizupAPI.Models.Class", "Class")
+                        .WithMany("Teachers")
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_TeacherClass_Class");
+
+                    b.HasOne("QuizupAPI.Models.Teacher", "Teacher")
+                        .WithMany("TeacherClasses")
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_TeacherClass_Teacher");
+
+                    b.Navigation("Class");
+
+                    b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("QuizupAPI.Models.TeacherSubject", b =>
+                {
+                    b.HasOne("QuizupAPI.Models.Subject", "Subject")
+                        .WithMany("TeacherSubjects")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_TeacherSubject_Subject");
+
+                    b.HasOne("QuizupAPI.Models.Teacher", "Teacher")
+                        .WithMany("TeacherSubjects")
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_TeacherSubject_Teacher");
+
+                    b.Navigation("Subject");
+
+                    b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("QuizupAPI.Models.Class", b =>
+                {
+                    b.Navigation("ClassSubjects");
+
+                    b.Navigation("Quizzes");
+
+                    b.Navigation("Students");
+
+                    b.Navigation("Teachers");
                 });
 
             modelBuilder.Entity("QuizupAPI.Models.Question", b =>
@@ -559,9 +793,22 @@ namespace QuizupAPI.Migrations
                     b.Navigation("QuizSubmissions");
                 });
 
+            modelBuilder.Entity("QuizupAPI.Models.Subject", b =>
+                {
+                    b.Navigation("ClassSubjects");
+
+                    b.Navigation("Quizzes");
+
+                    b.Navigation("TeacherSubjects");
+                });
+
             modelBuilder.Entity("QuizupAPI.Models.Teacher", b =>
                 {
                     b.Navigation("Quizzes");
+
+                    b.Navigation("TeacherClasses");
+
+                    b.Navigation("TeacherSubjects");
                 });
 
             modelBuilder.Entity("QuizupAPI.Models.User", b =>

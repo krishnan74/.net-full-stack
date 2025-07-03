@@ -8,6 +8,26 @@ namespace QuizupAPI.Hubs
 {
     public class QuizNotificationHub : Hub
     {
+        public async Task JoinClassGroup(string classGroupName)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, classGroupName);
+        }
+
+        public async Task LeaveClassGroup(string classGroupName)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, classGroupName);
+        }
+
+        public async Task NotifyStartQuizToClass(string classGroupName, QuizNotificationDTO quiz)
+        {
+            await Clients.Group(classGroupName).SendAsync("NotifyStartQuiz", quiz);
+        }
+
+        public async Task NotifyEndQuizToClass(string classGroupName, QuizNotificationDTO quiz)
+        {
+            await Clients.Group(classGroupName).SendAsync("NotifyEndQuiz", quiz);
+        }
+
         public async Task NotifyStartQuiz(QuizNotificationDTO quiz)
         {
             await Clients.All.SendAsync("NotifyStartQuiz", quiz);

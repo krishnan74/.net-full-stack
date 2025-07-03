@@ -12,6 +12,9 @@ namespace QuizupAPI.Misc.Mappers
             quiz.Description = addRequestDto.Description;
             quiz.DueDate = addRequestDto.DueDate;
             quiz.TeacherId = addRequestDto.TeacherId;
+            quiz.ClassId = addRequestDto.ClassId;
+            quiz.SubjectId = addRequestDto.SubjectId;
+            quiz.Tags = addRequestDto.Tags;
 
             return quiz;
         }

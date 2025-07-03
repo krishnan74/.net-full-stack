@@ -26,6 +26,8 @@ namespace QuizupAPI.Contexts
         public DbSet<TeacherSubject> teacherSubjects { get; set; } = null!;
         public DbSet<TeacherClass> teacherClasses { get; set; } = null!;
 
+        public DbSet<ClassSubject> classSubjects { get; set; } = null!;
+
         public DbSet<TeacherSummaryDTO> teacherSummary { get; set; }
         public DbSet<StudentSummaryDTO> studentSummary { get; set; }
 
@@ -59,7 +61,7 @@ namespace QuizupAPI.Contexts
 
             modelBuilder.Entity<Student>().HasOne(s => s.Class)
                                         .WithMany(c => c.Students)
-                                        .HasForeignKey<Student>(s => s.ClassId)
+                                        .HasForeignKey(s => s.ClassId)
                                         .HasConstraintName("FK_Student_Class")
                                         .OnDelete(DeleteBehavior.Restrict);
 
@@ -137,7 +139,7 @@ namespace QuizupAPI.Contexts
                                         .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<TeacherClass>().HasOne(ts => ts.Class)
-                                        .WithMany(c => c.TeacherClasses)
+                                        .WithMany(c => c.Teachers)
                                         .HasForeignKey(ts => ts.ClassId)
                                         .HasConstraintName("FK_TeacherClass_Class")
                                         .OnDelete(DeleteBehavior.Restrict);
@@ -148,7 +150,25 @@ namespace QuizupAPI.Contexts
                                         .HasConstraintName("FK_TeacherClass_Teacher")
                                         .OnDelete(DeleteBehavior.Restrict);
 
-                                    
+            modelBuilder.Entity<ClassSubject>().HasOne(cs => cs.Class)
+                                        .WithMany(c => c.ClassSubjects)
+                                        .HasForeignKey(cs => cs.ClassId)
+                                        .HasConstraintName("FK_ClassSubject_Class")
+                                        .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ClassSubject>().HasOne(cs => cs.Subject)
+                                        .WithMany(s => s.ClassSubjects)
+                                        .HasForeignKey(cs => cs.SubjectId)
+                                        .HasConstraintName("FK_ClassSubject_Subject")
+                                        .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TeacherClass>().HasOne(ts => ts.Teacher)
+                                        .WithMany(t => t.TeacherClasses)
+                                        .HasForeignKey(ts => ts.TeacherId)      
+                                        .HasConstraintName("FK_TeacherClass_Teacher")
+                                        .OnDelete(DeleteBehavior.Restrict);
+
+
 
 
             modelBuilder.Entity<TeacherSummaryDTO>().HasNoKey();

@@ -1,29 +1,28 @@
-
 CREATE OR REPLACE FUNCTION get_student_quiz_summary(
     p_student_id BIGINT,
     p_start_date TIMESTAMP DEFAULT NULL,
     p_end_date TIMESTAMP DEFAULT NULL
 )
 RETURNS TABLE (
-    student_id BIGINT,
-    student_name TEXT,
-    student_email TEXT,
-    student_class VARCHAR(100),
-    total_quizzes_available BIGINT,
-    total_quizzes_started BIGINT,
-    total_quizzes_completed BIGINT,
-    total_quizzes_in_progress BIGINT,
-    total_quizzes_saved BIGINT,
-    average_score DECIMAL(5,2),
-    highest_score INTEGER,
-    lowest_score INTEGER,
-    total_questions_attempted BIGINT,
-    total_correct_answers BIGINT,
-    accuracy_percentage DECIMAL(5,2),
-    total_time_spent_minutes INTEGER,
-    quizzes_by_status JSON,
-    recent_activity JSON,
-    performance_trend JSON
+    "StudentId" BIGINT,
+    "StudentName" TEXT,
+    "StudentEmail" TEXT,
+    "StudentClass" VARCHAR(100),
+    "TotalQuizzesAvailable" BIGINT,
+    "TotalQuizzesStarted" BIGINT,
+    "TotalQuizzesCompleted" BIGINT,
+    "TotalQuizzesInProgress" BIGINT,
+    "TotalQuizzesSaved" BIGINT,
+    "AverageScore" DECIMAL(5,2),
+    "HighestScore" INTEGER,
+    "LowestScore" INTEGER,
+    "TotalQuestionsAttempted" BIGINT,
+    "TotalCorrectAnswers" BIGINT,
+    "AccuracyPercentage" DECIMAL(5,2),
+    "TotalTimeSpentMinutes" INTEGER,
+    "QuizzesByStatus" JSON,
+    "RecentActivity" JSON,
+    "PerformanceTrend" JSON
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -32,9 +31,12 @@ BEGIN
             s."Id",
             CONCAT(s."FirstName", ' ', s."LastName") as full_name,
             s."Email",
-            s."Class"
+            s."ClassId"
         FROM students s
         WHERE s."Id" = p_student_id AND s."IsDeleted" = false
+    ),
+    class_info AS (
+        SELECT c."Id", c."Name" FROM classes c
     ),
     quiz_stats AS (
         SELECT 
@@ -123,30 +125,31 @@ BEGIN
         GROUP BY t."StudentId"
     )
     SELECT 
-        si."Id" as student_id,
-        si.full_name as student_name,
-        si."Email" as student_email,
-        si."Class" as student_class,
-        COALESCE(aq.total_available, 0) as total_quizzes_available,
-        COALESCE(qs.total_started, 0) as total_quizzes_started,
-        COALESCE(qs.total_completed, 0) as total_quizzes_completed,
-        COALESCE(qs.total_in_progress, 0) as total_quizzes_in_progress,
-        COALESCE(qs.total_saved, 0) as total_quizzes_saved,
-        ROUND(COALESCE(qs.avg_score, 0), 2) as average_score,
-        COALESCE(qs.max_score, 0) as highest_score,
-        COALESCE(qs.min_score, 0) as lowest_score,
-        COALESCE(qst.total_questions_attempted, 0) as total_questions_attempted,
-        COALESCE(qst.total_correct_answers, 0) as total_correct_answers,
+        si."Id" as "StudentId",
+        si.full_name as "StudentName",
+        si."Email" as "StudentEmail",
+        COALESCE(ci."Name", '')::VARCHAR(100) as "StudentClass",
+        COALESCE(aq.total_available, 0) as "TotalQuizzesAvailable",
+        COALESCE(qs.total_started, 0) as "TotalQuizzesStarted",
+        COALESCE(qs.total_completed, 0) as "TotalQuizzesCompleted",
+        COALESCE(qs.total_in_progress, 0) as "TotalQuizzesInProgress",
+        COALESCE(qs.total_saved, 0) as "TotalQuizzesSaved",
+        ROUND(COALESCE(qs.avg_score, 0), 2) as "AverageScore",
+        COALESCE(qs.max_score, 0) as "HighestScore",
+        COALESCE(qs.min_score, 0) as "LowestScore",
+        COALESCE(qst.total_questions_attempted, 0) as "TotalQuestionsAttempted",
+        COALESCE(qst.total_correct_answers, 0) as "TotalCorrectAnswers",
         CASE 
             WHEN qst.total_questions_attempted > 0 
             THEN ROUND((qst.total_correct_answers::DECIMAL / qst.total_questions_attempted) * 100, 2)
             ELSE 0 
-        END as accuracy_percentage,
-        0 as total_time_spent_minutes,
-        COALESCE(qbsd.status_breakdown, '{}'::json) as quizzes_by_status,
-        COALESCE(rad.recent_activities, '[]'::json) as recent_activity,
-        COALESCE(ptd.monthly_trend, '[]'::json) as performance_trend
+        END as "AccuracyPercentage",
+        0 as "TotalTimeSpentMinutes",
+        COALESCE(qbsd.status_breakdown, '{}'::json) as "QuizzesByStatus",
+        COALESCE(rad.recent_activities, '[]'::json) as "RecentActivity",
+        COALESCE(ptd.monthly_trend, '[]'::json) as "PerformanceTrend"
     FROM student_info si
+    LEFT JOIN class_info ci ON si."ClassId" = ci."Id"
     LEFT JOIN quiz_stats qs ON si."Id" = qs."StudentId"
     LEFT JOIN question_stats qst ON si."Id" = qst."StudentId"
     LEFT JOIN available_quizzes aq ON true

@@ -11,7 +11,7 @@ namespace QuizupAPI.Misc.Mappers
             student.FirstName = addRequestDto.FirstName;
             student.LastName = addRequestDto.LastName;
             student.Email = addRequestDto.Email;
-            student.Class = addRequestDto.Class;
+            student.ClassId = addRequestDto.ClassId ?? 0;
 
             return student;
         }
@@ -20,7 +20,6 @@ namespace QuizupAPI.Misc.Mappers
         {
             existingStudent.FirstName = updateRequestDto.FirstName;
             existingStudent.LastName = updateRequestDto.LastName;
-            existingStudent.Class = updateRequestDto.Class;
 
             return existingStudent;
         }

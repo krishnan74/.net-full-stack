@@ -20,17 +20,28 @@ namespace QuizupAPI.Services
         private readonly IEncryptionService _encryptionService;
         private readonly IRepository<string, User> _userRepository;
         private readonly IHubContext<QuizNotificationHub> _hubContext;
+
+        private readonly IRepository<long, TeacherSubject> _teacherSubjectRepository;
+        private readonly IRepository<long, TeacherClass> _teacherClassRepository;
+
+        private readonly IRepository<long, Class> _classRepository;
+
+        private readonly IRepository<long, Subject> _subjectRepository;
         private readonly QuizContext _context;
 
         public UserMapper userMapper;
         public TeacherMapper teacherMapper;
-        public TeacherService(IRepository<long, Teacher> teacherRepository, IRepository<long, Quiz> quizRepository, IHubContext<QuizNotificationHub> hubContext, IEncryptionService encryptionService, IRepository<string, User> userRepository, QuizContext context)
+        public TeacherService(IRepository<long, Teacher> teacherRepository, IRepository<long, Quiz> quizRepository, IHubContext<QuizNotificationHub> hubContext, IEncryptionService encryptionService, IRepository<string, User> userRepository, IRepository<long, TeacherSubject> teacherSubjectRepository, IRepository<long, TeacherClass> teacherClassRepository, IRepository<long, Class> classRepository, IRepository<long, Subject> subjectRepository, QuizContext context)
         {
             _quizRepository = quizRepository;
             _hubContext = hubContext;
             _teacherRepository = teacherRepository;
             _encryptionService = encryptionService;
             _userRepository = userRepository;
+            _teacherSubjectRepository = teacherSubjectRepository;
+            _teacherClassRepository = teacherClassRepository;
+            _classRepository = classRepository;
+            _subjectRepository = subjectRepository;
             _context = context;
             teacherMapper = new TeacherMapper();
             userMapper = new UserMapper();
@@ -40,8 +51,6 @@ namespace QuizupAPI.Services
         {
             try
             {
-
-
                 if (teacherDTO == null)
                 {
                     throw new ArgumentNullException(nameof(teacherDTO), "Teacher data cannot be null.");
@@ -86,7 +95,22 @@ namespace QuizupAPI.Services
                     throw new Exception("Failed to map TeacherAddRequestDTO to Teacher.");
                 }
 
-                return await _teacherRepository.Add(teacher);
+                var addedTeacher = await _teacherRepository.Add(teacher);
+
+                if (teacherDTO.ClassIds != null && teacherDTO.ClassIds.Any())
+                {
+                    await AddClassesForTeacher(teacherDTO.ClassIds, addedTeacher.Id);
+                }
+                if (teacherDTO.SubjectIds != null && teacherDTO.SubjectIds.Any())
+                {
+                    await AddSubjectsForTeacher(teacherDTO.SubjectIds, addedTeacher.Id);
+                }
+
+                return addedTeacher;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
             }
             catch (Exception ex)
             {
@@ -137,7 +161,7 @@ namespace QuizupAPI.Services
                 }
 
                 var existingTeacher = await _teacherRepository.Get(id);
-                
+
 
                 var teacher = teacherMapper.MapTeacherUpdateRequestTeacher(existingTeacher, teacherDTO);
                 if (teacher == null)
@@ -168,7 +192,7 @@ namespace QuizupAPI.Services
             try
             {
                 var existingTeacher = await _teacherRepository.Get(id);
-                
+
                 var deletedTeacher = await _teacherRepository.Delete(id);
                 await _userRepository.Delete(existingTeacher.Email);
                 return deletedTeacher;
@@ -179,10 +203,10 @@ namespace QuizupAPI.Services
                 throw new KeyNotFoundException(ex.Message);
             }
 
-             catch (Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception($"An error occurred while deleting the teacher with ID {id}.", ex);
-            }   
+            }
 
         }
 
@@ -191,7 +215,7 @@ namespace QuizupAPI.Services
             try
             {
                 var quiz = await _quizRepository.Get(quizId);
-                
+
                 if (quiz.TeacherId != teacherId)
                 {
                     throw new UnauthorizedAccessException("You are not authorized to start this quiz.");
@@ -209,10 +233,15 @@ namespace QuizupAPI.Services
                     Description = quiz.Description,
                     CreatedAt = DateTime.UtcNow,
                     DueDate = quiz.DueDate,
-                    TeacherName = quiz.Teacher.FirstName + " " + quiz.Teacher.LastName
+                    TeacherName = quiz.Teacher.FirstName + " " + quiz.Teacher.LastName,
+                    SubjectName = quiz.Subject?.Name ?? "No Subject",
+                    SubjectCode = quiz.Subject?.Code ?? "No Code",
+                    ClassName = quiz.Class?.Name ?? "No Class",
+                    Type = "start"
                 };
-                await _hubContext.Clients.All.SendAsync("NotifyStartQuiz", quizNotificationDTO);
-           
+                string classGroupName = $"class_{quiz.ClassId}";
+                await _hubContext.Clients.Group(classGroupName).SendAsync("NotifyStartQuiz", quizNotificationDTO);
+
                 return await _quizRepository.Update(quizId, quiz);
             }
             catch (KeyNotFoundException ex)
@@ -238,7 +267,7 @@ namespace QuizupAPI.Services
             try
             {
                 var quiz = await _quizRepository.Get(quizId);
-                
+
                 if (quiz.TeacherId != teacherId)
                 {
                     throw new UnauthorizedAccessException("You are not authorized to end this quiz.");
@@ -256,10 +285,15 @@ namespace QuizupAPI.Services
                     Description = quiz.Description,
                     CreatedAt = DateTime.UtcNow,
                     DueDate = quiz.DueDate,
-                    TeacherName = quiz.Teacher.FirstName + " " + quiz.Teacher.LastName
+                    TeacherName = quiz.Teacher.FirstName + " " + quiz.Teacher.LastName,
+                    SubjectName = quiz.Subject?.Name ?? "No Subject",
+                    SubjectCode = quiz.Subject?.Code ?? "No Code",
+                    ClassName = quiz.Class?.Name ?? "No Class",
+                    Type = "end"
                 };
 
-                await _hubContext.Clients.All.SendAsync("NotifyEndQuiz", quizNotificationDTO);
+                string classGroupName = $"class_{quiz.ClassId}";
+                await _hubContext.Clients.Group(classGroupName).SendAsync("NotifyEndQuiz", quizNotificationDTO);
 
                 return await _quizRepository.Update(quizId, quiz);
             }
@@ -283,6 +317,7 @@ namespace QuizupAPI.Services
 
         }
 
+
         public async Task<TeacherSummaryDTO> GetTeacherQuizSummaryAsync(long teacherId, DateTime? startDate = null, DateTime? endDate = null)
         {
             try
@@ -295,7 +330,11 @@ namespace QuizupAPI.Services
                 Console.WriteLine($"Teacher found");
 
                 var result = await _context.Set<TeacherSummaryDTO>()
-                        .FromSqlInterpolated($"select * from get_teacher_quiz_summary({teacherId}, {startDate ?? (DateTime?)null}, {endDate ?? (DateTime?)null})").FirstOrDefaultAsync();
+                        .FromSqlRaw(
+                            "select * from get_teacher_quiz_summary({0}, {1}::timestamp, {2}::timestamp)",
+                            teacherId, startDate, endDate
+                        )
+                        .FirstOrDefaultAsync();
 
                 Console.WriteLine($"Result: {JsonSerializer.Serialize(result)}");
 
@@ -315,7 +354,7 @@ namespace QuizupAPI.Services
                 throw new Exception($"An error occurred while retrieving quiz summary for teacher with ID {teacherId}.", ex);
             }
         }
-        
+
 
         public async Task<IEnumerable<Teacher>> GetTeachersPaginationAsync(int pageNumber, int pageSize)
         {
@@ -337,5 +376,61 @@ namespace QuizupAPI.Services
                 throw new Exception("An error occurred while retrieving teachers with pagination.", ex);
             }
         }
+
+        public async Task<IEnumerable<Subject>> GetSubjectsByTeacherIdAsync(long teacherId)
+        {
+            try
+            {
+                var teacher = await _teacherRepository.Get(teacherId);
+                var teacherSubjects = await _teacherSubjectRepository.GetAll();
+                return teacherSubjects.Where(ts => ts.TeacherId == teacherId).Select(ts => ts.Subject).ToList();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException($"No teacher found with ID {teacherId}.", ex);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException($"An error occurred while retrieving subjects for teacher with ID {teacherId}.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while retrieving subjects for teacher with ID {teacherId}.", ex);
+            }
+        }
+
+        private async Task AddClassesForTeacher(ICollection<long> classIds, long teacherId)
+        {
+
+            foreach (var classId in classIds)
+            {
+            var existingClass = await _classRepository.Get(classId);
+
+            var teacherClass = new TeacherClass
+            {
+                TeacherId = teacherId,
+                ClassId = classId
+            };
+            await _teacherClassRepository.Add(teacherClass);
+            }
+        }
+
+        private async Task AddSubjectsForTeacher(ICollection<long> subjectIds, long teacherId)
+        {
+
+            foreach (var subjectId in subjectIds)
+            {
+            var existingSubject = await _subjectRepository.Get(subjectId);
+
+            var teacherSubject = new TeacherSubject
+            {
+                TeacherId = teacherId,
+                SubjectId = subjectId
+            };
+            await _teacherSubjectRepository.Add(teacherSubject);
+            }
+
+        }
+
     }
 }

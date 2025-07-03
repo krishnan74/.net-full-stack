@@ -1,5 +1,5 @@
 import { BehaviorSubject, map, Observable } from 'rxjs';
-import { Teacher } from '../models/teacher';
+import { TeacherModel } from '../models/teacher';
 import { Inject, inject, Injectable } from '@angular/core';
 import { API_BASE_URL } from '../../../core/tokens/api-url.token';
 import { HttpClient } from '@angular/common/http';
@@ -13,20 +13,22 @@ export class TeacherService {
     @Inject(API_BASE_URL) private apiBaseUrl: string
   ) {}
   getTeacherById(id: number) {
-    const teacher = this.http.get<Teacher>(`${this.apiBaseUrl}/Teachers/${id}`);
+    const teacher = this.http.get<TeacherModel>(
+      `${this.apiBaseUrl}/Teachers/${id}`
+    );
     console.log('Teacher fetched:', teacher);
     return teacher;
   }
 
   createTeacher(
-    teacher: Omit<Teacher, 'id' | 'createdAt' | 'quizzes'> & {
+    teacher: Omit<TeacherModel, 'id' | 'createdAt' | 'quizzes'> & {
       password: string;
       role: string;
     }
-  ): Observable<ApiResponse<Teacher>> {
+  ): Observable<ApiResponse<TeacherModel>> {
     try {
       console.log('Creating teacher with data:', teacher);
-      const createdTeacher = this.http.post<ApiResponse<Teacher>>(
+      const createdTeacher = this.http.post<ApiResponse<TeacherModel>>(
         `${this.apiBaseUrl}/Teachers`,
         teacher
       );
@@ -39,12 +41,24 @@ export class TeacherService {
     }
   }
 
-  getAllTeachers(): Observable<ApiResponse<Teacher[]>> {
-    const teachers = this.http.get<ApiResponse<Teacher[]>>(
+  getAllTeachers(): Observable<ApiResponse<TeacherModel[]>> {
+    const teachers = this.http.get<ApiResponse<TeacherModel[]>>(
       `${this.apiBaseUrl}/Teachers`
     );
 
     console.log('All teachers fetched:', teachers);
     return teachers;
+  }
+
+  deleteTeacher(id: number): Observable<ApiResponse<TeacherModel>> {
+    console.log('Deleting teacher with ID:', id);
+    return this.http
+      .delete<ApiResponse<TeacherModel>>(`${this.apiBaseUrl}/Teachers/${id}`)
+      .pipe(
+        map((response) => {
+          console.log('Teacher deleted successfully:', response);
+          return response;
+        })
+      );
   }
 }

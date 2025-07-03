@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TeacherService } from '../../services/teacher.service';
-import { Teacher } from '../../models/teacher';
+import { TeacherModel } from '../../models/teacher';
 import { CommonModule } from '@angular/common';
 import { TeacherCard } from '../teacher-card/teacher-card';
 import { ApiResponse } from '../../../../shared/models/api-response';
@@ -12,7 +12,7 @@ import { ApiResponse } from '../../../../shared/models/api-response';
   styleUrl: './teacher-list.css',
 })
 export class TeacherList implements OnInit {
-  teachers: Teacher[] = [];
+  teachers: TeacherModel[] = [];
 
   constructor(private teacherService: TeacherService) {}
 
@@ -23,7 +23,7 @@ export class TeacherList implements OnInit {
   getAllTeachers() {
     this.teacherService
       .getAllTeachers()
-      .subscribe((response: ApiResponse<Teacher[]>) => {
+      .subscribe((response: ApiResponse<TeacherModel[]>) => {
         this.teachers = response.data;
       });
   }

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Teacher } from '../../models/teacher';
+import { TeacherModel } from '../../models/teacher';
 import { QuizModel } from '../../../quiz/models/quiz.model';
 
 @Component({
@@ -9,5 +9,5 @@ import { QuizModel } from '../../../quiz/models/quiz.model';
   styleUrl: './teacher-card.css',
 })
 export class TeacherCard {
-  @Input() teacher: Teacher | null = new Teacher();
+  @Input() teacher: TeacherModel | null = new TeacherModel();
 }

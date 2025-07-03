@@ -1,6 +1,6 @@
 import { QuizSubmission } from '../../quiz/models/quizSubmission.model';
 
-export class Student {
+export class StudentModel {
   constructor(
     public id: string = '',
     public email: string = '',
