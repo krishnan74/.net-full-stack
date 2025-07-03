@@ -6,6 +6,7 @@ import { ClassModel } from '../../class/models/class';
 import { AddSubjectDialogComponent } from '../dialogs/add-subject-dialog/add-subject-dialog.component';
 import { AddClassDialogComponent } from '../dialogs/add-class-dialog/add-class-dialog.component';
 import { CommonModule } from '@angular/common';
+import { UpdateClassDialogComponent } from '../dialogs/update-class-dialog/update-class-dialog.component';
 
 @Component({
   selector: 'app-classes-list',
@@ -29,10 +30,8 @@ export class ClassesListComponent implements OnInit {
     });
   }
 
-  addOrUpdateClass(classData: ClassModel | null): void {
-    const dialogRef = this.dialog.open(AddClassDialogComponent, {
-      data: classData,
-    });
+  addClass(): void {
+    const dialogRef = this.dialog.open(AddClassDialogComponent, {});
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
@@ -42,13 +41,14 @@ export class ClassesListComponent implements OnInit {
     });
   }
 
-  addSubjectToClass(classId: number): void {
-    const dialogRef = this.dialog.open(AddSubjectDialogComponent);
-
+  updateClass(classe: ClassModel): void {
+    const dialogRef = this.dialog.open(UpdateClassDialogComponent, {
+      data: classe,
+    });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log('Subject added:', result);
-        // Logic to add subject to class
+        console.log('Class updated:', result);
+        // Logic to update class
       }
     });
   }

@@ -13,14 +13,6 @@ export class ClassService {
     @Inject(API_BASE_URL) private apiBaseUrl: string
   ) {}
 
-  getClassById(id: number) {
-    const classe = this.http.get<ClassModel>(
-      `${this.apiBaseUrl}/Classes/${id}`
-    );
-    console.log('Class fetched:', classe);
-    return classe;
-  }
-
   createClass(
     classe: Omit<ClassModel, 'id' | 'createdAt' | 'updatedAt' | 'classSubjects'>
   ): Observable<ApiResponse<ClassModel>> {
@@ -39,6 +31,14 @@ export class ClassService {
     }
   }
 
+  getClassById(id: number) {
+    const classe = this.http.get<ClassModel>(
+      `${this.apiBaseUrl}/Classes/${id}`
+    );
+    console.log('Class fetched:', classe);
+    return classe;
+  }
+
   getAllClasses(): Observable<ApiResponse<ClassModel[]>> {
     const classes = this.http.get<ApiResponse<ClassModel[]>>(
       `${this.apiBaseUrl}/Classes`
@@ -46,6 +46,27 @@ export class ClassService {
 
     console.log('All classes fetched:', classes);
     return classes;
+  }
+
+  updateClass(data: {
+    id: number;
+    className: string;
+    addSubjectIds?: number[];
+    removeSubjectIds?: number[];
+  }): Observable<ApiResponse<ClassModel>> {
+    console.log('Updating class with ID:', data.id, 'and data:', data);
+    return this.http
+      .put<ApiResponse<ClassModel>>(`${this.apiBaseUrl}/Classes/${data.id}`, {
+        className: data.className,
+        addSubjectIds: data.addSubjectIds,
+        removeSubjectIds: data.removeSubjectIds,
+      })
+      .pipe(
+        map((response) => {
+          console.log('Class updated successfully:', response);
+          return response;
+        })
+      );
   }
 
   deleteClass(id: number): Observable<ApiResponse<ClassModel>> {

@@ -1,9 +1,7 @@
 <div class="table-list-container">
   <div class="header">
     <h2>Classes List</h2>
-    <button id="add-button" (click)="addOrUpdateClass(null)">
-      Add New Class
-    </button>
+    <button id="add-button" (click)="addClass()">Add New Class</button>
   </div>
 
   <table>
@@ -29,8 +27,7 @@
         <td>{{ classItem.createdAt | date }}</td>
         <td>{{ classItem.updatedAt | date }}</td>
         <td class="actions">
-          <button (click)="addOrUpdateClass(classItem)">Update</button>
-          <button (click)="addSubjectToClass(classItem.id)">Add Subject</button>
+          <button (click)="updateClass(classItem)">Update</button>
         </td>
       </tr>
     </tbody>
