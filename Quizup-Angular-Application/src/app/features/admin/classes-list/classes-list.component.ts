@@ -25,6 +25,7 @@ export class ClassesListComponent implements OnInit {
   loadClasses(): void {
     this.classService.getAllClasses().subscribe((data) => {
       this.classes = data.data;
+      console.log('Classes loaded:', this.classes);
     });
   }
 

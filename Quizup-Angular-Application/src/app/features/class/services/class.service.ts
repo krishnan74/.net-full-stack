@@ -22,7 +22,7 @@ export class ClassService {
   }
 
   createClass(
-    classe: Omit<ClassModel, 'id' | 'createdAt' | 'updatedAt'>
+    classe: Omit<ClassModel, 'id' | 'createdAt' | 'updatedAt' | 'classSubjects'>
   ): Observable<ApiResponse<ClassModel>> {
     try {
       console.log('Creating classe with data:', classe);

@@ -21,6 +21,7 @@ export class TeachersListComponent implements OnInit {
   loadTeachers(): void {
     this.teacherService.getAllTeachers().subscribe((data) => {
       this.teachers = data.data;
+      console.log('Teachers loaded:', this.teachers);
     });
   }
 
