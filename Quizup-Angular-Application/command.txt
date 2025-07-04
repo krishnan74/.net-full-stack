@@ -1,0 +1,2 @@
+Build: docker build -t quizup-angular-application .
+Run: docker run -p 4200:4200 quizup-angular-application
