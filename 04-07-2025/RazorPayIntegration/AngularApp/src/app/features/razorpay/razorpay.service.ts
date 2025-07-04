@@ -59,6 +59,9 @@ export class RazorpayService {
           email: email,
           contact: contactNumber,
         },
+        method: {
+          upi: true,
+        },
         theme: {
           color: '#6c63ff',
         },

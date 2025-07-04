@@ -45,13 +45,11 @@ export class PaymentFormComponent {
     const { amount, customerName, email, contactNumber } =
       this.paymentForm.value;
     try {
-      // Call createOrder and get the order id from the backend
       const order = await this.orderService
         .createOrder(amount, customerName, email, contactNumber)
         .subscribe({
           next: (order) => {
             console.log('Order created successfully:', order);
-            // Use the orderId in the payment initiation
             this.razorpayService.initiateTransaction(
               amount,
               customerName,

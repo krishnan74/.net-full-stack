@@ -4,7 +4,7 @@ import {
   HttpTestingController,
 } from '@angular/common/http/testing';
 import { OrderService } from './order.service';
-import { OrderModel } from '../models/order/order';
+import { OrderModel } from '../models/order';
 
 describe('OrderService', () => {
   let service: OrderService;

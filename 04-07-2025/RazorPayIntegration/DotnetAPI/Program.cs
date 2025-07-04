@@ -22,7 +22,7 @@ builder.Services.AddSwaggerGen(opt =>
 builder.Services.AddControllers()
                 .AddJsonOptions(opts =>
                 {
-                    opts.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+                    opts.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
                     opts.JsonSerializerOptions.WriteIndented = true;
                 });
 

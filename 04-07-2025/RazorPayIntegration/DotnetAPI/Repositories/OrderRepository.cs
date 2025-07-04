@@ -13,14 +13,14 @@ namespace DotnetAPI.Repositories
 
         public override async Task<Order> Get(Guid key)
         {
-            var order = await _databaseContext.orders.SingleOrDefaultAsync(p => p.Id == key);
+            var order = await _databaseContext.orders.Include(o => o.Payment).SingleOrDefaultAsync(p => p.Id == key);
 
             return order??throw new Exception("No order with the given ID");
         }
 
         public override async Task<IEnumerable<Order>> GetAll()
         {
-            var orders = _databaseContext.orders;
+            var orders = _databaseContext.orders.Include(o => o.Payment);
             if (!orders.Any())
                 return Enumerable.Empty<Order>();
             return (await orders.ToListAsync());
