@@ -1,15 +1,13 @@
-FROM node:22
-
+# Stage 1: Build the Angular app
+FROM node:22 AS build
 WORKDIR /app
-
 COPY package.json package-lock.json ./
-
-RUN npm install -g @angular/cli
-
 RUN npm install --force
-
 COPY . .
+RUN npm run build -- --output-path=dist
 
-EXPOSE 4200
-
-CMD ["ng", "serve", "--host", "0.0.0.0"]
+# Stage 2: Serve the Angular app with NGINX
+FROM nginx:alpine
+COPY --from=build /app/dist/browser/ /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
