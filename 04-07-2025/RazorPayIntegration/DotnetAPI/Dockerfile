@@ -6,10 +6,11 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 COPY ["DotnetAPI.csproj", "./"]
 RUN dotnet restore "./DotnetAPI.csproj"
+
 COPY . .
 
 RUN dotnet tool install --global dotnet-ef 
-ENV PATH="${PATH}:/root/.dotnet/tools"
+RUN /root/.dotnet/tools/dotnet-ef database update 
 
 WORKDIR "/src"
 RUN dotnet build "DotnetAPI.csproj" -c Release -o /app/build

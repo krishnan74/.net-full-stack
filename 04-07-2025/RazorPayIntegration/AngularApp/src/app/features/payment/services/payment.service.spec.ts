@@ -4,6 +4,7 @@ import {
   HttpTestingController,
 } from '@angular/common/http/testing';
 import { PaymentService } from './payment.service';
+import { API_BASE_URL } from '../../../core/tokens/api-url.token'; 
 
 describe('PaymentService', () => {
   let service: PaymentService;
@@ -12,7 +13,10 @@ describe('PaymentService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [PaymentService],
+      providers: [
+        PaymentService,
+        { provide: API_BASE_URL, useValue: 'http://localhost:5182/api' }, 
+      ],
     });
     service = TestBed.inject(PaymentService);
     httpMock = TestBed.inject(HttpTestingController);
