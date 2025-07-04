@@ -10,16 +10,23 @@ namespace QuizupAPI.Services
         private readonly ITokenService _tokenService;
         private readonly IEncryptionService _encryptionService;
         private readonly IRepository<string, User> _userRepository;
+
+        private readonly IRepository<long, Teacher> _teacherRepository;
+        private readonly IRepository<long, Student> _studentRepository;
         private readonly ILogger<AuthenticationService> _logger;
 
         public AuthenticationService(ITokenService tokenService,
                                     IEncryptionService encryptionService,
                                     IRepository<string, User> userRepository,
-                                    ILogger<AuthenticationService> logger)
+                                    ILogger<AuthenticationService> logger,
+                                    IRepository<long, Teacher> teacherRepository,
+                                    IRepository<long, Student> studentRepository)
         {
             _tokenService = tokenService;
             _encryptionService = encryptionService;
             _userRepository = userRepository;
+            _teacherRepository = teacherRepository;
+            _studentRepository = studentRepository;
             _logger = logger;
         }
         public async Task<UserLoginResponseDTO> Login(UserLoginRequestDTO user)
@@ -44,14 +51,32 @@ namespace QuizupAPI.Services
                 _logger.LogError("Password is required");
                 throw new Exception("Password is required");
             }
+
+            long? Id = null;
+            string? ClassGroupName = null;
+            if (dbUser.Role == "Teacher")
+            {
+                var teachers = await _teacherRepository.GetAll();
+                Id = teachers.FirstOrDefault(t => t.Email == dbUser.Username)?.Id;
+            }
+            if (dbUser.Role == "Student")
+            {
+                var students = await _studentRepository.GetAll();
+                var student = students.FirstOrDefault(s => s.Email == dbUser.Username);
+                Id = student?.Id;
+                ClassGroupName = $"class_{student?.ClassId}";
+            }
+            
             var token = await _tokenService.GenerateToken(dbUser);
             var refreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(dbUser);
             return new UserLoginResponseDTO
             {
+                UserId = Id,
                 Username = user.Username,
                 Role = dbUser.Role,
                 AccessToken = token,
                 RefreshToken = refreshToken,
+                ClassGroupName = ClassGroupName
             };
         }
 

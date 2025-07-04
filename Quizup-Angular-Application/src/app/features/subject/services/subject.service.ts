@@ -14,7 +14,9 @@ export class SubjectService {
   ) {}
 
   getSubjectById(id: number) {
-    const subject = this.http.get<SubjectModel>(`${this.apiBaseUrl}/Subjects/${id}`);
+    const subject = this.http.get<SubjectModel>(
+      `${this.apiBaseUrl}/Subjects/${id}`
+    );
     console.log('Subject fetched:', subject);
     return subject;
   }
@@ -44,5 +46,17 @@ export class SubjectService {
 
     console.log('All subjects fetched:', subjects);
     return subjects;
+  }
+
+  deleteSubject(id: number): Observable<ApiResponse<SubjectModel>> {
+    console.log('Deleting subject with ID:', id);
+    return this.http
+      .delete<ApiResponse<SubjectModel>>(`${this.apiBaseUrl}/Subjects/${id}`)
+      .pipe(
+        map((response) => {
+          console.log('Subject deleted successfully:', response);
+          return response;
+        })
+      );
   }
 }

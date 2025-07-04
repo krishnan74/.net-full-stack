@@ -1,0 +1,23 @@
+<div class="table-list-container">
+  <h2>Students List</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Class</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let student of students">
+        <td>{{ student.firstName }} {{ student.lastName }}</td>
+        <td>{{ student.email }}</td>
+        <td>{{ student.classs }}</td>
+        <td>
+          <button (click)="updateStudent(student)">Update</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,23 @@
+<div class="table-list-container">
+  <h2>Teachers List</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Subject</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let teacher of teachers">
+        <td>{{ teacher.firstName }} {{ teacher.lastName }}</td>
+        <td>{{ teacher.email }}</td>
+        <td>{{ teacher.subjects }}</td>
+        <td>
+          <button (click)="updateTeacher(teacher)">Update</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,53 +1,74 @@
-import { Component, OnInit } from '@angular/core';
-import { DashboardService } from './dashboard.service';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { selectUser } from '../../store/auth/state/auth.selectors';
-import { TeacherSummary } from '../teacher/models/teacher-summary.model';
+import { DashboardService } from './dashboard.service';
+import { Observable, of } from 'rxjs';
+import { switchMap, map } from 'rxjs/operators';
 import { StudentSummary } from '../student/models/student-summary.model';
-import { User } from '../../store/auth/auth.model';
+import { TeacherSummary } from '../teacher/models/teacher-summary.model';
+import { Chart, registerables, ChartConfiguration } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css'],
+  imports: [BaseChartDirective, CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
   user$ = this.store.select(selectUser);
-  user: User | null = null;
-  teacherSummary: TeacherSummary | null = null;
-  studentSummary: StudentSummary | null = null;
+
+  pieCharData: ChartConfiguration<'pie'>['data'] = {
+    labels: [],
+    datasets: [],
+  };
+
+  lineChartData: ChartConfiguration<'line'>['data'] = {
+    labels: [],
+    datasets: [],
+  };
+
+  pieOptions: ChartConfiguration<'pie'>['options'] = {
+    plugins: { legend: { position: 'bottom' } },
+  };
+
+  lineOptions: ChartConfiguration<'line'>['options'] = {
+    responsive: true,
+    scales: { x: {}, y: { beginAtZero: true, max: 100 } },
+  };
+
+  studentSummary$: Observable<StudentSummary | null> = this.user$.pipe(
+    switchMap((user) =>
+      user?.role === 'Student'
+        ? this.dashboardService.getStudentSummary(user.userId)
+        : of(null)
+    )
+  );
+
+  teacherSummary$: Observable<TeacherSummary | null> = this.user$.pipe(
+    switchMap((user) =>
+      user?.role === 'Teacher'
+        ? this.dashboardService.getTeacherSummary(user.userId)
+        : of(null)
+    )
+  );
 
   constructor(
-    private dashboardService: DashboardService,
-    private store: Store
-  ) {}
-
-  ngOnInit() {
+    private store: Store,
+    private dashboardService: DashboardService
+  ) {
     this.user$.subscribe((user) => {
-      if (user) {
-        this.user = user;
-      } else {
-        this.user = null;
-      }
+      console.log('User Observable Emission:', user);
     });
 
-    if (this.user?.role === 'student') {
-      this.getStudentSummary();
-    }
-    if (this.user?.role === 'teacher') {
-      this.getTeacherSummary();
-    }
-  }
-
-  getStudentSummary() {
-    this.dashboardService.getStudentSummary(this.user!.id).subscribe((data) => {
-      this.studentSummary = data.data as StudentSummary;
+    this.studentSummary$.subscribe((summary) => {
+      console.log('Student Summary Observable Emission:', summary);
     });
-  }
 
-  getTeacherSummary() {
-    this.dashboardService.getTeacherSummary(this.user!.id).subscribe((data) => {
-      this.teacherSummary = data.data as TeacherSummary;
+    this.teacherSummary$.subscribe((summary) => {
+      console.log('Teacher Summary Observable Emission:', summary);
     });
   }
 }

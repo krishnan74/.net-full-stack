@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { QuizModel } from '../models/quiz.model';
 import { Inject, inject, Injectable } from '@angular/core';
 import { API_BASE_URL } from '../../../core/tokens/api-url.token';
@@ -44,9 +44,29 @@ export class QuizService {
   ): Observable<QuizModel[]> {
     const quizzes = this.http.get<QuizModel[]>(`
         
-        ${this.apiBaseUrl}/Quizzes/search?Title=${searchTerm}&Description=${searchTerm}&TeacherName=${searchTerm}&CreatedAtMin=${createdAtMin?.toISOString() || ''}&CreatedAtMax=${createdAtMax?.toISOString() || ''}&DueDateMin=${dueDateMin?.toISOString() || ''}&DueDateMax=${dueDateMax?.toISOString() || ''}&IsActive=${isActive !== undefined ? isActive : ''}`);
+        ${
+          this.apiBaseUrl
+        }/Quizzes/search?Title=${searchTerm}&Description=${searchTerm}&TeacherName=${searchTerm}&CreatedAtMin=${
+      createdAtMin?.toISOString() || ''
+    }&CreatedAtMax=${createdAtMax?.toISOString() || ''}&DueDateMin=${
+      dueDateMin?.toISOString() || ''
+    }&DueDateMax=${dueDateMax?.toISOString() || ''}&IsActive=${
+      isActive !== undefined ? isActive : ''
+    }`);
 
-      console.log('Quizzes fetched:', quizzes);
+    console.log('Quizzes fetched:', quizzes);
     return quizzes;
+  }
+
+  deleteQuiz(id: number): Observable<ApiResponse<QuizModel>> {
+    console.log('Deleting quiz with ID:', id);
+    return this.http
+      .delete<ApiResponse<QuizModel>>(`${this.apiBaseUrl}/Quizzes/${id}`)
+      .pipe(
+        map((response) => {
+          console.log('Quiz deleted successfully:', response);
+          return response;
+        })
+      );
   }
 }
