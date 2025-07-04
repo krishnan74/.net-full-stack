@@ -1,11 +1,14 @@
 <div class="table-list-container">
-  <h2>Classes List</h2>
-  <button (click)="addOrUpdateClass(null)">Add New Class</button>
+  <div class="header">
+    <h2>Classes List</h2>
+    <button id="add-button" (click)="addClass()">Add New Class</button>
+  </div>
 
   <table>
     <thead>
       <tr>
         <th>Class Name</th>
+        <th>Subjects</th>
         <th>Created At</th>
         <th>Updated At</th>
         <th>Actions</th>
@@ -14,11 +17,17 @@
     <tbody>
       <tr *ngFor="let classItem of classes">
         <td>{{ classItem.name }}</td>
+        <td>
+          <ul id="subjects-list">
+            <li *ngFor="let classSubject of classItem.classSubjects">
+              {{ classSubject.subject.name }}
+            </li>
+          </ul>
+        </td>
         <td>{{ classItem.createdAt | date }}</td>
         <td>{{ classItem.updatedAt | date }}</td>
-        <td>
-          <button (click)="addOrUpdateClass(classItem)">Update</button>
-          <button (click)="addSubjectToClass(classItem.id)">Add Subject</button>
+        <td class="actions">
+          <button (click)="updateClass(classItem)">Update</button>
         </td>
       </tr>
     </tbody>

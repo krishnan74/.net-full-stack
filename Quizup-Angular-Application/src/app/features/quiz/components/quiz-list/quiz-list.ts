@@ -22,13 +22,19 @@ export class QuizList implements OnInit {
   quizzes: QuizModel[] = [];
 
   searchString: string = '';
-  searchSubject = new Subject<string>();
+  createdAtMin?: Date;
+  createdAtMax?: Date;
+  dueDateMin?: Date;
+  dueDateMax?: Date;
+  isActive?: boolean;
+
+  searchSubject = new Subject<void>();
   loading: boolean = false;
 
   constructor(private quizService: QuizService) {}
 
   handleSearchQuizzes() {
-    this.searchSubject.next(this.searchString);
+    this.searchSubject.next();
   }
 
   ngOnInit(): void {
@@ -37,14 +43,14 @@ export class QuizList implements OnInit {
         debounceTime(500),
         distinctUntilChanged(),
         tap(() => (this.loading = true)),
-        switchMap((query) =>
+        switchMap(() =>
           this.quizService.searchQuizzes(
-            query,
-            new Date('2024-12-31'),
-            new Date('2024-12-31'),
-            new Date('2024-12-31'),
-            new Date('2024-12-31'),
-            false
+            this.searchString,
+            this.createdAtMin,
+            this.createdAtMax,
+            this.dueDateMin,
+            this.dueDateMax,
+            this.isActive
           )
         ),
         tap(() => (this.loading = false))
@@ -52,7 +58,6 @@ export class QuizList implements OnInit {
       .subscribe({
         next: (data: any) => {
           console.log(data);
-
           this.quizzes = data as QuizModel[];
         },
       });

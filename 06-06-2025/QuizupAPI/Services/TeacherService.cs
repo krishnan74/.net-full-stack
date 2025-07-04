@@ -24,14 +24,14 @@ namespace QuizupAPI.Services
         private readonly IRepository<long, TeacherSubject> _teacherSubjectRepository;
         private readonly IRepository<long, TeacherClass> _teacherClassRepository;
 
-        private readonly IRepository<long, Class> _classRepository;
+        private readonly IRepository<long, Classe> _classRepository;
 
         private readonly IRepository<long, Subject> _subjectRepository;
         private readonly QuizContext _context;
 
         public UserMapper userMapper;
         public TeacherMapper teacherMapper;
-        public TeacherService(IRepository<long, Teacher> teacherRepository, IRepository<long, Quiz> quizRepository, IHubContext<QuizNotificationHub> hubContext, IEncryptionService encryptionService, IRepository<string, User> userRepository, IRepository<long, TeacherSubject> teacherSubjectRepository, IRepository<long, TeacherClass> teacherClassRepository, IRepository<long, Class> classRepository, IRepository<long, Subject> subjectRepository, QuizContext context)
+        public TeacherService(IRepository<long, Teacher> teacherRepository, IRepository<long, Quiz> quizRepository, IHubContext<QuizNotificationHub> hubContext, IEncryptionService encryptionService, IRepository<string, User> userRepository, IRepository<long, TeacherSubject> teacherSubjectRepository, IRepository<long, TeacherClass> teacherClassRepository, IRepository<long, Classe> classRepository, IRepository<long, Subject> subjectRepository, QuizContext context)
         {
             _quizRepository = quizRepository;
             _hubContext = hubContext;
@@ -236,7 +236,7 @@ namespace QuizupAPI.Services
                     TeacherName = quiz.Teacher.FirstName + " " + quiz.Teacher.LastName,
                     SubjectName = quiz.Subject?.Name ?? "No Subject",
                     SubjectCode = quiz.Subject?.Code ?? "No Code",
-                    ClassName = quiz.Class?.Name ?? "No Class",
+                    ClassName = quiz.Classe?.Name ?? "No Class",
                     Type = "start"
                 };
                 string classGroupName = $"class_{quiz.ClassId}";
@@ -288,7 +288,7 @@ namespace QuizupAPI.Services
                     TeacherName = quiz.Teacher.FirstName + " " + quiz.Teacher.LastName,
                     SubjectName = quiz.Subject?.Name ?? "No Subject",
                     SubjectCode = quiz.Subject?.Code ?? "No Code",
-                    ClassName = quiz.Class?.Name ?? "No Class",
+                    ClassName = quiz.Classe?.Name ?? "No Class",
                     Type = "end"
                 };
 

@@ -1,5 +1,7 @@
 <div class="table-list-container">
-  <h2>Students List</h2>
+  <div class="header">
+    <h2>Students List</h2>
+  </div>
   <table>
     <thead>
       <tr>
@@ -13,8 +15,8 @@
       <tr *ngFor="let student of students">
         <td>{{ student.firstName }} {{ student.lastName }}</td>
         <td>{{ student.email }}</td>
-        <td>{{ student.classs }}</td>
-        <td>
+        <td>{{ student.classe.name }}</td>
+        <td class="actions">
           <button (click)="updateStudent(student)">Update</button>
         </td>
       </tr>
