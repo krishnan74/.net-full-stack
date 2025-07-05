@@ -241,11 +241,11 @@ namespace QuizupAPI.Controllers
         [ProducesResponseType(typeof(ApiResponse<object>), 404)]
         [ProducesResponseType(typeof(ApiResponse<object>), 500)]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteQuiz(long id, [FromQuery] long teacherId)
+        public async Task<IActionResult> DeleteQuiz(long id)
         {
             try
             {
-                var quiz = await _quizService.DeleteQuizAsync(id, teacherId);
+                var quiz = await _quizService.DeleteQuizAsync(id);
                 return Ok(ApiResponse<Quiz>.SuccessResponse(quiz, "Quiz deleted successfully"));
             }
             catch (KeyNotFoundException ex)

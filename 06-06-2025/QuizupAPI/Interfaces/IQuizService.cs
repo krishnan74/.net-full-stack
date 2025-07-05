@@ -15,7 +15,7 @@ namespace QuizupAPI.Interfaces
         Task<Quiz> UpdateQuizAsync(long quizId, long teacherId, QuizUpdateRequestDTO quiz);
         Task<Question> AddQuestionToQuizAsync(long quizId, long teacherId, QuestionAddRequestDTO question);
         Task<Question> UpdateQuestionAsync(long quizId, long teacherId, QuestionUpdateRequestDTO question);
-        Task<Quiz> DeleteQuizAsync(long id, long teacherId);
+        Task<Quiz> DeleteQuizAsync(long id);
 
         Task<IEnumerable<Quiz>> GetQuizzesPaginationAsync(
             int pageNumber,

@@ -193,6 +193,20 @@ namespace QuizupAPI.Services
             {
                 var existingTeacher = await _teacherRepository.Get(id);
 
+                var teacherSubjects = await _teacherSubjectRepository.GetAll();
+                var subjectsToDelete = teacherSubjects.Where(ts => ts.TeacherId == id).ToList();
+                foreach (var teacherSubject in subjectsToDelete)
+                {
+                    await _teacherSubjectRepository.Delete(teacherSubject.Id);
+                }
+
+                var teacherClasses = await _teacherClassRepository.GetAll();
+                var classesToDelete = teacherClasses.Where(tc => tc.TeacherId == id).ToList();
+                foreach (var teacherClass in classesToDelete)
+                {
+                    await _teacherClassRepository.Delete(teacherClass.Id);
+                }
+
                 var deletedTeacher = await _teacherRepository.Delete(id);
                 await _userRepository.Delete(existingTeacher.Email);
                 return deletedTeacher;

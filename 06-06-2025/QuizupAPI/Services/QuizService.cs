@@ -148,16 +148,19 @@ namespace QuizupAPI.Services
                 throw new Exception($"An error occurred while updating the quiz: {ex.Message}");
             }
         }
-        public async Task<Quiz> DeleteQuizAsync(long id, long teacherId)
+        public async Task<Quiz> DeleteQuizAsync(long id)
         {
             try
             {
                 var quiz = await _quizRepository.Get(id);
-                
-                if (quiz.TeacherId != teacherId)
+
+                var quizQuestions = await _quizQuestionRepository.GetAll();
+                var questionsToDelete = quizQuestions.Where(q => q.QuizId == id).ToList();
+                foreach (var quizQuestion in questionsToDelete)
                 {
-                    throw new UnauthorizedAccessException("You are not authorized to delete this quiz.");
+                    await _quizQuestionRepository.Delete(quizQuestion.Id);
                 }
+                
                 return await _quizRepository.Delete(id);
             }
             catch (KeyNotFoundException ex)
