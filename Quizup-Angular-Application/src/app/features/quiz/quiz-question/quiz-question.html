@@ -10,6 +10,7 @@
     @for(option of question?.options; track $index) {
     <button
       class="text-black font-semibold border-[#bfbdc2] border-2 rounded-lg p-14"
+      (click)="selectOption(option)"
     >
       {{ option }}
     </button>

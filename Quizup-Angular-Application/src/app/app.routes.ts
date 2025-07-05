@@ -25,7 +25,7 @@ export const routes: Routes = [
     component: TeacherList,
   },
   {
-    path: 'quiz/:id',
+    path: 'quiz/:quizId/attempt/:submissionId',
     component: Quiz,
   },
   {

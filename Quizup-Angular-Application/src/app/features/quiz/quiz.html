@@ -19,6 +19,7 @@
 
   <app-quiz-question
     [question]="questions[currentQuestionIndex]"
+    (answerSelected)="selectAnswer($event.questionId, $event.selectedAnswer)"
   ></app-quiz-question>
 
   <app-quiz-timer

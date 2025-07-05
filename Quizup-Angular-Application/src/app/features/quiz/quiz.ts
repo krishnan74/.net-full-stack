@@ -6,6 +6,11 @@ import { QuizQuestionModel } from './models/quizQuestion.model';
 import { QuizQuestion } from './quiz-question/quiz-question';
 import { QuizTimerComponent } from './components/quiz-timer/quiz-timer';
 import { QuizTimerService } from './services/quiz-timer.service';
+import { AnswerModel } from './models/answer.model';
+import { selectUser } from '../../store/auth/state/auth.selectors';
+import { Store } from '@ngrx/store';
+import { StudentService } from '../student/services/student.service';
+import { User } from '../../store/auth/auth.model';
 
 @Component({
   selector: 'app-quiz',
@@ -14,18 +19,31 @@ import { QuizTimerService } from './services/quiz-timer.service';
   styleUrl: './quiz.css',
 })
 export class Quiz implements OnInit {
+  user$ = this.store.select(selectUser);
+  user: User | null = null;
+
   router = inject(ActivatedRoute);
   progress: number = 0;
   quizId: number = 0;
+  submissionId: number = 0;
   questions: QuestionModel[] = [];
   currentQuestionIndex: number = 0;
+  quizAnswers: Omit<AnswerModel, 'id' | 'quizSubmissionId'>[] = [];
   constructor(
     private quizService: QuizService,
-    private quizTimerService: QuizTimerService
-  ) {}
+    private quizTimerService: QuizTimerService,
+    private studentService: StudentService,
+    private store: Store
+  ) {
+    this.user$.subscribe((user) => {
+      this.user = user;
+      console.log('User fetched:', this.user);
+    });
+  }
 
   ngOnInit(): void {
-    this.quizId = Number(this.router.snapshot.params['id']);
+    this.quizId = Number(this.router.snapshot.params['quizId']);
+    this.submissionId = Number(this.router.snapshot.params['submissionId']);
 
     this.quizService.getQuizById(this.quizId).subscribe({
       next: (data) => {
@@ -50,13 +68,20 @@ export class Quiz implements OnInit {
     this.quizTimerService.startTimer().subscribe({
       next: (value) => {
         this.progress = value * 100;
-        console.log('Progress:', this.progress);
       },
       complete: () => {
-        console.log('Progress completed ', this.progress);
         this.nextQuestion();
       },
     });
+  }
+
+  selectAnswer(questionId: number, selectedAnswer: string) {
+    this.quizAnswers[this.currentQuestionIndex] = {
+      questionId: questionId,
+      selectedAnswer: selectedAnswer,
+    };
+
+    console.log('Selected answers', this.quizAnswers);
   }
 
   prevQuestion(): void {
@@ -73,14 +98,24 @@ export class Quiz implements OnInit {
       this.quizTimerService.startTimer().subscribe({
         next: (value) => {
           this.progress = value * 100;
-          console.log('Progress:', this.progress);
         },
         complete: () => {
-          console.log('Progress completed ', this.progress);
           this.nextQuestion();
         },
       });
     } else {
+      this.studentService
+        .submitQuiz(this.user?.userId || 0, this.submissionId, this.quizAnswers)
+        .subscribe({
+          next: (response) => {
+            alert(
+              `Quiz submitted successfully! Your score is: ${response.data.score}`
+            );
+          },
+          error: (error) => {
+            console.error('Error submitting quiz:', error);
+          },
+        });
       console.log('No more questions available.');
     }
   }
