@@ -1,0 +1,35 @@
+<div class="payments-container">
+  <h2>Payments List</h2>
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p>Loading payments...</p>
+  </div>
+
+  <table *ngIf="!loading && payments.length > 0" class="payments-table">
+    <thead>
+      <tr>
+        <th>Payment ID</th>
+        <th>Order ID</th>
+        <th>Amount</th>
+        <th>Currency</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let payment of payments">
+        <td>{{ payment.id }}</td>
+        <td>{{ payment.order?.id }}</td>
+        <td>{{ payment.amount }}</td>
+        <td>{{ payment.currency }}</td>
+        <td>{{ payment.status }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && payments.length === 0" class="no-payments">
+    <p>No payments found.</p>
+  </div>
+</div>

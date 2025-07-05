@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: krish74
+      POSTGRES_DB: razorpayDB
+    networks:
+      - appnet
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ./DotnetAPI
+    image: dotnetapi:latest
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=razorpayDB;Username=postgres;Password=krish74
+    depends_on:
+      - db
+    ports:
+      - "5182:5182"
+    networks:
+      - appnet
+
+  web:
+    build:
+      context: ./AngularApp
+    image: angularweb:latest
+    depends_on:
+      - api
+    ports:
+      - "8080:80"
+    networks:
+      - appnet
+
+networks:
+  appnet:
+
+volumes:
+  db_data:

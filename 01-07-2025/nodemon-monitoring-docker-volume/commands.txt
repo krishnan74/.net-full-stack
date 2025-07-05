@@ -1,0 +1,5 @@
+# To build the docker file 
+docker build -t nodemon-docker-example .
+
+# To run the build
+docker run  -it  -v  ${PWD}:/app nodemon-docker-example
