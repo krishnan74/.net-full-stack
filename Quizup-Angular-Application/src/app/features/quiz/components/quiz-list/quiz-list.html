@@ -3,7 +3,7 @@
     <input
       type="text"
       [(ngModel)]="searchString"
-      (input)="handleSearchQuizzes()"
+      (ngModelChange)="handleSearchQuizzes()"
       placeholder="Search quizzes..."
       class="search-input"
     />
@@ -16,7 +16,7 @@
         id="createdAtMin"
         type="date"
         [(ngModel)]="createdAtMin"
-        (change)="handleSearchQuizzes()"
+        (ngModelChange)="handleSearchQuizzes()"
         class="date-input"
       />
     </div>
@@ -26,7 +26,7 @@
         id="createdAtMax"
         type="date"
         [(ngModel)]="createdAtMax"
-        (change)="handleSearchQuizzes()"
+        (ngModelChange)="handleSearchQuizzes()"
         class="date-input"
       />
     </div>
@@ -36,7 +36,7 @@
         id="dueDateMin"
         type="date"
         [(ngModel)]="dueDateMin"
-        (change)="handleSearchQuizzes()"
+        (ngModelChange)="handleSearchQuizzes()"
         class="date-input"
       />
     </div>
@@ -46,7 +46,7 @@
         id="dueDateMax"
         type="date"
         [(ngModel)]="dueDateMax"
-        (change)="handleSearchQuizzes()"
+        (ngModelChange)="handleSearchQuizzes()"
         class="date-input"
       />
     </div>
@@ -55,7 +55,7 @@
         <input
           type="checkbox"
           [(ngModel)]="isActive"
-          (change)="handleSearchQuizzes()"
+          (ngModelChange)="handleSearchQuizzes()"
         />
         Active Only
       </label>
@@ -72,12 +72,15 @@
 
 <div *ngIf="!loading || quizzes.length > 0" class="quizzes-list">
   <app-quiz-card
-    *ngFor="let item of quizzes; trackBy: item.id"
+    *ngFor="let item of quizzes"
     [quiz]="item"
     class="quiz-card"
   ></app-quiz-card>
 </div>
 
-<div *ngIf="!loading && quizzes.length === 0 && searchString" class="no-results">
+<div
+  *ngIf="!loading && quizzes.length === 0 && searchString"
+  class="no-results"
+>
   <p>No quizzes found for "{{ searchString }}"</p>
 </div>

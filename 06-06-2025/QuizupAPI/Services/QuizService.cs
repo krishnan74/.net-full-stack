@@ -281,30 +281,32 @@ namespace QuizupAPI.Services
                 }
 
                 // Apply CreatedAt filters
-                if (quizSearchModel.CreatedAtMin.HasValue)
+                if (quizSearchModel.CreatedAtMin != null)
                 {
-                    quizzes = quizzes.Where(q => q.CreatedAt >= quizSearchModel.CreatedAtMin.Value);
+                    Console.WriteLine($"Filtering quizzes created after: {quizSearchModel.CreatedAtMin}");
+                    quizzes = quizzes.Where(q => q.CreatedAt >= quizSearchModel.CreatedAtMin);
                 }
-                if (quizSearchModel.CreatedAtMax.HasValue)
+                if (quizSearchModel.CreatedAtMax != null)
                 {
-                    quizzes = quizzes.Where(q => q.CreatedAt <= quizSearchModel.CreatedAtMax.Value);
+                    Console.WriteLine($"Filtering quizzes created before: {quizSearchModel.CreatedAtMax}");
+                    quizzes = quizzes.Where(q => q.CreatedAt <= quizSearchModel.CreatedAtMax);
                 }
 
                 // Apply DueDate filters
-                if (quizSearchModel.DueDateMin.HasValue)
+                if (quizSearchModel.DueDateMin != null)
                 {
-                    quizzes = quizzes.Where(q => q.DueDate >= quizSearchModel.DueDateMin.Value);
+                    Console.WriteLine($"Filtering quizzes due after: {quizSearchModel.DueDateMin}");
+                    quizzes = quizzes.Where(q => q.DueDate >= quizSearchModel.DueDateMin);
                 }
-                if (quizSearchModel.DueDateMax.HasValue)
+                if (quizSearchModel.DueDateMax != null)
                 {
-                    quizzes = quizzes.Where(q => q.DueDate <= quizSearchModel.DueDateMax.Value);
+                    Console.WriteLine($"Filtering quizzes due before: {quizSearchModel.DueDateMax}");
+                    quizzes = quizzes.Where(q => q.DueDate <= quizSearchModel.DueDateMax);
                 }
 
-                // Apply IsActive filter
-                if (quizSearchModel.IsActive.HasValue)
-                {
-                    quizzes = quizzes.Where(q => q.IsActive == quizSearchModel.IsActive.Value);
-                }
+
+                
+                quizzes = quizzes.Where(q => q.IsActive == quizSearchModel.IsActive);
 
                 return quizzes.ToList();
             }
@@ -378,10 +380,10 @@ namespace QuizupAPI.Services
         }
 
         private IEnumerable<Quiz> SearchByCreatedAt(
-            IEnumerable<Quiz> quizzes, Range<DateTime>? createdAt
+            IEnumerable<Quiz> quizzes, DateTime? createdAtMin, DateTime? createdAtMax
         )
         {
-            if (createdAt == null || (createdAt.Min == null && createdAt.Max == null))
+            if (createdAtMin == null && createdAtMax == null)
             {
                 Console.WriteLine("No created date provided, returning all quizzes.");
 
@@ -389,11 +391,11 @@ namespace QuizupAPI.Services
             }
             else
             {
-                Console.WriteLine($"Searching quizzes with created date containing: {createdAt.Min} to {createdAt.Max}");
+                Console.WriteLine($"Searching quizzes with created date containing: {createdAtMin} to {createdAtMax}");
                 var filteredQuizzes = quizzes.Where(q =>
 
-                (createdAt.Min == null || q.CreatedAt >= createdAt.Min) &&
-                (createdAt.Max == null || q.CreatedAt <= createdAt.Max)
+                (createdAtMin == null || q.CreatedAt >= createdAtMin) &&
+                (createdAtMax == null || q.CreatedAt <= createdAtMax)
                 ).ToList();
                 
                 return filteredQuizzes;
@@ -404,10 +406,10 @@ namespace QuizupAPI.Services
         }
 
         private IEnumerable<Quiz> SearchByDueDate(
-            IEnumerable<Quiz> quizzes, Range<DateTime>? dueDate
+            IEnumerable<Quiz> quizzes, DateTime? dueDateMin, DateTime? dueDateMax
         )
         {
-            if (dueDate == null || (dueDate.Min == null && dueDate.Max == null))
+            if (dueDateMin == null && dueDateMax == null)
             {
                 Console.WriteLine("No due date provided, returning all quizzes.");
                 return quizzes;
@@ -415,11 +417,11 @@ namespace QuizupAPI.Services
 
             else
             {
-                Console.WriteLine($"Searching quizzes with due date containing: {dueDate.Min} to {dueDate.Max}");
-                  return quizzes.Where(q =>
-                (dueDate.Min == null || q.DueDate >= dueDate.Min) &&
-                (dueDate.Max == null || q.DueDate <= dueDate.Max)
-            ).ToList();
+                Console.WriteLine($"Searching quizzes with due date containing: {dueDateMin} to {dueDateMax}");
+                return quizzes.Where(q =>
+                    (dueDateMin == null || q.DueDate >= dueDateMin) &&
+                    (dueDateMax == null || q.DueDate <= dueDateMax)
+                ).ToList();
             }
 
           

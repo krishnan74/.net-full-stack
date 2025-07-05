@@ -1,12 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { QuizService } from '../../services/quiz.service';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  Subject,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { debounceTime, Subject, switchMap, tap } from 'rxjs';
 import { QuizModel } from '../../models/quiz.model';
 import { QuizCard } from '../quiz-card/quiz-card';
 import { CommonModule } from '@angular/common';
@@ -26,7 +20,7 @@ export class QuizList implements OnInit {
   createdAtMax?: Date;
   dueDateMin?: Date;
   dueDateMax?: Date;
-  isActive?: boolean;
+  isActive?: boolean = false;
 
   searchSubject = new Subject<void>();
   loading: boolean = false;
@@ -41,7 +35,6 @@ export class QuizList implements OnInit {
     this.searchSubject
       .pipe(
         debounceTime(500),
-        distinctUntilChanged(),
         tap(() => (this.loading = true)),
         switchMap(() =>
           this.quizService.searchQuizzes(
@@ -57,8 +50,8 @@ export class QuizList implements OnInit {
       )
       .subscribe({
         next: (data: any) => {
-          console.log(data);
-          this.quizzes = data as QuizModel[];
+          console.log('Quizzes fetched:', data.data);
+          this.quizzes = data.data as QuizModel[];
         },
       });
   }

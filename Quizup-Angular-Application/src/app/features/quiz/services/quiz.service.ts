@@ -47,10 +47,10 @@ export class QuizService {
         ${
           this.apiBaseUrl
         }/Quizzes/search?Title=${searchTerm}&Description=${searchTerm}&TeacherName=${searchTerm}&CreatedAtMin=${
-      createdAtMin?.toISOString() || ''
-    }&CreatedAtMax=${createdAtMax?.toISOString() || ''}&DueDateMin=${
-      dueDateMin?.toISOString() || ''
-    }&DueDateMax=${dueDateMax?.toISOString() || ''}&IsActive=${
+      createdAtMin || ''
+    }&CreatedAtMax=${createdAtMax || ''}&DueDateMin=${
+      dueDateMin || ''
+    }&DueDateMax=${dueDateMax || ''}&IsActive=${
       isActive !== undefined ? isActive : ''
     }`);
 
