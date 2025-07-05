@@ -24,11 +24,32 @@ export class QuizList implements OnInit {
 
   searchSubject = new Subject<void>();
   loading: boolean = false;
+  showFilters: boolean = true;
+  filterToggle: boolean = false;
+  lastScrollTop: number = 0;
 
-  constructor(private quizService: QuizService) {}
+  constructor(private quizService: QuizService) {
+    window.addEventListener('scroll', this.onScroll.bind(this));
+  }
 
   handleSearchQuizzes() {
     this.searchSubject.next();
+  }
+
+  onScroll() {
+    const st = window.scrollY || document.documentElement.scrollTop;
+    if (st > this.lastScrollTop && st > 100 && !this.filterToggle) {
+      this.showFilters = false;
+    } else if (st <= 0) {
+      this.showFilters = true;
+      this.filterToggle = false;
+    }
+    this.lastScrollTop = st <= 0 ? 0 : st;
+  }
+
+  toggleFilters() {
+    this.filterToggle = !this.filterToggle;
+    this.showFilters = !this.showFilters;
   }
 
   ngOnInit(): void {

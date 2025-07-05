@@ -3,7 +3,20 @@ header {
   z-index: 100;
   justify-content: space-between;
   align-items: center;
-  padding: 0px 20px;
+  padding: 10px 2rem 15px 2rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: sticky;
+  top: 30px;
+  z-index: 1000;
+}
+
+.scrolled {
+  border-radius: 16px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.801);
+  border-left: 1px solid rgba(255, 255, 255, 0.801);
+  border-right: 1px solid rgba(255, 255, 255, 0.801);
 }
 
 h1 {
@@ -45,7 +58,6 @@ a:hover {
 .login-button:hover {
   border: 1px solid #2d2431;
 }
-
 
 .logout-button {
   padding: 10px 20px;

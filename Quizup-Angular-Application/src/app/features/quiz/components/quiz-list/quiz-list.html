@@ -7,9 +7,20 @@
       placeholder="Search quizzes..."
       class="search-input"
     />
+
+    <div class="filters-toggle" *ngIf="!showFilters">
+      <button class="show-filters-btn" (click)="toggleFilters()">
+        <span class="down-arrow">&#8595;</span> Show Filters
+      </button>
+    </div>
   </div>
 
-  <div class="filters-container">
+  <div
+    class="filters-container slide-filters"
+    [class.slide-out]="!showFilters"
+    [class.slide-in]="showFilters"
+    *ngIf="showFilters"
+  >
     <div class="date-filter">
       <label for="createdAtMin">Created At Min:</label>
       <input
@@ -51,14 +62,19 @@
       />
     </div>
     <div class="checkbox-filter">
-      <label>
-        <input
-          type="checkbox"
-          [(ngModel)]="isActive"
-          (ngModelChange)="handleSearchQuizzes()"
-        />
-        Active Only
-      </label>
+      <label> Active Only </label>
+
+      <input
+        type="checkbox"
+        [(ngModel)]="isActive"
+        (ngModelChange)="handleSearchQuizzes()"
+      />
+    </div>
+
+    <div class="filters-toggle" *ngIf="showFilters">
+      <button class="show-filters-btn" (click)="toggleFilters()">
+        <span class="up-arrow">&#8593;</span> Hide Filters
+      </button>
     </div>
   </div>
 </div>
@@ -71,11 +87,7 @@
 </div>
 
 <div *ngIf="!loading || quizzes.length > 0" class="quizzes-list">
-  <app-quiz-card
-    *ngFor="let item of quizzes"
-    [quiz]="item"
-    class="quiz-card"
-  ></app-quiz-card>
+  <app-quiz-card *ngFor="let item of quizzes" [quiz]="item"></app-quiz-card>
 </div>
 
 <div
