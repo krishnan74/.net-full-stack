@@ -1,3 +1,4 @@
+import { ClassModel } from '../../class/models/class';
 import { QuizSubmission } from '../../quiz/models/quizSubmission.model';
 
 export class StudentModel {
@@ -6,7 +7,7 @@ export class StudentModel {
     public email: string = '',
     public firstName: string = '',
     public lastName: string = '',
-    public classs: string = '',
+    public classe: ClassModel = new ClassModel(),
     public createdAt: Date = new Date(),
     public quizSubmissions?: QuizSubmission[]
   ) {}

@@ -4,12 +4,30 @@ import { RazorpayService } from './features/razorpay/razorpay.service';
 import { PaymentService } from './features/payment/services/payment.service';
 import { OrderService } from './features/order/services/order.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs'; 
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App, HttpClientTestingModule],
-      providers: [RazorpayService, OrderService, PaymentService],
+      providers: [
+        RazorpayService,
+        OrderService,
+        PaymentService,
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({}), 
+            queryParams: of({}), 
+            snapshot: {
+              paramMap: {
+                get: (key: string) => null, 
+              },
+            },
+          },
+        },
+      ],
     }).compileComponents();
   });
 

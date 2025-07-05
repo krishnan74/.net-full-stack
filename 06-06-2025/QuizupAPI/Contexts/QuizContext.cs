@@ -21,7 +21,7 @@ namespace QuizupAPI.Contexts
         public DbSet<Teacher> teachers { get; set; } = null!;
         public DbSet<Student> students { get; set; } = null!;
 
-        public DbSet<Class> classes { get; set; } = null!;
+        public DbSet<Classe> classes { get; set; } = null!;
         public DbSet<Subject> subjects { get; set; } = null!;
         public DbSet<TeacherSubject> teacherSubjects { get; set; } = null!;
         public DbSet<TeacherClass> teacherClasses { get; set; } = null!;
@@ -59,7 +59,7 @@ namespace QuizupAPI.Contexts
                                         .HasConstraintName("FK_User_Student")
                                         .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Student>().HasOne(s => s.Class)
+            modelBuilder.Entity<Student>().HasOne(s => s.Classe)
                                         .WithMany(c => c.Students)
                                         .HasForeignKey(s => s.ClassId)
                                         .HasConstraintName("FK_Student_Class")
@@ -77,7 +77,7 @@ namespace QuizupAPI.Contexts
                                         .HasConstraintName("FK_Quiz_Teacher")
                                         .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Quiz>().HasOne(q => q.Class)
+            modelBuilder.Entity<Quiz>().HasOne(q => q.Classe)
                                         .WithMany(c => c.Quizzes)
                                         .HasForeignKey(q => q.ClassId)
                                         .HasConstraintName("FK_Quiz_Class")
@@ -138,7 +138,7 @@ namespace QuizupAPI.Contexts
                                         .HasConstraintName("FK_TeacherSubject_Subject")
                                         .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<TeacherClass>().HasOne(ts => ts.Class)
+            modelBuilder.Entity<TeacherClass>().HasOne(ts => ts.Classe)
                                         .WithMany(c => c.Teachers)
                                         .HasForeignKey(ts => ts.ClassId)
                                         .HasConstraintName("FK_TeacherClass_Class")
@@ -150,7 +150,7 @@ namespace QuizupAPI.Contexts
                                         .HasConstraintName("FK_TeacherClass_Teacher")
                                         .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ClassSubject>().HasOne(cs => cs.Class)
+            modelBuilder.Entity<ClassSubject>().HasOne(cs => cs.Classe)
                                         .WithMany(c => c.ClassSubjects)
                                         .HasForeignKey(cs => cs.ClassId)
                                         .HasConstraintName("FK_ClassSubject_Class")

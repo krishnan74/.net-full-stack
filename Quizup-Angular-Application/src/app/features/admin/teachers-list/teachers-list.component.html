@@ -1,11 +1,14 @@
 <div class="table-list-container">
-  <h2>Teachers List</h2>
+  <div class="header">
+    <h2>Teachers List</h2>
+  </div>
   <table>
     <thead>
       <tr>
         <th>Name</th>
         <th>Email</th>
-        <th>Subject</th>
+        <th>Classes</th>
+        <th>Subjects</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -13,7 +16,20 @@
       <tr *ngFor="let teacher of teachers">
         <td>{{ teacher.firstName }} {{ teacher.lastName }}</td>
         <td>{{ teacher.email }}</td>
-        <td>{{ teacher.subjects }}</td>
+        <td>
+          <ul id="subjects-list">
+            <li *ngFor="let teacherClass of teacher.teacherClasses">
+              {{ teacherClass.classe.name }}
+            </li>
+          </ul>
+        </td>
+        <td>
+          <ul id="subjects-list">
+            <li *ngFor="let teacherSubject of teacher.teacherSubjects">
+              {{ teacherSubject.subject.name }}
+            </li>
+          </ul>
+        </td>
         <td>
           <button (click)="updateTeacher(teacher)">Update</button>
         </td>

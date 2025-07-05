@@ -1,0 +1,77 @@
+.admin-dashboard {
+  padding: 3rem 4rem;
+  border-radius: 16px;
+  max-width: 800px;
+  width: 90%;
+  text-align: center;
+  margin: auto;
+}
+
+.admin-dashboard h2 {
+  font-size: 2.4rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #2e2932;
+}
+
+.subheading {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  color: #2e2932;
+}
+
+.admin-nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-nav li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 1px solid #fc99f5;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-nav li:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  color: white;
+  background: linear-gradient(
+    135deg,
+    #fc99f5bf 0%,
+    #ff98e5a0 15%,
+    #fcc2eea0 20%,
+    #ff99d8 30%,
+    #ff9acdcd 40%,
+    #ff9acdcd 50%,
+    #ff9dbfac 60%,
+    #fca0b7 75%,
+    #fca8a7a6 90%,
+    #f2be90c0 100%
+  );
+}
+
+.admin-nav a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem;
+  text-decoration: none;
+  color: #2e2932;
+  font-size: 1.4rem;
+  font-weight: 600;
+  border-radius: 12px;
+  transition: background-color 0.3s;
+}
+
+.admin-nav a span {
+  font-size: 2rem;
+  margin-right: 0.5rem;
+}

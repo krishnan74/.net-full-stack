@@ -21,6 +21,7 @@ export class StudentsListComponent implements OnInit {
   loadStudents(): void {
     this.studentService.getAllStudents().subscribe((data) => {
       this.students = data.data;
+      console.log('Students loaded:', this.students);
     });
   }
 

@@ -11,6 +11,7 @@ body {
   background-color: #eae9ee;
   color: #2e2932;
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 * {

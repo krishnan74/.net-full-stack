@@ -268,28 +268,53 @@ namespace QuizupAPI.Services
             try
             {
                 var quizzes = await _quizRepository.GetAll();
-                var oneQuiz = await _quizRepository.Get(1);
-                Console.WriteLine($"One quiz teacher name: {oneQuiz.Teacher.FirstName} {oneQuiz.Teacher.LastName}");
 
-                quizzes = SearchByTitle(quizzes, quizSearchModel.Title);
-                quizzes = SearchByDescription(quizzes, quizSearchModel.Description);
-                quizzes = SearchByTeacherName(quizzes, quizSearchModel.TeacherName);
-                quizzes = SearchByCreatedAt(quizzes, quizSearchModel.CreatedAt);
-                quizzes = SearchByDueDate(quizzes, quizSearchModel.DueDate);
-                quizzes = SearchByIsActive(quizzes, quizSearchModel.IsActive);
-
-                if (quizzes != null && quizzes.Count() > 0)
+                // Apply OR logic for Title, Description, and TeacherName
+                if (!string.IsNullOrWhiteSpace(quizSearchModel.Title) ||
+                    !string.IsNullOrWhiteSpace(quizSearchModel.Description) ||
+                    !string.IsNullOrWhiteSpace(quizSearchModel.TeacherName))
                 {
-                    return quizzes.ToList();
+                    quizzes = quizzes.Where(q =>
+                        (!string.IsNullOrWhiteSpace(quizSearchModel.Title) && q.Title.ToLower().Contains(quizSearchModel.Title.ToLower())) ||
+                        (!string.IsNullOrWhiteSpace(quizSearchModel.Description) && q.Description.ToLower().Contains(quizSearchModel.Description.ToLower())) ||
+                        (!string.IsNullOrWhiteSpace(quizSearchModel.TeacherName) &&
+                            (q.Teacher.FirstName.ToLower().Contains(quizSearchModel.TeacherName.ToLower()) ||
+                             q.Teacher.LastName.ToLower().Contains(quizSearchModel.TeacherName.ToLower())))
+                    );
                 }
 
+                // Apply CreatedAt filters
+                if (quizSearchModel.CreatedAtMin.HasValue)
+                {
+                    quizzes = quizzes.Where(q => q.CreatedAt >= quizSearchModel.CreatedAtMin.Value);
+                }
+                if (quizSearchModel.CreatedAtMax.HasValue)
+                {
+                    quizzes = quizzes.Where(q => q.CreatedAt <= quizSearchModel.CreatedAtMax.Value);
+                }
+
+                // Apply DueDate filters
+                if (quizSearchModel.DueDateMin.HasValue)
+                {
+                    quizzes = quizzes.Where(q => q.DueDate >= quizSearchModel.DueDateMin.Value);
+                }
+                if (quizSearchModel.DueDateMax.HasValue)
+                {
+                    quizzes = quizzes.Where(q => q.DueDate <= quizSearchModel.DueDateMax.Value);
+                }
+
+                // Apply IsActive filter
+                if (quizSearchModel.IsActive.HasValue)
+                {
+                    quizzes = quizzes.Where(q => q.IsActive == quizSearchModel.IsActive.Value);
+                }
+
+                return quizzes.ToList();
             }
             catch (Exception ex)
             {
-                throw new Exception("Failed to search quiz", ex);
+                throw new Exception("Failed to search quizzes", ex);
             }
-            return null;
-
         }
 
         private IEnumerable<Quiz> SearchByTitle(

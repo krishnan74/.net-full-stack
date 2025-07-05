@@ -22,7 +22,7 @@ namespace QuizupAPI.Repositories
 
         public override async Task<IEnumerable<Student>> GetAll()
         {
-            var students = _quizContext.students;
+            var students = _quizContext.students.Include(s => s.Classe);
             if (!students.Any())
                 return Enumerable.Empty<Student>();
             return (await students.ToListAsync());

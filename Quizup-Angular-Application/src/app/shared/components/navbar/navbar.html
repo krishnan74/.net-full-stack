@@ -7,9 +7,6 @@
   <div class="flex">
     <div class="links-div mr-2">
       <li>
-        <a routerLink="/">Dashboard</a>
-      </li>
-      <li>
         <a routerLink="/quizzes">Quizzes</a>
       </li>
       <li>
@@ -18,20 +15,24 @@
       <li>
         <a routerLink="/dashboard">Dashboard</a>
       </li>
+
+      @if( user?.role === 'Admin') {
+      <li>
+        <a routerLink="/admin">Admin</a>
+      </li>
+      } @else{
       <li>
         <a routerLink="/profile">Profile</a>
       </li>
+      }
     </div>
 
     <div class="flex gap-2">
-      @if(username){
+      @if(user?.username){
       <button class="logout-button" (click)="onLogout()">Logout</button>
-      }
-      @else{
-      <button  class="login-button" routerLink="/auth/login">Login</button>
+      } @else{
+      <button class="login-button" routerLink="/auth/login">Login</button>
       }
     </div>
   </div>
 </header>
-
-

@@ -1,7 +1,7 @@
-
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using QuizupAPI.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace QuizupAPI.Models
 {
@@ -15,8 +15,9 @@ namespace QuizupAPI.Models
         [Required]
         public string LastName { get; set; } = string.Empty;
         
-        public ICollection<TeacherSubject>? TeacherSubjects { get; set; }
-        public ICollection<TeacherClass>? TeacherClasses { get; set; }
+        public ICollection<TeacherClass> TeacherClasses { get; set; }
+
+        public ICollection<TeacherSubject> TeacherSubjects { get; set; }
 
         public bool IsDeleted { get; set; } = false;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -24,4 +25,6 @@ namespace QuizupAPI.Models
         public User? User { get; set; }
         public ICollection<Quiz>? Quizzes { get; set; }
     }
+
+
 }

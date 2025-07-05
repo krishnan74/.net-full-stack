@@ -124,12 +124,15 @@ namespace QuizupAPI.Controllers
                 {
                     return BadRequest(ApiResponse<object>.ErrorResponse("Search criteria cannot be null."));
                 }
+                Console.WriteLine($"Search Criteria: Title={quizSearchModel.Title},");
                 var quizzes = await _quizService.SearchQuiz(quizSearchModel);
                 if (quizzes == null || !quizzes.Any())
                 {
+                    Console.WriteLine("No quizzes found matching the search criteria.");
                     return Ok(ApiResponse<IEnumerable<Quiz>>.SuccessResponse(new List<Quiz>(), "No quizzes found matching the search criteria"));
                 }
 
+                Console.WriteLine($"Found {quizzes.Count()} quizzes matching the search criteria.");
                 return Ok(ApiResponse<IEnumerable<Quiz>>.SuccessResponse(quizzes, "Quizzes fetched successfully"));
             }
             catch (Exception ex)
