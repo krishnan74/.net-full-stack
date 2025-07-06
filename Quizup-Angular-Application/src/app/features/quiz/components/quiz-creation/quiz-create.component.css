@@ -1,0 +1,98 @@
+.quiz-create-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(60, 30, 90, 0.08);
+  padding: 2.5rem 2rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+input,
+textarea,
+select {
+  padding: 0.7rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.questions-section {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.questions-list,
+.selected-questions {
+  flex: 1;
+  background: #f8f9fc;
+  border-radius: 8px;
+  padding: 1rem;
+  min-height: 250px;
+}
+
+.questions-list ul,
+.selected-questions ul {
+  list-style: none;
+  padding: 0;
+}
+
+.questions-list li,
+.selected-questions li {
+  background: #fff;
+  margin-bottom: 0.7rem;
+  padding: 0.7rem 1rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.questions-list button,
+.selected-questions button {
+  background: #7c3aed;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  margin-left: 1rem;
+}
+
+.questions-list button:hover,
+.selected-questions button:hover {
+  background: #5b21b6;
+}
+
+button[type="submit"] {
+  margin-top: 2rem;
+  padding: 0.9rem 2.2rem;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #7c3aed 0%, #f9e6f7 100%);
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.09);
+  transition: background 0.2s, color 0.2s;
+}
+
+button[type="submit"]:hover {
+  background: linear-gradient(90deg, #f9e6f7 0%, #7c3aed 100%);
+  color: #7c3aed;
+}

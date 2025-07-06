@@ -14,6 +14,7 @@ import { StudentsListComponent } from './features/admin/students-list/students-l
 import { TeachersListComponent } from './features/admin/teachers-list/teachers-list.component';
 import { SubjectsListComponent } from './features/admin/subjects-list/subjects-list.component';
 import { ClassesListComponent } from './features/admin/classes-list/classes-list.component';
+import { QuizCreateComponent } from './features/quiz/components/quiz-creation/quiz-create.component';
 
 export const routes: Routes = [
   {
@@ -27,6 +28,10 @@ export const routes: Routes = [
   {
     path: 'quiz/:quizId/attempt/:submissionId',
     component: Quiz,
+  },
+  {
+    path: 'quiz/create',
+    component: QuizCreateComponent,
   },
   {
     path: 'quizzes',
