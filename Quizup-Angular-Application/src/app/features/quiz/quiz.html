@@ -27,3 +27,10 @@
     [progress]="progress"
   ></app-quiz-timer>
 </div>
+
+<app-quiz-result-dialog
+  [score]="quizScore"
+  [visible]="showResultDialog"
+  (reviewAnswers)="reviewAnswers()"
+  (goBackToQuizzes)="goBackToQuizzes()"
+></app-quiz-result-dialog>

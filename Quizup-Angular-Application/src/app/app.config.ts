@@ -26,10 +26,19 @@ import { localStorageMetaReducer } from './store/auth/state/meta.reducer';
 import { ClassService } from './features/class/services/class.service';
 import { DashboardService } from './features/dashboard/dashboard.service';
 import { SignalRService } from './features/notification/services/signalr.service';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeuix/themes/aura';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    provideAnimationsAsync(),
+    providePrimeNG({
+      theme: {
+        preset: Aura,
+      },
+    }),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(withInterceptorsFromDi()),
