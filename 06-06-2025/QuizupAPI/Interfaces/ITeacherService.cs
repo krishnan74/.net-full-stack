@@ -20,6 +20,7 @@ namespace QuizupAPI.Interfaces
             int pageSize
         );
         Task<IEnumerable<Subject>> GetSubjectsByTeacherIdAsync(long teacherId);
+        Task<IEnumerable<Classe>> GetClassesByTeacherIdAsync(long teacherId);
 
     }
 }

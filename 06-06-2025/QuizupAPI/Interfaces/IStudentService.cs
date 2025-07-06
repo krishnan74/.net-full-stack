@@ -18,9 +18,11 @@ namespace QuizupAPI.Interfaces
         Task<QuizSubmission> SubmitQuizAsync(long studentId, long quizSubmissionId, QuizSubmissionDTO submission);
         Task<QuizSubmission> SaveAnswersAsync(long studentId, long quizSubmissionId, QuizSubmissionDTO submission);
         Task<StudentSummaryDTO> GetStudentQuizSummaryAsync(long studentId, DateTime? startDate = null, DateTime? endDate = null);
-        Task<IEnumerable<Student>> GetStudentsPaginationAsync( 
-            int pageNumber, 
+        Task<IEnumerable<Student>> GetStudentsPaginationAsync(
+            int pageNumber,
             int pageSize
             );
+        
+        Task<IEnumerable<Subject>> GetSubjectsByStudentIdAsync(long studentId);
     }
 }

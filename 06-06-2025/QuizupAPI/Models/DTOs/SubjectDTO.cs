@@ -1,4 +1,3 @@
-//create model for QuizSubmissionDTO
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

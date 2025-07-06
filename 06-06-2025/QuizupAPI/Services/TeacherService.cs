@@ -398,20 +398,42 @@ namespace QuizupAPI.Services
                 throw new Exception($"An error occurred while retrieving subjects for teacher with ID {teacherId}.", ex);
             }
         }
+        
+        public async Task<IEnumerable<Classe>> GetClassesByTeacherIdAsync(long teacherId)
+        {
+            try
+            {
+                var teacher = await _teacherRepository.Get(teacherId);
+                var teacherClasses = await _teacherClassRepository.GetAll();
+                return teacherClasses.Where(tc => tc.TeacherId == teacherId).Select(tc => tc.Classe).ToList();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException($"No teacher found with ID {teacherId}.", ex);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException($"An error occurred while retrieving classes for teacher with ID {teacherId}.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while retrieving classes for teacher with ID {teacherId}.", ex);
+            }
+        }
 
         private async Task AddClassesForTeacher(ICollection<long> classIds, long teacherId)
         {
 
             foreach (var classId in classIds)
             {
-            var existingClass = await _classRepository.Get(classId);
+                var existingClass = await _classRepository.Get(classId);
 
-            var teacherClass = new TeacherClass
-            {
-                TeacherId = teacherId,
-                ClassId = classId
-            };
-            await _teacherClassRepository.Add(teacherClass);
+                var teacherClass = new TeacherClass
+                {
+                    TeacherId = teacherId,
+                    ClassId = classId
+                };
+                await _teacherClassRepository.Add(teacherClass);
             }
         }
 

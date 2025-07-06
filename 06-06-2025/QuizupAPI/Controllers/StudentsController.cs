@@ -133,7 +133,7 @@ namespace QuizupAPI.Controllers
                 }
 
                 var student = await _studentService.AddStudentAsync(studentDto);
-                return CreatedAtAction(nameof(GetStudentById), new { id = student.Id }, 
+                return CreatedAtAction(nameof(GetStudentById), new { id = student.Id },
                     ApiResponse<Student>.SuccessResponse(student, "Student created successfully"));
             }
             catch (ArgumentNullException ex)
@@ -398,6 +398,38 @@ namespace QuizupAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while retrieving student quiz summary. " + ex.Message));
+            }
+        }
+        
+                
+        /// <summary>
+        /// Get all subjects for a specific student
+        /// </summary>
+        /// <param name="studentId">Student ID</param>
+        /// <returns>List of subjects for the student</returns>
+        [HttpGet("{studentId}/subjects")]
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<Subject>>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 500)]
+        [Authorize]
+        public async Task<IActionResult> GetSubjectsByStudentId(long studentId)
+        {
+            try
+            {
+                var subjects = await _studentService.GetSubjectsByStudentIdAsync(studentId);
+                if (subjects == null || !subjects.Any())
+                {
+                    return NotFound(ApiResponse<object>.ErrorResponse("No subjects found for the specified student."));
+                }
+                return Ok(ApiResponse<IEnumerable<Subject>>.SuccessResponse(subjects, "Subjects fetched successfully for the student."));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ApiResponse<object>.ErrorResponse(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while fetching subjects for the student.", ex.Message));
             }
         }
     }

@@ -132,7 +132,7 @@ namespace QuizupAPI.Controllers
                 }
 
                 var teacher = await _teacherService.AddTeacherAsync(teacherDto);
-                return CreatedAtAction(nameof(GetTeacherById), new { id = teacher.Id }, 
+                return CreatedAtAction(nameof(GetTeacherById), new { id = teacher.Id },
                     ApiResponse<Teacher>.SuccessResponse(teacher, "Teacher created successfully"));
             }
             catch (ArgumentNullException ex)
@@ -143,7 +143,7 @@ namespace QuizupAPI.Controllers
             {
                 return BadRequest(ApiResponse<object>.ErrorResponse(ex.Message));
             }
-        
+
             catch (Exception ex)
             {
                 return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while creating the teacher. " + ex.Message));
@@ -310,5 +310,65 @@ namespace QuizupAPI.Controllers
                 return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while retrieving teacher quiz summary. " + ex.Message));
             }
         }
+
+        /// <summary>
+        /// Get all subjects taught by a teacher
+        /// </summary>
+        /// <param name="id">Teacher ID</param>
+        /// <returns>List of subjects</returns>
+        [HttpGet("{id}/subjects")]
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<Subject>>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 500)]
+        public async Task<IActionResult> GetSubjectsByTeacherId(long id)
+        {
+            try
+            {
+                var subjects = await _teacherService.GetSubjectsByTeacherIdAsync(id);
+                if (subjects == null || !subjects.Any())
+                {
+                    return NotFound(ApiResponse<object>.ErrorResponse($"No subjects found for teacher with ID {id}."));
+                }
+                return Ok(ApiResponse<IEnumerable<Subject>>.SuccessResponse(subjects, "Subjects fetched successfully"));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ApiResponse<object>.ErrorResponse(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while retrieving subjects. " + ex.Message));
+            }
+        }
+
+        /// <summary>
+        /// Get all classes taught by a teacher
+        /// </summary>
+        /// <param name="id">Teacher ID</param>
+        /// <returns>List of classes</returns>
+        [HttpGet("{id}/classes")]
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<Classe>>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 500)]
+        public async Task<IActionResult> GetClassesByTeacherId(long id)
+        {
+            try
+            {
+                var classes = await _teacherService.GetClassesByTeacherIdAsync(id);
+                if (classes == null || !classes.Any())
+                {
+                    return NotFound(ApiResponse<object>.ErrorResponse($"No classes found for teacher with ID {id}."));
+                }
+                return Ok(ApiResponse<IEnumerable<Classe>>.SuccessResponse(classes, "Classes fetched successfully"));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ApiResponse<object>.ErrorResponse(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while retrieving classes. " + ex.Message));
+            }
+        }
     }
-} 
+}
