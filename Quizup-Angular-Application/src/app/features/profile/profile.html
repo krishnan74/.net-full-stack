@@ -1,15 +1,80 @@
-<h2>Profile</h2>
-<form (ngSubmit)="updateDetails()">
-  <label>Name: <input [(ngModel)]="userDetails.name" name="name"></label><br>
-  <label>Email: <input [(ngModel)]="userDetails.email" name="email"></label><br>
-  <button type="submit">Update Details</button>
-</form>
+<h2 class="profile-title">Profile</h2>
 
-<h3>Change Password</h3>
-<form (ngSubmit)="changePassword()">
-  <label>Current Password: <input type="password" [(ngModel)]="passwordData.currentPassword" name="currentPassword"></label><br>
-  <label>New Password: <input type="password" [(ngModel)]="passwordData.newPassword" name="newPassword"></label><br>
-  <button type="submit">Change Password</button>
-</form>
+<ng-container *ngIf="user$ | async as user">
+  <div class="welcome-card">
+    <h3>Welcome, {{ user.username }}!</h3>
+  </div>
 
-<div *ngIf="message">{{ message }}</div>
+  <!-- Student Profile Summary -->
+  <ng-container *ngIf="user.role === 'Student'">
+    <ng-container *ngIf="studentSubjects$ | async as studentSubjects">
+      <div class="summary-section">
+        <h3 class="section-title">Subjects</h3>
+        <div class="summary-grid">
+          <div class="summary-card" *ngFor="let subject of studentSubjects">
+            <b>Subject:</b> {{ subject.name }}
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <!-- Teacher Profile Summary -->
+  <ng-container *ngIf="user.role === 'Teacher'">
+    <ng-container *ngIf="teacherSubjects$ | async as teacherSubjects">
+      <div class="summary-section">
+        <h3 class="section-title">Subjects</h3>
+        <div class="summary-grid">
+          <div class="summary-card" *ngFor="let subject of teacherSubjects">
+            <b>Subject:</b> {{ subject.name }}
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="teacherClasses$ | async as teacherClasses">
+      <div class="summary-section">
+        <h3 class="section-title">Classes</h3>
+        <div class="summary-grid">
+          <div class="summary-card" *ngFor="let classe of teacherClasses">
+            <b>Class:</b> {{ classe.name }}
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <!-- Change Password Section -->
+  <div class="summary-section">
+    <h3 class="section-title">Change Password</h3>
+    <form (ngSubmit)="changePassword()" class="password-form">
+      <label>
+        Current Password:
+        <input
+          type="password"
+          [(ngModel)]="passwordData.currentPassword"
+          name="currentPassword"
+          required
+        />
+      </label>
+      <label>
+        New Password:
+        <input
+          type="password"
+          [(ngModel)]="passwordData.newPassword"
+          name="newPassword"
+          required
+        />
+      </label>
+      <label>
+        Confirm New Password:
+        <input
+          type="password"
+          [(ngModel)]="passwordData.confirmNewPassword"
+          name="confirmNewPassword"
+          required
+        />
+      </label>
+      <button type="submit">Change Password</button>
+    </form>
+  </div>
+</ng-container>

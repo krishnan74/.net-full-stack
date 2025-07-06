@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from '../../../shared/models/api-response';
 import { User } from '../../../store/auth/auth.model';
 import { ClassModel } from '../models/class';
+import { SubjectModel } from '../../subject/models/subject';
 
 @Injectable()
 export class ClassService {
@@ -76,6 +77,22 @@ export class ClassService {
       .pipe(
         map((response) => {
           console.log('Class deleted successfully:', response);
+          return response;
+        })
+      );
+  }
+
+  getSubjectsByClassId(
+    classId: number
+  ): Observable<ApiResponse<SubjectModel[]>> {
+    console.log('Fetching subjects for class with ID:', classId);
+    return this.http
+      .get<ApiResponse<SubjectModel[]>>(
+        `${this.apiBaseUrl}/Classes/${classId}/subjects`
+      )
+      .pipe(
+        map((response) => {
+          console.log('Subjects fetched successfully:', response);
           return response;
         })
       );

@@ -2,6 +2,13 @@ import { Component } from '@angular/core';
 import { ProfileService } from './profile.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ClassService } from '../class/services/class.service';
+import { Store } from '@ngrx/store';
+import { User } from '../../store/auth/auth.model';
+import { selectUser } from '../../store/auth/state/auth.selectors';
+import { Observable, of, switchMap } from 'rxjs';
+import { SubjectModel } from '../subject/models/subject';
+import { ClassModel } from '../class/models/class';
 
 @Component({
   selector: 'app-profile',
@@ -10,21 +17,52 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./profile.css'],
 })
 export class ProfileComponent {
-  userDetails = { name: '', email: '' };
-  passwordData = { currentPassword: '', newPassword: '' };
-  message = '';
+  user$ = this.store.select(selectUser);
+  user: User | null = null;
 
-  constructor(private profileService: ProfileService) {}
+  passwordData = {
+    currentPassword: '',
+    newPassword: '',
+    confirmNewPassword: '',
+  };
 
-  updateDetails() {
-    this.profileService.updateUserDetails(this.userDetails).subscribe((res) => {
-      this.message = 'Profile updated successfully!';
+  changePassword() {}
+
+  studentSubjects$: Observable<SubjectModel[] | null> = this.user$.pipe(
+    switchMap((user) =>
+      user?.role === 'Student'
+        ? this.profileService.getSubjectsByStudentId(user.userId)
+        : of(null)
+    )
+  );
+
+  teacherSubjects$: Observable<SubjectModel[] | null> = this.user$.pipe(
+    switchMap((user) =>
+      user?.role === 'Teacher'
+        ? this.profileService.getSubjectsByTeacherId(user.userId)
+        : of(null)
+    )
+  );
+
+  teacherClasses$: Observable<ClassModel[] | null> = this.user$.pipe(
+    switchMap((user) =>
+      user?.role === 'Teacher'
+        ? this.profileService.getClassesByTeacherId(user.userId)
+        : of(null)
+    )
+  );
+
+  constructor(private profileService: ProfileService, private store: Store) {
+    this.studentSubjects$.subscribe((subjects) => {
+      console.log('Fetched subjects:', subjects);
     });
-  }
 
-  changePassword() {
-    this.profileService.changePassword(this.passwordData).subscribe((res) => {
-      this.message = 'Password changed successfully!';
+    this.teacherClasses$.subscribe((classes) => {
+      console.log('Fetched classes:', classes);
+    });
+
+    this.teacherSubjects$.subscribe((subjects) => {
+      console.log('Fetched teacher subjects:', subjects);
     });
   }
 }
