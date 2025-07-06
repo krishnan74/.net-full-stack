@@ -5,7 +5,7 @@ import { QuizModel } from '../../quiz/models/quiz.model';
 
 export class TeacherModel {
   constructor(
-    public id: string = '',
+    public id: number = 0,
     public email: string = '',
     public firstName: string = '',
     public lastName: string = '',

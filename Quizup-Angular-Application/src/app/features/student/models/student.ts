@@ -3,7 +3,7 @@ import { QuizSubmission } from '../../quiz/models/quizSubmission.model';
 
 export class StudentModel {
   constructor(
-    public id: string = '',
+    public id: number = 0,
     public email: string = '',
     public firstName: string = '',
     public lastName: string = '',

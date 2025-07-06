@@ -44,6 +44,8 @@ export class Quiz implements OnInit {
   quizAnswers: Omit<AnswerModel, 'id' | 'quizSubmissionId'>[] = [];
   showResultDialog: boolean = false;
   quizScore: number = 0;
+  reviewMode: boolean = false;
+  submissionAnswers: any[] = [];
   constructor(
     private quizService: QuizService,
     private quizTimerService: QuizTimerService,
@@ -128,6 +130,7 @@ export class Quiz implements OnInit {
           next: (response) => {
             this.quizScore = response.data.score;
             this.showResultDialog = true;
+            this.submissionAnswers = response.data.answers || [];
             this.messageService.add({
               severity: 'success',
               summary: 'Quiz Submitted',
@@ -151,6 +154,23 @@ export class Quiz implements OnInit {
 
   reviewAnswers() {
     this.showResultDialog = false;
+    this.reviewMode = true;
+  }
+
+  getReviewStatus(
+    questionId: number,
+    option: string
+  ): 'correct' | 'incorrect' | null {
+    if (!this.reviewMode || !this.submissionAnswers.length) return null;
+    const answer = this.submissionAnswers.find(
+      (a) => a.questionId === questionId
+    );
+    if (!answer) return null;
+    if (answer.selectedAnswer === option) {
+      return 'correct';
+    } else {
+      return 'incorrect';
+    }
   }
 
   goBackToQuizzes() {
