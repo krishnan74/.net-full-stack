@@ -4,8 +4,8 @@ import { Component } from '@angular/core';
   selector: 'app-landing',
   imports: [],
   templateUrl: './landing.html',
-  styleUrl: './landing.css'
+  styleUrl: './landing.css',
 })
 export class Landing {
-
+  imagePath = 'assets/images/blob4.png';
 }
