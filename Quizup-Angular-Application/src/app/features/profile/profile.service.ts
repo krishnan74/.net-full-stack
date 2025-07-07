@@ -5,6 +5,7 @@ import { ApiResponse } from '../../shared/models/api-response';
 import { SubjectModel } from '../subject/models/subject';
 import { API_BASE_URL } from '../../core/tokens/api-url.token';
 import { ClassModel } from '../class/models/class';
+import { QuestionModel } from '../quiz/models/question.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileService {
@@ -56,4 +57,17 @@ export class ProfileService {
         })
       );
   }
+
+  getQuestionsByTeacherId(teacherId: number): Observable<QuestionModel[]> {
+    return this.http
+      .get<ApiResponse<QuestionModel[]>>(
+        `${this.apiBaseUrl}/Teachers/${teacherId}/questions`
+      )
+      .pipe(
+        map((response) => {
+          return response.data;
+        })
+      );
+  }
+
 }

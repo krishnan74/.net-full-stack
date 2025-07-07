@@ -1,83 +1,90 @@
 <div class="quiz-create-container">
-  <h2>Create New Quiz</h2>
-  <form [formGroup]="quizForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label>Title</label>
-      <input formControlName="title" type="text" />
-    </div>
-    <div class="form-group">
-      <label>Description</label>
-      <textarea formControlName="description"></textarea>
-    </div>
-    <div class="form-group">
-      <label>Due Date</label>
-      <input formControlName="dueDate" type="datetime-local" />
-    </div>
-    <div class="form-group">
-      <label>Teacher</label>
-      <select formControlName="teacherId">
-        <option *ngFor="let t of availableTeachers" [value]="t.id">
-          {{ t.name }}
-        </option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Subject</label>
-      <select formControlName="subjectId">
-        <option *ngFor="let s of availableSubjects" [value]="s.id">
-          {{ s.name }}
-        </option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Class</label>
-      <select formControlName="classId">
-        <option *ngFor="let c of availableClasses" [value]="c.id">
-          {{ c.name }}
-        </option>
-      </select>
-    </div>
-    <div class="questions-section">
-      <div class="questions-list">
-        <h3>Available Questions</h3>
-        <input
-          type="text"
-          placeholder="Search questions..."
-          [value]="questionSearch"
-          (input)="
-            questionSearch = $any($event.target).value; searchQuestions()
-          "
-        />
-        <ul>
-          <li
-            *ngFor="let q of filteredQuestions"
-            draggable="true"
-            (dragstart)="onDragStart($event, q)"
-          >
-            {{ q.text }}
-            <button type="button" (click)="addQuestion(q)">Add</button>
-          </li>
-        </ul>
+  <div>
+    <h2>Create New Quiz</h2>
+    <form [formGroup]="quizForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>Title</label>
+        <input formControlName="title" type="text" />
       </div>
-      <div
-        class="selected-questions"
-        (dragover)="$event.preventDefault()"
-        (drop)="onDrop($event)"
+      <div class="form-group">
+        <label>Description</label>
+        <textarea formControlName="description"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Due Date</label>
+        <input formControlName="dueDate" type="datetime-local" />
+      </div>
+      <div class="form-group">
+        <label>Subject</label>
+        <ng-container *ngIf="teacherSubjects$ | async as teacherSubjects">
+          <select formControlName="subjectId">
+            <option *ngFor="let s of teacherSubjects" [value]="s.id">
+              {{ s.name }}
+            </option>
+          </select>
+        </ng-container>
+      </div>
+      <div class="form-group">
+        <label>Class</label>
+        <ng-container *ngIf="teacherClasses$ | async as teacherClasses">
+          <select formControlName="classId">
+            <option *ngFor="let c of teacherClasses" [value]="c.id">
+              {{ c.name }}
+            </option>
+          </select>
+        </ng-container>
+      </div>
+
+      <!-- Selected Questions -->
+      <div class="questions-section">
+        <div
+          class="selected-questions"
+          (dragover)="$event.preventDefault()"
+          (drop)="onDrop($event)"
+        >
+          <h3>Selected Questions</h3>
+          <ul>
+            <li *ngFor="let q of selectedQuestions; let i = index">
+              {{ q.text }}
+              <button type="button" (click)="removeQuestion(i)">Remove</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="selectedQuestions.length === 0"
       >
-        <h3>Selected Questions</h3>
-        <ul>
-          <li *ngFor="let q of selectedQuestions; let i = index">
-            {{ q.text }}
-            <button type="button" (click)="removeQuestion(i)">Remove</button>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <button
-      type="submit"
-      [disabled]="!quizForm.valid || selectedQuestions.length === 0"
-    >
-      Create Quiz
-    </button>
-  </form>
+        Create Quiz
+      </button>
+    </form>
+  </div>
+
+  <div class="questions-list">
+    <h3>Available Questions</h3>
+    <input
+      type="text"
+      placeholder="Search questions..."
+      [value]="questionSearch"
+      (input)="
+        questionSearch = $any($event.target).value; searchQuestions()
+      "
+    />
+    <ul>
+      <li
+        *ngFor="let q of filteredQuestions"
+        draggable="true"
+        (dragstart)="onDragStart($event, q)"
+      >
+        <div>
+          {{ q.text }}
+          <ul class="options-list">
+            <li *ngFor="let option of q.options">{{ option }}</li>
+          </ul>
+        </div>
+        <button type="button" (click)="addQuestion(q)">Add</button>
+      </li>
+    </ul>
+  </div>
 </div>
