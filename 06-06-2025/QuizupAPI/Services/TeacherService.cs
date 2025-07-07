@@ -323,11 +323,9 @@ namespace QuizupAPI.Services
             try
             {
 
-                Console.WriteLine($"Retrieving quiz summary for teacher with ID {teacherId} from {startDate?.ToString("yyyy-MM-dd") ?? "start"} to {endDate?.ToString("yyyy-MM-dd") ?? "end"}.");
                 // Verify teacher exists
                 var teacher = await _teacherRepository.Get(teacherId);
 
-                Console.WriteLine($"Teacher found");
 
                 var result = await _context.Set<TeacherSummaryDTO>()
                         .FromSqlRaw(
@@ -336,7 +334,6 @@ namespace QuizupAPI.Services
                         )
                         .FirstOrDefaultAsync();
 
-                Console.WriteLine($"Result: {JsonSerializer.Serialize(result)}");
 
                 if (result == null)
                 {
@@ -458,11 +455,8 @@ namespace QuizupAPI.Services
             try
             {
 
-                Console.WriteLine($"Retrieving questions for teacher with ID {teacherId}.");
-                // Verify teacher exists
                 var teacher = await _teacherRepository.Get(teacherId);
 
-                Console.WriteLine($"Teacher found");
 
                 var result = await _context.Set<Question>()
                         .FromSqlRaw(
@@ -471,11 +465,9 @@ namespace QuizupAPI.Services
                         )
                         .ToListAsync();
 
-                Console.WriteLine($"Result: {JsonSerializer.Serialize(result)}");
 
                 if (result == null)
                 {
-                    Console.WriteLine($"No questions found for teacher with ID {teacherId}.");
                     throw new Exception($"Failed to retrieve questions for teacher with ID {teacherId}.");
                 }
 
