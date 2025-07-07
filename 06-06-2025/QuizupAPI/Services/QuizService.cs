@@ -448,27 +448,39 @@ namespace QuizupAPI.Services
 
             foreach (var questionDTO in quizAddRequestDTO.Questions)
             {
-                var question = questionMapper.MapQuestionAddRequestQuestion(questionDTO);
-                if (question == null)
-                {
-                    throw new Exception("Failed to map question from DTO.");
-                }
-                var addedQuestion = await _questionRepository.Add(question);
+                long? questionId = questionDTO.Id;
 
+                if( questionId == null ){
+
+                    var question = questionMapper.MapQuestionAddRequestQuestion(questionDTO);
+
+                    if (question == null)
+                    {
+                        throw new Exception("Failed to map question from DTO.");
+                    }
+
+                    var addedQuestion = await _questionRepository.Add(question);
+
+                    if( addedQuestion == null )
+                    {
+                        throw new Exception("Failed to add question");
+                    }
+
+                    questionId = addedQuestion.Id;
+                }
+                
                 var quizQuestion = new QuizQuestion
                 {
                     QuizId = quizId,
-                    QuestionId = addedQuestion.Id
+                    QuestionId = questionId
                 };
+
                 var addedQuizQuestion = await _quizQuestionRepository.Add(quizQuestion);
                 if (addedQuizQuestion == null)
                 {
                     throw new Exception("Failed to add question to quiz");
                 }
-                if (addedQuestion == null)
-                {
-                    throw new Exception("Failed to add question");
-                }
+                
             }
         }
         
