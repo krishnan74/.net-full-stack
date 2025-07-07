@@ -454,5 +454,46 @@ namespace QuizupAPI.Services
 
         }
 
+        public async Task<IEnumerable<Question>> GetQuestionsByTeacherIdAsync(long teacherId){
+            try
+            {
+
+                Console.WriteLine($"Retrieving questions for teacher with ID {teacherId}.");
+                // Verify teacher exists
+                var teacher = await _teacherRepository.Get(teacherId);
+
+                Console.WriteLine($"Teacher found");
+
+                var result = await _context.Set<Question>()
+                        .FromSqlRaw(
+                            "select * from get_questions_by_teacher_id({0})",
+                            teacherId
+                        )
+                        .ToListAsync();
+
+                Console.WriteLine($"Result: {JsonSerializer.Serialize(result)}");
+
+                if (result == null)
+                {
+                    Console.WriteLine($"No questions found for teacher with ID {teacherId}.");
+                    throw new Exception($"Failed to retrieve questions for teacher with ID {teacherId}.");
+                }
+
+                return result;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while retrieving questions for teacher with ID {teacherId}.", ex);
+            }
+        }
+
+                
+        
+
+
     }
 }

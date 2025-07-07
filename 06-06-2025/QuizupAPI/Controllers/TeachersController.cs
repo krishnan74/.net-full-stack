@@ -325,7 +325,7 @@ namespace QuizupAPI.Controllers
             try
             {
                 var subjects = await _teacherService.GetSubjectsByTeacherIdAsync(id);
-                if (subjects == null || !subjects.Any())
+                if (subjects == null)
                 {
                     return NotFound(ApiResponse<object>.ErrorResponse($"No subjects found for teacher with ID {id}."));
                 }
@@ -355,7 +355,7 @@ namespace QuizupAPI.Controllers
             try
             {
                 var classes = await _teacherService.GetClassesByTeacherIdAsync(id);
-                if (classes == null || !classes.Any())
+                if (classes == null)
                 {
                     return NotFound(ApiResponse<object>.ErrorResponse($"No classes found for teacher with ID {id}."));
                 }
@@ -370,5 +370,37 @@ namespace QuizupAPI.Controllers
                 return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while retrieving classes. " + ex.Message));
             }
         }
+
+        /// <summary>
+        /// Get all questions created by a teacher
+        /// </summary>
+        /// <param name="id">Teacher ID</param>
+        /// <returns>List of questions</returns>
+        [HttpGet("{id}/questions")]
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<Question>>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 500)]
+        public async Task<IActionResult> GetQuestionsByTeacherId(long id)
+        {
+            try
+            {
+                var questions = await _teacherService.GetQuestionsByTeacherIdAsync(id);
+                if (questions == null )
+                {
+                    return NotFound(ApiResponse<object>.ErrorResponse($"No questions found for teacher with ID {id}."));
+                }
+                return Ok(ApiResponse<IEnumerable<Question>>.SuccessResponse(questions, "Questions fetched successfully"));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ApiResponse<object>.ErrorResponse(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while retrieving questions. " + ex.Message));
+            }
+        }
+
+        
     }
 }
