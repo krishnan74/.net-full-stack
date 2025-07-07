@@ -52,10 +52,7 @@
         </div>
       </div>
 
-      <button
-        type="submit"
-        [disabled]="selectedQuestions.length === 0"
-      >
+      <button type="submit" [disabled]="selectedQuestions.length === 0">
         Create Quiz
       </button>
     </form>
@@ -69,9 +66,7 @@
       type="text"
       placeholder="Search questions..."
       [value]="questionSearch"
-      (input)="
-        questionSearch = $any($event.target).value; searchQuestions()
-      "
+      (input)="questionSearch = $any($event.target).value; searchQuestions()"
     />
 
     <!-- Empty Question Section -->
@@ -80,17 +75,56 @@
       <div>
         <p>{{ questionSearch }}</p>
         <ul class="options-list">
-          <li *ngFor="let option of newQuestionOptions; let i = index">
+          <li>
             <input
               type="radio"
               name="correctAnswer"
-              [value]="i"
+              [value]="newQuestionOptions[0]"
               [(ngModel)]="newQuestionCorrectAnswer"
             />
             <input
               type="text"
-              [ngModel]="newQuestionOptions[i]"
-              (ngModelChange)="newQuestionOptions[i] = $event"
+              name="option{{ 0 }}"
+              [(ngModel)]="newQuestionOptions[0]"
+              placeholder="Enter option"
+            />
+
+            <input
+              type="radio"
+              name="correctAnswer"
+              [value]="newQuestionOptions[1]"
+              [(ngModel)]="newQuestionCorrectAnswer"
+            />
+            <input
+              type="text"
+              name="option{{ 1 }}"
+              [(ngModel)]="newQuestionOptions[1]"
+              placeholder="Enter option"
+            />
+
+            <input
+              type="radio"
+              name="correctAnswer"
+              [value]="newQuestionOptions[2]"
+              [(ngModel)]="newQuestionCorrectAnswer"
+            />
+            <input
+              type="text"
+              name="option{{ 2 }}"
+              [(ngModel)]="newQuestionOptions[2]"
+              placeholder="Enter option"
+            />
+
+            <input
+              type="radio"
+              name="correctAnswer"
+              [value]="newQuestionOptions[3]"
+              [(ngModel)]="newQuestionCorrectAnswer"
+            />
+            <input
+              type="text"
+              name="option{{ 3 }}"
+              [(ngModel)]="newQuestionOptions[3]"
               placeholder="Enter option"
             />
           </li>

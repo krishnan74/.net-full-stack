@@ -1,5 +1,5 @@
 import { BehaviorSubject, map, Observable } from 'rxjs';
-import { QuizModel } from '../models/quiz.model';
+import { QuizCreateModel, QuizModel } from '../models/quiz.model';
 import { Inject, inject, Injectable } from '@angular/core';
 import { API_BASE_URL } from '../../../core/tokens/api-url.token';
 import { HttpClient } from '@angular/common/http';
@@ -23,11 +23,9 @@ export class QuizService {
     return quiz;
   }
 
-  createQuiz(
-    quiz: Omit<QuizModel, 'id' | 'createdAt' | 'createdBy' | 'isActive'>
-  ): Observable<QuizModel> {
-    const createdQuiz = this.http.post<QuizModel>(
-      `${this.apiBaseUrl}/quizzes`,
+  createQuiz(quiz: QuizCreateModel): Observable<ApiResponse<QuizModel>> {
+    const createdQuiz = this.http.post<ApiResponse<QuizModel>>(
+      `${this.apiBaseUrl}/Quizzes`,
       quiz
     );
     console.log('Quiz created:', createdQuiz);
