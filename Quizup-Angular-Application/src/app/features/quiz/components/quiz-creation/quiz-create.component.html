@@ -63,6 +63,8 @@
 
   <div class="questions-list">
     <h3>Available Questions</h3>
+
+    <!-- Search Bar -->
     <input
       type="text"
       placeholder="Search questions..."
@@ -71,6 +73,39 @@
         questionSearch = $any($event.target).value; searchQuestions()
       "
     />
+
+    <!-- Empty Question Section -->
+    <div class="empty-question" *ngIf="questionSearch.trim() !== ''">
+      <h4>Create a New Question</h4>
+      <div>
+        <p>{{ questionSearch }}</p>
+        <ul class="options-list">
+          <li *ngFor="let option of newQuestionOptions; let i = index">
+            <input
+              type="radio"
+              name="correctAnswer"
+              [value]="i"
+              [(ngModel)]="newQuestionCorrectAnswer"
+            />
+            <input
+              type="text"
+              [ngModel]="newQuestionOptions[i]"
+              (ngModelChange)="newQuestionOptions[i] = $event"
+              placeholder="Enter option"
+            />
+          </li>
+        </ul>
+      </div>
+      <button
+        type="button"
+        (click)="createNewQuestion()"
+        [disabled]="isCreateButtonDisabled()"
+      >
+        Create
+      </button>
+    </div>
+
+    <!-- Existing Questions -->
     <ul>
       <li
         *ngFor="let q of filteredQuestions"
@@ -80,7 +115,12 @@
         <div>
           {{ q.text }}
           <ul class="options-list">
-            <li *ngFor="let option of q.options">{{ option }}</li>
+            <li
+              *ngFor="let option of q.options; let i = index"
+              [ngClass]="{ 'correct-answer': q.correctAnswer === option }"
+            >
+              {{ option }}
+            </li>
           </ul>
         </div>
         <button type="button" (click)="addQuestion(q)">Add</button>

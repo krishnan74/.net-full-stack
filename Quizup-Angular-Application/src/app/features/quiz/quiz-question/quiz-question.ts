@@ -26,7 +26,7 @@ export class QuizQuestion implements OnInit {
         `Selected option: ${option} for question ID: ${this.question.id}`
       );
       this.answerSelected.emit({
-        questionId: this.question.id,
+        questionId: this.question.id!,
         selectedAnswer: option,
       });
     }

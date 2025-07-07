@@ -31,6 +31,10 @@ select {
   width: 100%;
 }
 
+.options-list input{
+  width: 100px;
+}
+
 .questions-section {
   display: flex;
   gap: 2rem;
@@ -101,4 +105,9 @@ button[type="submit"] {
 button[type="submit"]:hover {
   background: linear-gradient(90deg, #f9e6f7 0%, #7c3aed 100%);
   color: #7c3aed;
+}
+
+.correct-answer{
+  background-color: #d1fae5;
+  border-left: 4px solid #059669;
 }

@@ -6,6 +6,7 @@ import {
   Validators,
   FormArray,
   ReactiveFormsModule,
+  FormsModule,
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { User } from '../../../../store/auth/auth.model';
@@ -20,7 +21,7 @@ import { QuestionModel } from '../../models/question.model';
   selector: 'app-quiz-create',
   templateUrl: './quiz-create.component.html',
   styleUrls: ['./quiz-create.component.css'],
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule],
 })
 export class QuizCreateComponent implements OnInit {
   user$ = this.store.select(selectUser);
@@ -31,6 +32,8 @@ export class QuizCreateComponent implements OnInit {
   filteredQuestions: QuestionModel[] = [];
   selectedQuestions: QuestionModel[] = [];
   questionSearch: string = '';
+  newQuestionOptions: string[] = ['', '', '', '']; 
+  newQuestionCorrectAnswer: string | null = null; 
 
   constructor(private fb: FormBuilder, private profileService: ProfileService, private store: Store) {
 
@@ -44,7 +47,6 @@ export class QuizCreateComponent implements OnInit {
       dueDate: ['', Validators.required],
       subjectId: ['', Validators.required],
       classId: ['', Validators.required],
-      questions: this.fb.array([]),
     });
 
   }
@@ -58,11 +60,6 @@ export class QuizCreateComponent implements OnInit {
       }
     });
   }
-
-  get questionsArray(): FormArray {
-    return this.quizForm.get('questions') as FormArray;
-  }
-
 
   teacherSubjects$: Observable<SubjectModel[] | null> = this.user$.pipe(
     switchMap((user) =>
@@ -91,20 +88,12 @@ export class QuizCreateComponent implements OnInit {
   addQuestion(question: QuestionModel) {
     if (!this.selectedQuestions.find((q) => q.id === question.id)) {
       this.selectedQuestions.push(question);
-      this.questionsArray.push(
-        this.fb.group({
-          id: [question.id, Validators.required],
-          text: [question.text, Validators.required],
-          options: [question.options, Validators.required],
-          correctAnswer: [question.correctAnswer, Validators.required],
-        })
-      );
+      
     }
   }
 
   removeQuestion(index: number) {
     this.selectedQuestions.splice(index, 1);
-    this.questionsArray.removeAt(index);
   }
 
   searchQuestions() {
@@ -114,17 +103,32 @@ export class QuizCreateComponent implements OnInit {
     );
   }
 
+  createNewQuestion() {
+
+    console.log('Creating new question:', this.questionSearch, this.newQuestionOptions, this.newQuestionCorrectAnswer);
+    const newQuestion: QuestionModel = {
+      id: null, 
+      text: this.questionSearch.trim(),
+      options: [...this.newQuestionOptions], 
+      correctAnswer: this.newQuestionCorrectAnswer, 
+    };
+
+    this.addQuestion(newQuestion);
+
+    this.questionSearch = '';
+    this.newQuestionOptions = ['', '', '', '']; // Reset to four empty options
+    this.newQuestionCorrectAnswer = null;
+  }
+
   onSubmit() {
     console.log('Form Submitted:', this.quizForm.value);
     if (this.quizForm.valid) {
-      // Final data to send
       const quizData = {
         ...this.quizForm.value,
         teacherId: this.user?.userId,
         questions: this.selectedQuestions,
       };
       console.log('Quiz Data:', quizData);
-      // TODO: Call quiz creation service
     }
   }
 
@@ -141,5 +145,11 @@ export class QuizCreateComponent implements OnInit {
     if (event.dataTransfer) {
       event.dataTransfer.setData('question', JSON.stringify(question));
     }
+  }
+
+  isCreateButtonDisabled(): boolean {
+    console.log('Checking if create button is disabled');
+    console.log('New Question Options:', this.newQuestionOptions);
+    return this.newQuestionOptions.some((opt) => opt.trim() === '') || this.questionSearch.trim() === '';
   }
 }

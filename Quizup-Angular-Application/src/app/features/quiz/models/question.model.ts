@@ -1,8 +1,8 @@
 export class QuestionModel {
   constructor(
-    public id: number = 0,
+    public id: number | null = null,
     public text: string = '',
     public options: string[] = [],
-    public correctAnswer: string = ''
+    public correctAnswer: string | null = null
   ) {}
 }
