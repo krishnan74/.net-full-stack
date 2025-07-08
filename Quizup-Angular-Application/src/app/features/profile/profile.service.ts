@@ -18,8 +18,14 @@ export class ProfileService {
     return this.http.put(`${this.apiBaseUrl}/api/user`, details);
   }
 
-  changePassword(data: any): Observable<any> {
-    return this.http.post(`${this.apiBaseUrl}/api/user/change-password`, data);
+  changePassword(
+    currentPassword: string,
+    newPassword: string
+  ): Observable<any> {
+    return this.http.post(`${this.apiBaseUrl}/Auth/change-password`, {
+      currentPassword,
+      newPassword,
+    });
   }
 
   getSubjectsByStudentId(studentId: number): Observable<SubjectModel[]> {

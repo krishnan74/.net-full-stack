@@ -1,0 +1,58 @@
+/* update-student-dialog.component.css */
+.update-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.update-form label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.update-form input {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.update-form .actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.update-form button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  background: #007bff;
+  color: #fff;
+  transition: background 0.2s;
+}
+
+.update-form button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.update-form button[type="button"] {
+  background: #eee;
+  color: #333;
+}
+
+.update-form button[type="button"]:hover {
+  background: #ddd;
+}

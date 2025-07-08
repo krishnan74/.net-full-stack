@@ -38,7 +38,6 @@ export class ClassesListComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         console.log('Class added/updated:', result);
-        // Logic to add or update class
       }
     });
   }
@@ -50,7 +49,6 @@ export class ClassesListComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         console.log('Class updated:', result);
-        // Logic to update class
       }
     });
   }

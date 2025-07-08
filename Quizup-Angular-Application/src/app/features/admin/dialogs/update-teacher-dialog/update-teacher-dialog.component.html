@@ -1,0 +1,19 @@
+<h2>Update Teacher</h2>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="update-form">
+  <label>
+    First Name
+    <input type="text" formControlName="firstName" required />
+  </label>
+  <label>
+    Last Name
+    <input type="text" formControlName="lastName" required />
+  </label>
+  <label>
+    Email
+    <input type="email" formControlName="email" required />
+  </label>
+  <div class="actions">
+    <button type="button" (click)="onCancel()">Cancel</button>
+    <button type="submit" [disabled]="form.invalid">Update</button>
+  </div>
+</form>

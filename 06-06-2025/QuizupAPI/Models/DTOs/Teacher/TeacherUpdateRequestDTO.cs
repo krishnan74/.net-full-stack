@@ -8,9 +8,9 @@ namespace QuizupAPI.Models.DTOs.Teacher
 
         [Required(ErrorMessage = "Last name is required")]
         public string LastName { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Subject is required")]
-        [MaxLength(100, ErrorMessage = "Subject cannot exceed 100 characters")]
-        public string Subject { get; set; } = string.Empty;
+        public long SubjectId { get; set; } = 0;
+        public long ClassGroupId { get; set; } = 0;
+        public long ClassId { get; set; } = 0;
+        
     }
 }

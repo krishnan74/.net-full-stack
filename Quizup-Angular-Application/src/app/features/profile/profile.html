@@ -46,35 +46,26 @@
   <!-- Change Password Section -->
   <div class="summary-section">
     <h3 class="section-title">Change Password</h3>
-    <form (ngSubmit)="changePassword()" class="password-form">
+    <form
+      [formGroup]="passwordForm"
+      (ngSubmit)="changePassword()"
+      class="password-form"
+    >
       <label>
         Current Password:
-        <input
-          type="password"
-          [(ngModel)]="passwordData.currentPassword"
-          name="currentPassword"
-          required
-        />
+        <input type="password" formControlName="currentPassword" required />
       </label>
       <label>
         New Password:
-        <input
-          type="password"
-          [(ngModel)]="passwordData.newPassword"
-          name="newPassword"
-          required
-        />
+        <input type="password" formControlName="newPassword" required />
       </label>
       <label>
         Confirm New Password:
-        <input
-          type="password"
-          [(ngModel)]="passwordData.confirmNewPassword"
-          name="confirmNewPassword"
-          required
-        />
+        <input type="password" formControlName="confirmNewPassword" required />
       </label>
-      <button type="submit">Change Password</button>
+      <button type="submit" [disabled]="passwordForm.invalid">
+        Change Password
+      </button>
     </form>
   </div>
 </ng-container>

@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../dialogs/confirm-dialog/confirm-dialog.component';
 import { BreadcrumbsComponent } from '../../../shared/components/breadcrumbs/breadcrumbs.component';
+import { UpdateStudentDialogComponent } from '../dialogs/update-student-dialog/update-student-dialog.component';
 @Component({
   selector: 'app-students-list',
   templateUrl: './students-list.component.html',
@@ -30,8 +31,17 @@ export class StudentsListComponent implements OnInit {
     });
   }
 
-  updateStudent(student: any): void {
-    // Logic to update student
+  updateStudent(student: StudentModel): void {
+    const dialogRef = this.dialog.open(UpdateStudentDialogComponent, {
+      data: { student },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.studentService.updateStudent(result).subscribe(() => {
+          this.loadStudents();
+        });
+      }
+    });
   }
 
   deleteStudent(studentId: number): void {

@@ -1,5 +1,5 @@
 import { BehaviorSubject, map, Observable } from 'rxjs';
-import { StudentModel } from '../models/student.model';
+import { StudentModel, StudentUpdateModel } from '../models/student.model';
 import { Inject, inject, Injectable } from '@angular/core';
 import { API_BASE_URL } from '../../../core/tokens/api-url.token';
 import { HttpClient } from '@angular/common/http';
@@ -16,14 +16,6 @@ export class StudentService {
     private http: HttpClient,
     @Inject(API_BASE_URL) private apiBaseUrl: string
   ) {}
-
-  getStudentById(id: number) {
-    const student = this.http.get<StudentModel>(
-      `${this.apiBaseUrl}/Students/${id}`
-    );
-    console.log('Student fetched:', student);
-    return student;
-  }
 
   createStudent(
     student: Omit<StudentModel, 'id' | 'createdAt' | 'quizzes'> & {
@@ -44,6 +36,14 @@ export class StudentService {
     }
   }
 
+  getStudentById(id: number) {
+    const student = this.http.get<StudentModel>(
+      `${this.apiBaseUrl}/Students/${id}`
+    );
+    console.log('Student fetched:', student);
+    return student;
+  }
+
   getAllStudents(): Observable<ApiResponse<StudentModel[]>> {
     const students = this.http.get<ApiResponse<StudentModel[]>>(
       `${this.apiBaseUrl}/Students`
@@ -51,6 +51,23 @@ export class StudentService {
 
     console.log('All students fetched:', students);
     return students;
+  }
+
+  updateStudent(
+    student: StudentUpdateModel
+  ): Observable<ApiResponse<StudentModel>> {
+    console.log('Updating student:', student);
+    return this.http
+      .put<ApiResponse<StudentModel>>(
+        `${this.apiBaseUrl}/Students/${student.id}`,
+        student
+      )
+      .pipe(
+        map((response) => {
+          console.log('Student updated successfully:', response);
+          return response;
+        })
+      );
   }
 
   deleteStudent(id: number): Observable<ApiResponse<StudentModel>> {

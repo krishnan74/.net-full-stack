@@ -16,3 +16,14 @@ export class TeacherModel {
     public quizzes?: QuizModel[]
   ) {}
 }
+
+export class TeacherUpdateModel {
+  constructor(
+    public id: number = 0,
+    public firstName: string = '',
+    public lastName: string = '',
+    public subjectId: number = 0,
+    public classGroupId: number = 0,
+    public classId: number = 0
+  ) {}
+}

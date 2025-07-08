@@ -12,3 +12,13 @@ export class StudentModel {
     public quizSubmissions?: QuizSubmission[]
   ) {}
 }
+
+export class StudentUpdateModel {
+  constructor(
+    public id: number = 0,
+    public email: string = '',
+    public firstName: string = '',
+    public lastName: string = '',
+    public classeId: number = 0
+  ) {}
+}

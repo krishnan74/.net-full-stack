@@ -1,5 +1,5 @@
 import { BehaviorSubject, map, Observable } from 'rxjs';
-import { TeacherModel } from '../models/teacher.model';
+import { TeacherModel, TeacherUpdateModel } from '../models/teacher.model';
 import { Inject, inject, Injectable } from '@angular/core';
 import { API_BASE_URL } from '../../../core/tokens/api-url.token';
 import { HttpClient } from '@angular/common/http';
@@ -48,6 +48,23 @@ export class TeacherService {
 
     console.log('All teachers fetched:', teachers);
     return teachers;
+  }
+
+  updateTeacher(
+    teacher: TeacherUpdateModel
+  ): Observable<ApiResponse<TeacherModel>> {
+    console.log('Updating teacher:', teacher);
+    return this.http
+      .put<ApiResponse<TeacherModel>>(
+        `${this.apiBaseUrl}/Teachers/${teacher.id}`,
+        teacher
+      )
+      .pipe(
+        map((response) => {
+          console.log('Teacher updated successfully:', response);
+          return response;
+        })
+      );
   }
 
   deleteTeacher(id: number): Observable<ApiResponse<TeacherModel>> {
