@@ -1,0 +1,135 @@
+.quiz-submission-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  color: #2e2e2e;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.quiz-detail-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 2rem;
+}
+
+.quiz-info,
+.submission-info {
+  flex: 1 1 300px;
+}
+
+.quiz-info h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.quiz-info p,
+.submission-info p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.quiz-questions {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.quiz-questions h4 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+.question-block {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.question-text {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.options-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.options-list li {
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.4rem;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.correct-answer {
+  font-weight: 600;
+  background-color: #e7f7ea;
+  color: #0e7c3a;
+  border-left: 4px solid #0e7c3a;
+}
+
+.selected-answer {
+  border: 1px solid #bbb;
+}
+
+.is-correct {
+  background-color: #d4edda;
+  color: #155724;
+  font-weight: bold;
+  border-left: 4px solid #0e7c3a !important;
+  border: 1px solid #0e7c3a;
+}
+
+.is-incorrect {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-left: 4px solid #721c24;
+  font-weight: bold;
+}
+
+.options-list span {
+  margin-left: 8px;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .quiz-detail-container {
+    flex-direction: column;
+  }
+
+  .quiz-info,
+  .submission-info {
+    flex: 1 1 100%;
+  }
+
+  .quiz-submission-page {
+    padding: 1.5rem;
+  }
+
+  .quiz-questions {
+    padding: 1.2rem;
+  }
+
+  .quiz-submission-page h2 {
+    font-size: 1.7rem;
+  }
+
+  .quiz-info h3 {
+    font-size: 1.25rem;
+  }
+}

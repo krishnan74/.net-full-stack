@@ -13,9 +13,10 @@ namespace QuizupAPI.Repositories
 
         public override async Task<QuizSubmission> Get(long key)
         {
-            var quizSubmission = await _quizContext.quizSubmissions.
-                Include(qsub => qsub.Answers).
-            SingleOrDefaultAsync(p => p.Id == key);
+            var quizSubmission = await _quizContext.quizSubmissions
+                .Include(qs => qs.Answers)
+                .Include(qs => qs.Student) 
+                .SingleOrDefaultAsync(qs => qs.Id == key);
 
             return quizSubmission??throw new KeyNotFoundException($"No QuizSubmission with the given ID: {key}");
         }

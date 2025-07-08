@@ -16,16 +16,19 @@ namespace QuizupAPI.Services
         private readonly IRepository<long, Quiz> _quizRepository;
         private readonly IRepository<long, Question> _questionRepository;
         private readonly IRepository<long, QuizQuestion> _quizQuestionRepository;
+        private readonly IRepository<long, QuizSubmission> _quizSubmissionRepository;
         public QuizMapper quizMapper;
         public QuestionMapper questionMapper;
 
         public QuizService(IRepository<long, Quiz> quizRepository,
                             IRepository<long, Question> questionRepository,
-                            IRepository<long, QuizQuestion> quizQuestionRepository)
+                            IRepository<long, QuizQuestion> quizQuestionRepository,
+                            IRepository<long, QuizSubmission> quizSubmissionRepository)
         {
             _quizRepository = quizRepository;
             _questionRepository = questionRepository;
             _quizQuestionRepository = quizQuestionRepository;
+            _quizSubmissionRepository = quizSubmissionRepository;
             quizMapper = new QuizMapper();
             questionMapper = new QuestionMapper();
         }
@@ -316,6 +319,23 @@ namespace QuizupAPI.Services
             }
         }
 
+        public async Task<QuizSubmission> GetQuizSubmissionByIdAsync(long quizSubmissionId)
+        {
+            try
+            {
+                var quizSubmission = await _quizSubmissionRepository.Get(quizSubmissionId);
+                return quizSubmission;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException($"Quiz submission with ID {quizSubmissionId} not found.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while retrieving the quiz submission: {ex.Message}", ex);
+            }
+        }
+
         private IEnumerable<Quiz> SearchByTitle(
             IEnumerable<Quiz> quizzes, string title
         )
@@ -330,7 +350,7 @@ namespace QuizupAPI.Services
                 Console.WriteLine($"Searching quizzes with title containing: {title}");
                 var filteredQuizzes = quizzes.Where(q => q.Title.ToLower().Contains(title.ToLower())).ToList();
 
-              
+
 
                 return filteredQuizzes;
             }

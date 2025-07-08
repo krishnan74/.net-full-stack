@@ -3,6 +3,7 @@ import { QuizModel } from '../../models/quiz.model';
 import { QuizService } from '../../services/quiz.service';
 import { QuestionCard } from '../../components/question-card/question-card';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-quiz-detail-page',
@@ -14,13 +15,20 @@ export class QuizDetailPage {
   quiz: QuizModel = new QuizModel();
   sortKey: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
+  quizId: number = 0;
 
-  constructor(private quizService: QuizService) {
+  constructor(
+    private quizService: QuizService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    this.quizId = Number(this.route.snapshot.params['quizId']);
     this.loadQuiz();
   }
 
   viewSubmission(submissionId: number) {
     console.log('Viewing submission:', submissionId);
+    this.router.navigate(['/quiz', this.quiz.id, 'submission', submissionId]);
   }
 
   sortSubmissions(key: string) {
@@ -52,7 +60,7 @@ export class QuizDetailPage {
   }
 
   loadQuiz() {
-    this.quizService.getQuizById(1).subscribe((quiz) => {
+    this.quizService.getQuizById(this.quizId).subscribe((quiz) => {
       this.quiz = quiz.data;
       console.log('Quiz loaded:', this.quiz);
     });

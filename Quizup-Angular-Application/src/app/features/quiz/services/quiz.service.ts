@@ -4,6 +4,7 @@ import { Inject, inject, Injectable } from '@angular/core';
 import { API_BASE_URL } from '../../../core/tokens/api-url.token';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from '../../../shared/models/api-response';
+import { QuizSubmissionModel } from '../../../shared/models/quiz-submission.model';
 
 @Injectable()
 export class QuizService {
@@ -68,6 +69,21 @@ export class QuizService {
       .pipe(
         map((response) => {
           console.log('Quiz deleted successfully:', response);
+          return response;
+        })
+      );
+  }
+
+  getQuizSubmissionId(
+    id: number
+  ): Observable<ApiResponse<QuizSubmissionModel>> {
+    return this.http
+      .get<ApiResponse<QuizSubmissionModel>>(
+        `${this.apiBaseUrl}/Quizzes/submissions/${id}`
+      )
+      .pipe(
+        map((response) => {
+          console.log('Quiz submission fetched:', response);
           return response;
         })
       );

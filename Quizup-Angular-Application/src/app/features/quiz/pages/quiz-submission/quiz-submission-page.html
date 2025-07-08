@@ -1,0 +1,65 @@
+<div class="quiz-submission-page">
+  <h2>Quiz Submission</h2>
+
+  <ng-container *ngIf="quizSubmission as submission">
+    <ng-container *ngIf="quiz as q">
+      <div class="quiz-detail-container">
+        <div class="quiz-info">
+          <h3><strong>Title: </strong> {{ q.title }}</h3>
+          <p><strong>Description: </strong> {{ q.description }}</p>
+          <p *ngIf="q.subject">
+            <strong>Subject:</strong> {{ q.subject?.name }}
+          </p>
+          <p *ngIf="q.classe"><strong>Class:</strong> {{ q.classe?.name }}</p>
+          <p><strong>Due Date:</strong> {{ q.dueDate | date: 'short' }}</p>
+          <p><strong>Created At:</strong> {{ q.createdAt | date: 'short' }}</p>
+        </div>
+
+        <div class="submission-info">
+          <h4>Submission Details</h4>
+          <p>
+            <strong>Student:</strong> {{ submission.student?.firstName }} {{
+            submission.student?.lastName }}
+          </p>
+          <p><strong>Score:</strong> {{ submission.score }}</p>
+          <p><strong>Status:</strong> {{ submission.submissionStatus }}</p>
+          <p>
+            <strong>Submitted At:</strong> {{ submission.submissionDate | date:
+            'short' }}
+          </p>
+        </div>
+      </div>
+
+      <div class="quiz-questions">
+        <h4>Answers</h4>
+        <ul>
+          <li *ngFor="let qq of q.quizQuestions; let i = index">
+            <div class="question-block">
+              <div class="question-text">
+                <strong>Q{{ i + 1 }}.</strong> {{ qq.question.text }}
+              </div>
+              <ul class="options-list">
+                <li
+                  *ngFor="let option of qq.question.options; let j = index"
+                  [ngClass]="{
+                    'correct-answer': qq.question.correctAnswer === option,
+                    'selected-answer': submission.answers && submission.answers[i]?.selectedAnswer === option,
+                    'is-correct': submission.answers && submission.answers[i]?.selectedAnswer === option && qq.question.correctAnswer === option,
+                    'is-incorrect': submission.answers && submission.answers[i]?.selectedAnswer === option && qq.question.correctAnswer !== option
+                  }"
+                >
+                  {{ option }}
+                  <span *ngIf="qq.question.correctAnswer === option">✔</span>
+                  <span
+                    *ngIf="submission.answers && submission.answers[i]?.selectedAnswer === option && qq.question.correctAnswer !== option"
+                    >✗</span
+                  >
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

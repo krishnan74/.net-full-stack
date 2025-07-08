@@ -25,5 +25,7 @@ namespace QuizupAPI.Interfaces
         Task<IEnumerable<Quiz>> SearchQuiz(
             QuizSearchModel quizSearchModel
         );
+
+        Task<QuizSubmission> GetQuizSubmissionByIdAsync( long quizSubmissionId );
     }
 }

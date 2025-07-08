@@ -31,7 +31,10 @@ export const routes: Routes = [
       { path: ':quizId/attempt/:submissionId', component: QuizAttemptPage },
       { path: 'create', component: QuizCreatePage },
       { path: 'explore', component: QuizExplorePage },
-      { path: 'submission/:submissionId', component: QuizSubmissionPage },
+      {
+        path: ':quizId/submission/:submissionId',
+        component: QuizSubmissionPage,
+      },
       { path: ':quizId', component: QuizDetailPage },
     ],
   },

@@ -66,7 +66,7 @@ namespace QuizupAPI.Controllers
                 return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while retrieving the quiz. " + ex.Message));
             }
         }
-        
+
         /// <summary>
         /// Get quizzes based on pagination
         /// </summary>
@@ -164,7 +164,7 @@ namespace QuizupAPI.Controllers
                 }
 
                 var quiz = await _quizService.AddQuizAsync(quizDto);
-                return CreatedAtAction(nameof(GetQuizById), new { id = quiz.Id }, 
+                return CreatedAtAction(nameof(GetQuizById), new { id = quiz.Id },
                     ApiResponse<Quiz>.SuccessResponse(quiz, "Quiz created successfully"));
             }
             catch (ArgumentNullException ex)
@@ -287,7 +287,7 @@ namespace QuizupAPI.Controllers
                 }
 
                 var question = await _quizService.AddQuestionToQuizAsync(quizId, teacherId, questionDto);
-                return CreatedAtAction(nameof(AddQuestionToQuiz), new { quizId, teacherId }, 
+                return CreatedAtAction(nameof(AddQuestionToQuiz), new { quizId, teacherId },
                     ApiResponse<Question>.SuccessResponse(question, "Question added successfully"));
             }
             catch (ArgumentNullException ex)
@@ -354,6 +354,32 @@ namespace QuizupAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while updating the question. " + ex.Message));
+            }
+        }
+        
+        /// <summary>
+        /// Get a quiz submission by its ID
+        /// </summary>
+        /// <param name="submissionId">Quiz Submission ID</param>
+        /// <returns>Quiz submission details</returns>
+        [HttpGet("submissions/{submissionId}")]
+        [ProducesResponseType(typeof(ApiResponse<QuizSubmission>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 500)]
+        public async Task<IActionResult> GetQuizSubmissionById(long submissionId)
+        {
+            try
+            {
+                var submission = await _quizService.GetQuizSubmissionByIdAsync(submissionId);
+                return Ok(ApiResponse<QuizSubmission>.SuccessResponse(submission, "Quiz submission fetched successfully"));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ApiResponse<object>.ErrorResponse(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while retrieving the quiz submission. " + ex.Message));
             }
         }
     }
