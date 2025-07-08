@@ -1,3 +1,8 @@
+a {
+  text-decoration: underline;
+  color: inherit;
+}
+
 .get-started-button {
   font-size: 1.125rem;
   font-weight: 600;
@@ -51,7 +56,7 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
-.instruction-section ul li:not(:last-child)::after {
+.instruction-section ul li:not(:nth-child(5), :nth-child(3))::after {
   content: "";
   width: 40px;
   height: 4px;
@@ -62,7 +67,7 @@
   transform: translateY(-50%);
 }
 
-.instruction-section ul li:not(:last-child)::before {
+.instruction-section ul li:not(:nth-child(5), :nth-child(3))::before {
   content: "";
   position: absolute;
   top: 50%;
