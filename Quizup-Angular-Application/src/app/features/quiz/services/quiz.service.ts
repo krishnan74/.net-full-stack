@@ -17,9 +17,14 @@ export class QuizService {
   quizzes$: Observable<QuizModel[]> = this.quizzesSubject.asObservable();
 
   getQuizById(id: number): Observable<ApiResponse<QuizModel>> {
-    const quiz = this.http.get<ApiResponse<QuizModel>>(
-      `${this.apiBaseUrl}/Quizzes/${id}`
-    );
+    const quiz = this.http
+      .get<ApiResponse<QuizModel>>(`${this.apiBaseUrl}/Quizzes/${id}`)
+      .pipe(
+        map((response) => {
+          console.log('Quiz fetched:', response);
+          return response;
+        })
+      );
     return quiz;
   }
 

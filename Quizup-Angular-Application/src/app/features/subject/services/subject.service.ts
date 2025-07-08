@@ -4,7 +4,7 @@ import { API_BASE_URL } from '../../../core/tokens/api-url.token';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from '../../../shared/models/api-response';
 import { User } from '../../../store/auth/auth.model';
-import { SubjectModel } from '../models/subject';
+import { SubjectModel } from '../models/subject.model';
 
 @Injectable()
 export class SubjectService {

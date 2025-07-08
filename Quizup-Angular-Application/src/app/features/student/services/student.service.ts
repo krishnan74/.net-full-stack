@@ -1,5 +1,5 @@
 import { BehaviorSubject, map, Observable } from 'rxjs';
-import { StudentModel } from '../models/student';
+import { StudentModel } from '../models/student.model';
 import { Inject, inject, Injectable } from '@angular/core';
 import { API_BASE_URL } from '../../../core/tokens/api-url.token';
 import { HttpClient } from '@angular/common/http';
@@ -125,5 +125,4 @@ export class StudentService {
         })
       );
   }
-
 }

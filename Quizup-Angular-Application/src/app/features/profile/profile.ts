@@ -7,8 +7,8 @@ import { Store } from '@ngrx/store';
 import { User } from '../../store/auth/auth.model';
 import { selectUser } from '../../store/auth/state/auth.selectors';
 import { Observable, of, switchMap } from 'rxjs';
-import { SubjectModel } from '../subject/models/subject';
-import { ClassModel } from '../class/models/class';
+import { SubjectModel } from '../subject/models/subject.model';
+import { ClassModel } from '../class/models/class.model';
 
 @Component({
   selector: 'app-profile',

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { QuestionModel } from '../models/question.model';
+import { QuestionModel } from '../../models/question.model';
 import { CommonModule } from '@angular/common';
 
 @Component({

@@ -2,9 +2,9 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { ApiResponse } from '../../shared/models/api-response';
-import { SubjectModel } from '../subject/models/subject';
+import { SubjectModel } from '../subject/models/subject.model';
 import { API_BASE_URL } from '../../core/tokens/api-url.token';
-import { ClassModel } from '../class/models/class';
+import { ClassModel } from '../class/models/class.model';
 import { QuestionModel } from '../quiz/models/question.model';
 
 @Injectable({ providedIn: 'root' })
@@ -69,5 +69,4 @@ export class ProfileService {
         })
       );
   }
-
 }

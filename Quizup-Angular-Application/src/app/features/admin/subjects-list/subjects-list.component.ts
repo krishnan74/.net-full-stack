@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SubjectService } from '../../subject/services/subject.service';
 import { CommonModule } from '@angular/common';
-import { SubjectModel } from '../../subject/models/subject';
+import { SubjectModel } from '../../subject/models/subject.model';
 import { MatDialog } from '@angular/material/dialog';
 import { AddSubjectDialogComponent } from '../dialogs/add-subject-dialog/add-subject-dialog.component';
 import { ConfirmDialogComponent } from '../dialogs/confirm-dialog/confirm-dialog.component';

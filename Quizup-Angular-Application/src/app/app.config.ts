@@ -24,7 +24,7 @@ import { AuthInterceptor } from './core/interceptors/auth-interceptor';
 import { QuizService } from './features/quiz/services/quiz.service';
 import { localStorageMetaReducer } from './store/auth/state/meta.reducer';
 import { ClassService } from './features/class/services/class.service';
-import { DashboardService } from './features/dashboard/dashboard.service';
+import { DashboardService } from './features/dashboard/services/dashboard.service';
 import { SignalRService } from './features/notification/services/signalr.service';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';

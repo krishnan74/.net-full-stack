@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TeacherService } from '../../teacher/services/teacher.service';
-import { TeacherModel } from '../../teacher/models/teacher';
+import { TeacherModel } from '../../teacher/models/teacher.model';
 import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../dialogs/confirm-dialog/confirm-dialog.component';

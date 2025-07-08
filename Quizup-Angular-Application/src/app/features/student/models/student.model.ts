@@ -1,4 +1,4 @@
-import { ClassModel } from '../../class/models/class';
+import { ClassModel } from '../../class/models/class.model';
 import { QuizSubmission } from '../../quiz/models/quizSubmission.model';
 
 export class StudentModel {

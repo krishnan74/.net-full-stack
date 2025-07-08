@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { selectUser } from '../../store/auth/state/auth.selectors';
-import { DashboardService } from './dashboard.service';
+import { DashboardService } from './services/dashboard.service';
 import { Observable, of } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 import { StudentSummary } from '../student/models/student-summary.model';

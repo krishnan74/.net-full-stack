@@ -1,5 +1,5 @@
 import { ClassSubjectModel } from '../../../shared/models/class-subject.model';
-import { SubjectModel } from '../../subject/models/subject';
+import { SubjectModel } from '../../subject/models/subject.model';
 
 export class ClassModel {
   constructor(

@@ -3,10 +3,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ClassService } from '../../../class/services/class.service';
 import { SubjectService } from '../../../subject/services/subject.service';
-import { SubjectModel } from '../../../subject/models/subject';
+import { SubjectModel } from '../../../subject/models/subject.model';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ClassModel } from '../../../class/models/class';
+import { ClassModel } from '../../../class/models/class.model';
 
 @Component({
   selector: 'app-update-class-dialog',

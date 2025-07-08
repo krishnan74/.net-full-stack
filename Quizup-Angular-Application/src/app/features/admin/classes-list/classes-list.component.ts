@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { ClassService } from '../../class/services/class.service';
-import { ClassModel } from '../../class/models/class';
+import { ClassModel } from '../../class/models/class.model';
 import { AddSubjectDialogComponent } from '../dialogs/add-subject-dialog/add-subject-dialog.component';
 import { AddClassDialogComponent } from '../dialogs/add-class-dialog/add-class-dialog.component';
 import { CommonModule } from '@angular/common';

@@ -1,3 +1,6 @@
+import { QuizSubmissionModel } from '../../../shared/models/quiz-submission.model';
+import { ClassModel } from '../../class/models/class.model';
+import { SubjectModel } from '../../subject/models/subject.model';
 import { QuestionModel } from './question.model';
 import { QuizQuestionModel } from './quizQuestion.model';
 export class QuizModel {
@@ -6,6 +9,10 @@ export class QuizModel {
     public title: string = '',
     public description: string = '',
     public quizQuestions?: QuizQuestionModel[],
+    public submissions?: QuizSubmissionModel[],
+    public subject?: SubjectModel,
+    public classe?: ClassModel,
+    public tags?: string[],
     public teacherId: number = 0,
     public createdBy: string = '',
     public createdAt: Date = new Date(),

@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionModel } from '../../models/question.model';
 import { QuizService } from '../../services/quiz.service';
 import { QuizQuestionModel } from '../../models/quizQuestion.model';
-import { QuizQuestion } from '../../quiz-question/quiz-question';
+import { QuizQuestion } from '../../components/quiz-question/quiz-question';
 import { QuizTimerComponent } from '../../components/quiz-timer/quiz-timer';
 import { QuizTimerService } from '../../services/quiz-timer.service';
 import { AnswerModel } from '../../models/answer.model';

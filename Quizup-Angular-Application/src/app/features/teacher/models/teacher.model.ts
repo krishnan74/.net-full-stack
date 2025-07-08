@@ -1,6 +1,6 @@
 import { TeacherClassModel } from '../../../shared/models/teacher-class.model';
 import { TeacherSubjectModel } from '../../../shared/models/teacher-subject.model';
-import { ClassModel } from '../../class/models/class';
+import { ClassModel } from '../../class/models/class.model';
 import { QuizModel } from '../../quiz/models/quiz.model';
 
 export class TeacherModel {

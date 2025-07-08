@@ -1,6 +1,6 @@
 import { AnswerModel } from '../../features/quiz/models/answer.model';
 import { QuizModel } from '../../features/quiz/models/quiz.model';
-import { StudentModel } from '../../features/student/models/student';
+import { StudentModel } from '../../features/student/models/student.model';
 
 export class QuizSubmissionModel {
   constructor(

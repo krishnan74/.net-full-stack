@@ -4,8 +4,8 @@ import { API_BASE_URL } from '../../../core/tokens/api-url.token';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from '../../../shared/models/api-response';
 import { User } from '../../../store/auth/auth.model';
-import { ClassModel } from '../models/class';
-import { SubjectModel } from '../../subject/models/subject';
+import { ClassModel } from '../models/class.model';
+import { SubjectModel } from '../../subject/models/subject.model';
 
 @Injectable()
 export class ClassService {

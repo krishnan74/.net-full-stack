@@ -16,15 +16,13 @@ import { ClassesListComponent } from './features/admin/classes-list/classes-list
 import { QuizComponent } from './features/quiz/quiz';
 import { QuizCreatePage } from './features/quiz/pages/create/quiz-create-page';
 import { QuizExplorePage } from './features/quiz/pages/explore/quiz-explore-page';
+import { QuizSubmissionPage } from './features/quiz/pages/quiz-submission/quiz-submission-page';
+import { QuizDetailPage } from './features/quiz/pages/quiz-detail/quiz-detail-page';
 
 export const routes: Routes = [
   {
     path: '',
     component: Landing,
-  },
-  {
-    path: 'teachers',
-    component: TeacherList,
   },
   {
     path: 'quiz',
@@ -33,6 +31,8 @@ export const routes: Routes = [
       { path: ':quizId/attempt/:submissionId', component: QuizAttemptPage },
       { path: 'create', component: QuizCreatePage },
       { path: 'explore', component: QuizExplorePage },
+      { path: 'submission/:submissionId', component: QuizSubmissionPage },
+      { path: ':quizId', component: QuizDetailPage },
     ],
   },
   {
