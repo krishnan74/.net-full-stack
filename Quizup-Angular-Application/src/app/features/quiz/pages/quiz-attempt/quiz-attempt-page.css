@@ -1,0 +1,68 @@
+.result-dialog-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(60, 30, 90, 0.25);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.result-dialog {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(60, 30, 90, 0.18);
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  min-width: 340px;
+  text-align: center;
+  animation: pop-in 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes pop-in {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.result-dialog h2 {
+  color: #7c3aed;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.result-dialog p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.result-dialog-actions {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+}
+
+.result-dialog-actions button {
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: linear-gradient(90deg, #7c3aed 0%, #f9e6f7 100%);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.09);
+  transition: background 0.2s, color 0.2s;
+}
+
+.result-dialog-actions button:hover {
+  background: linear-gradient(90deg, #f9e6f7 0%, #7c3aed 100%);
+  color: #7c3aed;
+}
