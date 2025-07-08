@@ -13,17 +13,18 @@ import { User } from '../../../../store/auth/auth.model';
 import { selectUser } from '../../../../store/auth/state/auth.selectors';
 import { ProfileService } from '../../../profile/profile.service';
 import { Observable, switchMap, of } from 'rxjs';
-import { ClassModel } from '../../../class/models/class';
-import { SubjectModel } from '../../../subject/models/subject';
+import { ClassModel } from '../../../class/models/class.model';
+import { SubjectModel } from '../../../subject/models/subject.model';
 import { QuestionModel } from '../../models/question.model';
 import { QuizService } from '../../services/quiz.service';
 import { QuizCreateModel } from '../../models/quiz.model';
+import { QuestionCard } from '../question-card/question-card';
 
 @Component({
   selector: 'app-quiz-create',
   templateUrl: './quiz-create.component.html',
   styleUrls: ['./quiz-create.component.css'],
-  imports: [ReactiveFormsModule, CommonModule, FormsModule],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule, QuestionCard],
 })
 export class QuizCreateComponent implements OnInit {
   user$ = this.store.select(selectUser);

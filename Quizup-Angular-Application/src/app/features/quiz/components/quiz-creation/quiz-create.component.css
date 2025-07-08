@@ -31,7 +31,7 @@ select {
   width: 100%;
 }
 
-.options-list input{
+.options-list input {
   width: 100px;
 }
 
@@ -83,7 +83,7 @@ select {
   background: #5b21b6;
 }
 
-.options-list{
+.options-list {
   display: flex;
   padding-left: 1rem;
 }
@@ -107,7 +107,7 @@ button[type="submit"]:hover {
   color: #7c3aed;
 }
 
-.correct-answer{
+.correct-answer {
   background-color: #d1fae5;
   border-left: 4px solid #059669;
 }

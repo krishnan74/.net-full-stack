@@ -136,17 +136,7 @@
         draggable="true"
         (dragstart)="onDragStart($event, q)"
       >
-        <div>
-          {{ q.text }}
-          <ul class="options-list">
-            <li
-              *ngFor="let option of q.options; let i = index"
-              [ngClass]="{ 'correct-answer': q.correctAnswer === option }"
-            >
-              {{ option }}
-            </li>
-          </ul>
-        </div>
+        <app-question-card [question]="q"></app-question-card>
         <button type="button" (click)="addQuestion(q)">Add</button>
       </li>
     </ul>

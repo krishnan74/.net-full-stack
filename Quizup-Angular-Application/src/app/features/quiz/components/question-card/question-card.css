@@ -1,0 +1,23 @@
+.options-list {
+  display: flex;
+  padding-left: 2rem;
+  margin-top: 0.3rem;
+  gap: 5px;
+}
+
+.correct-answer {
+  background-color: #d1fae5;
+  border-left: 4px solid #059669 !important;
+}
+
+.options-list li {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+}
+
+.question-number {
+  font-weight: bold;
+  color: #333;
+  margin-right: 0.3rem;
+}
