@@ -99,11 +99,11 @@ namespace QuizupAPI.Services
 
                 if (teacherDTO.ClassIds != null && teacherDTO.ClassIds.Any())
                 {
-                    await AddClassesForTeacher(teacherDTO.ClassIds, addedTeacher.Id);
+                    await AddClassesToTeacherAsync(addedTeacher.Id, teacherDTO.ClassIds );
                 }
                 if (teacherDTO.SubjectIds != null && teacherDTO.SubjectIds.Any())
                 {
-                    await AddSubjectsForTeacher(teacherDTO.SubjectIds, addedTeacher.Id);
+                    await AddSubjectsToTeacherAsync(addedTeacher.Id, teacherDTO.SubjectIds);
                 }
 
                 return addedTeacher;
@@ -146,33 +146,52 @@ namespace QuizupAPI.Services
             }
         }
 
-        public async Task<Teacher> UpdateTeacherAsync(long id, TeacherUpdateRequestDTO teacherDTO)
+        public async Task<Teacher> UpdateTeacherAsync(long id, TeacherUpdateRequestDTO teacherUpdateDTO)
         {
             try
             {
-                if (teacherDTO == null)
+                if (teacherUpdateDTO == null)
                 {
-                    throw new ArgumentNullException(nameof(teacherDTO), "Teacher data cannot be null.");
+                    throw new ArgumentNullException(nameof(teacherUpdateDTO), "Teacher data cannot be null.");
                 }
 
-                if (string.IsNullOrWhiteSpace(teacherDTO.FirstName) || string.IsNullOrWhiteSpace(teacherDTO.LastName) || string.IsNullOrWhiteSpace(teacherDTO.Subject))
+                if (string.IsNullOrWhiteSpace(teacherUpdateDTO.FirstName) || string.IsNullOrWhiteSpace(teacherUpdateDTO.LastName) )
                 {
-                    throw new ArgumentException("First name, last name and subject are required fields.");
+                    throw new ArgumentException("First name and last name are required fields.");
                 }
 
                 var existingTeacher = await _teacherRepository.Get(id);
 
-
-                var teacher = teacherMapper.MapTeacherUpdateRequestTeacher(existingTeacher, teacherDTO);
-                if (teacher == null)
+                var mappedTeacher = teacherMapper.MapTeacherUpdateRequestTeacher(existingTeacher, teacherUpdateDTO);
+                if (mappedTeacher == null)
                 {
                     throw new Exception("Failed to map TeacherUpdateRequestDTO to Teacher.");
                 }
 
-                var updatedTeacher = await _teacherRepository.Update(id, teacher);
+                var updatedTeacher = await _teacherRepository.Update(id, mappedTeacher);
                 if (updatedTeacher == null)
                 {
                     throw new Exception($"Failed to update teacher with ID {id}.");
+                }
+
+                if(teacherUpdateDTO.RemoveSubjectIds != null && teacherUpdateDTO.RemoveSubjectIds.Any())
+                {
+                    await RemoveSubjectsFromTeacherAsync(updatedTeacher.Id, teacherUpdateDTO.RemoveSubjectIds);
+                }
+
+                if(teacherUpdateDTO.AddSubjectIds != null && teacherUpdateDTO.AddSubjectIds.Any())
+                {
+                    await AddSubjectsToTeacherAsync(updatedTeacher.Id, teacherUpdateDTO.AddSubjectIds);
+                }
+
+                if (teacherUpdateDTO.RemoveClassIds != null && teacherUpdateDTO.RemoveClassIds.Any())
+                {
+                    await RemoveClassesFromTeacherAsync(updatedTeacher.Id, teacherUpdateDTO.RemoveClassIds);
+                }
+
+                if (teacherUpdateDTO.AddClassIds != null && teacherUpdateDTO.AddClassIds.Any())
+                {
+                    await AddClassesToTeacherAsync(updatedTeacher.Id, teacherUpdateDTO.AddClassIds);
                 }
 
                 return updatedTeacher;
@@ -395,7 +414,7 @@ namespace QuizupAPI.Services
                 throw new Exception($"An error occurred while retrieving subjects for teacher with ID {teacherId}.", ex);
             }
         }
-        
+
         public async Task<IEnumerable<Classe>> GetClassesByTeacherIdAsync(long teacherId)
         {
             try
@@ -417,41 +436,8 @@ namespace QuizupAPI.Services
                 throw new Exception($"An error occurred while retrieving classes for teacher with ID {teacherId}.", ex);
             }
         }
-
-        private async Task AddClassesForTeacher(ICollection<long> classIds, long teacherId)
+        public async Task<IEnumerable<Question>> GetQuestionsByTeacherIdAsync(long teacherId)
         {
-
-            foreach (var classId in classIds)
-            {
-                var existingClass = await _classRepository.Get(classId);
-
-                var teacherClass = new TeacherClass
-                {
-                    TeacherId = teacherId,
-                    ClassId = classId
-                };
-                await _teacherClassRepository.Add(teacherClass);
-            }
-        }
-
-        private async Task AddSubjectsForTeacher(ICollection<long> subjectIds, long teacherId)
-        {
-
-            foreach (var subjectId in subjectIds)
-            {
-            var existingSubject = await _subjectRepository.Get(subjectId);
-
-            var teacherSubject = new TeacherSubject
-            {
-                TeacherId = teacherId,
-                SubjectId = subjectId
-            };
-            await _teacherSubjectRepository.Add(teacherSubject);
-            }
-
-        }
-
-        public async Task<IEnumerable<Question>> GetQuestionsByTeacherIdAsync(long teacherId){
             try
             {
 
@@ -483,9 +469,123 @@ namespace QuizupAPI.Services
             }
         }
 
-                
-        
+        private async Task<Teacher> AddSubjectsToTeacherAsync(long teacherId, ICollection<long> subjectIds)
+        {
+            try
+            {
+                var teacher = await _teacherRepository.Get(teacherId);
 
+                foreach (var subjectId in subjectIds)
+                {
+                    var existingSubject = await _subjectRepository.Get(subjectId);
+
+                    var teacherSubject = new TeacherSubject
+                    {
+                        TeacherId = teacherId,
+                        SubjectId = subjectId
+                    };
+
+                    await _teacherSubjectRepository.Add(teacherSubject);
+                }
+
+                return teacher;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while adding subjects to the teacher.", ex);
+            }
+        }
+
+        private async Task<Teacher> RemoveSubjectsFromTeacherAsync(long teacherId, ICollection<long> subjectIds)
+        {
+            try
+            {
+                var teacher = await _teacherRepository.Get(teacherId);
+
+                foreach (var subjectId in subjectIds)
+                {
+                    var teacherSubject = await _teacherSubjectRepository.GetAll();
+                    var existingTeacherSubject = teacherSubject.FirstOrDefault(ts => ts.TeacherId == teacherId && ts.SubjectId == subjectId);
+                    if (existingTeacherSubject != null)
+                    {
+                        await _teacherSubjectRepository.Delete(existingTeacherSubject.Id);
+                    }
+                }
+
+                return teacher;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while removing subjects from the teacher.", ex);
+            }
+        }
+
+        private async Task<Teacher> AddClassesToTeacherAsync(long teacherId, ICollection<long> classIds)
+        {
+            try
+            {
+                var teacher = await _teacherRepository.Get(teacherId);
+
+                foreach (var classId in classIds)
+                {
+                    var existingClass = await _classRepository.Get(classId);
+
+                    var teacherClass = new TeacherClass
+                    {
+                        TeacherId = teacherId,
+                        ClassId = classId
+                    };
+
+                    await _teacherClassRepository.Add(teacherClass);
+                }
+
+                return teacher;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while adding classes to the teacher.", ex);
+            }
+        }
+
+        private async Task<Teacher> RemoveClassesFromTeacherAsync(long teacherId, ICollection<long> classIds)
+        {
+            try
+            {
+                var teacher = await _teacherRepository.Get(teacherId);
+
+                foreach (var classId in classIds)
+                {
+                    var teacherClass = await _teacherClassRepository.GetAll();
+                    var existingTeacherClass = teacherClass.FirstOrDefault(tc => tc.TeacherId == teacherId && tc.ClassId == classId);
+                    if (existingTeacherClass != null)
+                    {
+                        await _teacherClassRepository.Delete(existingTeacherClass.Id);
+                    }
+                }
+
+                return teacher;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while removing classes from the teacher.", ex);
+            }
+        }
 
     }
 }

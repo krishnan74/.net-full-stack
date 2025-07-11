@@ -135,31 +135,39 @@ namespace QuizupAPI.Services
         {
             try
             {
+
                 if (studentDTO == null)
                 {
+                    Console.WriteLine("Student data is null.");
                     throw new ArgumentNullException(nameof(studentDTO), "Student data cannot be null.");
                 }
 
                 if (string.IsNullOrWhiteSpace(studentDTO.FirstName) || string.IsNullOrWhiteSpace(studentDTO.LastName))
                 {
+                    Console.WriteLine("First name or last name is missing.");
                     throw new ArgumentException("First name, last name are required fields.");
                 }
 
                 var existingStudent = await _studentRepository.Get(id);
                 if (existingStudent == null)
                 {
+                    Console.WriteLine($"Student with ID {id} not found.");
                     throw new KeyNotFoundException($"Student with ID {id} not found.");
                 }
 
+                Console.WriteLine("Mapping StudentUpdateRequestDTO to Student...");
                 var student = studentMapper.MapStudentUpdateRequestStudent(existingStudent, studentDTO);
+
                 if (student == null)
                 {
+                    Console.WriteLine("Failed to map StudentUpdateRequestDTO to Student.");
                     throw new Exception("Failed to map StudentUpdateRequestDTO to Student.");
                 }
 
                 var updatedStudent = await _studentRepository.Update(id, student);
                 if (updatedStudent == null)
                 {
+                    Console.WriteLine($"Failed to update student with ID {id}.");
                     throw new Exception($"Failed to update student with ID {id}.");
                 }
 
@@ -167,6 +175,7 @@ namespace QuizupAPI.Services
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"An error occurred while updating the student with ID {id}: {ex.Message}");
                 throw new Exception($"An error occurred while updating the student with ID {id}.", ex);
             }
         }

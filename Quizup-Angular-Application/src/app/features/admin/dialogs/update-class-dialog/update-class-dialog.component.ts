@@ -72,6 +72,11 @@ export class UpdateClassDialogComponent implements OnInit {
     this.removeSubjectIds.push(removedId);
   }
 
+  getSubjectName(id: number): string {
+    const found = this.availableSubjects.find((s) => s.id === id);
+    return found ? found.name : '';
+  }
+
   onSave(): void {
     if (this.classForm.valid) {
       const updatedClass = {
@@ -95,10 +100,5 @@ export class UpdateClassDialogComponent implements OnInit {
 
   onCancel(): void {
     this.dialogRef.close();
-  }
-
-  getSubjectName(id: number): string {
-    const found = this.availableSubjects.find((s) => s.id === id);
-    return found ? found.name : '';
   }
 }

@@ -33,7 +33,7 @@ export class TeachersListComponent implements OnInit {
 
   updateTeacher(teacher: TeacherModel): void {
     const dialogRef = this.dialog.open(UpdateTeacherDialogComponent, {
-      data: { teacher },
+      data: teacher,
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {

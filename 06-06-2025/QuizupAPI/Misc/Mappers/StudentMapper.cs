@@ -20,7 +20,7 @@ namespace QuizupAPI.Misc.Mappers
         {
             existingStudent.FirstName = updateRequestDto.FirstName;
             existingStudent.LastName = updateRequestDto.LastName;
-
+            existingStudent.ClassId = updateRequestDto.ClassId ?? existingStudent.ClassId;
             return existingStudent;
         }
     
