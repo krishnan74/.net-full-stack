@@ -16,7 +16,6 @@ export class TeacherService {
     const teacher = this.http.get<TeacherModel>(
       `${this.apiBaseUrl}/Teachers/${id}`
     );
-    console.log('Teacher fetched:', teacher);
     return teacher;
   }
 
@@ -27,13 +26,11 @@ export class TeacherService {
     }
   ): Observable<ApiResponse<TeacherModel>> {
     try {
-      console.log('Creating teacher with data:', teacher);
       const createdTeacher = this.http.post<ApiResponse<TeacherModel>>(
         `${this.apiBaseUrl}/Teachers`,
         teacher
       );
 
-      console.log('Teacher created:', createdTeacher);
       return createdTeacher;
     } catch (error) {
       console.error('Error creating teacher:', error);
@@ -46,14 +43,12 @@ export class TeacherService {
       `${this.apiBaseUrl}/Teachers`
     );
 
-    console.log('All teachers fetched:', teachers);
     return teachers;
   }
 
   updateTeacher(
     teacher: TeacherUpdateModel
   ): Observable<ApiResponse<TeacherModel>> {
-    console.log('Updating teacher:', teacher);
     return this.http
       .put<ApiResponse<TeacherModel>>(
         `${this.apiBaseUrl}/Teachers/${teacher.id}`,
@@ -61,19 +56,16 @@ export class TeacherService {
       )
       .pipe(
         map((response) => {
-          console.log('Teacher updated successfully:', response);
           return response;
         })
       );
   }
 
   deleteTeacher(id: number): Observable<ApiResponse<TeacherModel>> {
-    console.log('Deleting teacher with ID:', id);
     return this.http
       .delete<ApiResponse<TeacherModel>>(`${this.apiBaseUrl}/Teachers/${id}`)
       .pipe(
         map((response) => {
-          console.log('Teacher deleted successfully:', response);
           return response;
         })
       );

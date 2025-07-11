@@ -18,13 +18,11 @@ export class ClassService {
     classe: Omit<ClassModel, 'id' | 'createdAt' | 'updatedAt' | 'classSubjects'>
   ): Observable<ApiResponse<ClassModel>> {
     try {
-      console.log('Creating classe with data:', classe);
       const createdClass = this.http.post<ApiResponse<ClassModel>>(
         `${this.apiBaseUrl}/Classes`,
         classe
       );
 
-      console.log('Class created:', createdClass);
       return createdClass;
     } catch (error) {
       console.error('Error creating classe:', error);
@@ -36,7 +34,6 @@ export class ClassService {
     const classe = this.http.get<ClassModel>(
       `${this.apiBaseUrl}/Classes/${id}`
     );
-    console.log('Class fetched:', classe);
     return classe;
   }
 
@@ -45,7 +42,6 @@ export class ClassService {
       `${this.apiBaseUrl}/Classes`
     );
 
-    console.log('All classes fetched:', classes);
     return classes;
   }
 
@@ -55,7 +51,6 @@ export class ClassService {
     addSubjectIds?: number[];
     removeSubjectIds?: number[];
   }): Observable<ApiResponse<ClassModel>> {
-    console.log('Updating class with ID:', data.id, 'and data:', data);
     return this.http
       .put<ApiResponse<ClassModel>>(`${this.apiBaseUrl}/Classes/${data.id}`, {
         className: data.className,
@@ -64,19 +59,16 @@ export class ClassService {
       })
       .pipe(
         map((response) => {
-          console.log('Class updated successfully:', response);
           return response;
         })
       );
   }
 
   deleteClass(id: number): Observable<ApiResponse<ClassModel>> {
-    console.log('Deleting class with ID:', id);
     return this.http
       .delete<ApiResponse<ClassModel>>(`${this.apiBaseUrl}/Classes/${id}`)
       .pipe(
         map((response) => {
-          console.log('Class deleted successfully:', response);
           return response;
         })
       );
@@ -85,14 +77,12 @@ export class ClassService {
   getSubjectsByClassId(
     classId: number
   ): Observable<ApiResponse<SubjectModel[]>> {
-    console.log('Fetching subjects for class with ID:', classId);
     return this.http
       .get<ApiResponse<SubjectModel[]>>(
         `${this.apiBaseUrl}/Classes/${classId}/subjects`
       )
       .pipe(
         map((response) => {
-          console.log('Subjects fetched successfully:', response);
           return response;
         })
       );

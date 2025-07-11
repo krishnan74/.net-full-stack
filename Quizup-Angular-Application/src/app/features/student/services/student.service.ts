@@ -28,7 +28,6 @@ export class StudentService {
         student
       );
 
-      console.log('Student created:', createdStudent);
       return createdStudent;
     } catch (error) {
       console.error('Error creating student:', error);
@@ -40,7 +39,6 @@ export class StudentService {
     const student = this.http.get<StudentModel>(
       `${this.apiBaseUrl}/Students/${id}`
     );
-    console.log('Student fetched:', student);
     return student;
   }
 
@@ -49,14 +47,12 @@ export class StudentService {
       `${this.apiBaseUrl}/Students`
     );
 
-    console.log('All students fetched:', students);
     return students;
   }
 
   updateStudent(
     student: StudentUpdateModel
   ): Observable<ApiResponse<StudentModel>> {
-    console.log('Updating student:', student);
     return this.http
       .put<ApiResponse<StudentModel>>(
         `${this.apiBaseUrl}/Students/${student.id}`,
@@ -64,19 +60,16 @@ export class StudentService {
       )
       .pipe(
         map((response) => {
-          console.log('Student updated successfully:', response);
           return response;
         })
       );
   }
 
   deleteStudent(id: number): Observable<ApiResponse<StudentModel>> {
-    console.log('Deleting student with ID:', id);
     return this.http
       .delete<ApiResponse<StudentModel>>(`${this.apiBaseUrl}/Students/${id}`)
       .pipe(
         map((response) => {
-          console.log('Student deleted successfully:', response);
           return response;
         })
       );
@@ -93,7 +86,6 @@ export class StudentService {
       )
       .pipe(
         map((response) => {
-          console.log('Quiz attempt response:', response);
           return response;
         })
       );
@@ -112,7 +104,6 @@ export class StudentService {
       )
       .pipe(
         map((response) => {
-          console.log('Quiz submission response:', response);
           return response;
         })
       );
@@ -130,14 +121,10 @@ export class StudentService {
       .pipe(
         map((response) => {
           const submissions = response.data;
-          console.log('Submissions fetched:', submissions);
           const submissionId =
             submissions.find((submission) => submission.quizId === quizId)
               ?.id || null;
-          console.log(
-            `Quiz attempt exists for student ${studentId} and quiz ${quizId}:`,
-            submissionId
-          );
+
           return submissionId;
         })
       );

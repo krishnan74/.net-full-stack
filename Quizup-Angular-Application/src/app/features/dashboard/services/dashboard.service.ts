@@ -14,14 +14,12 @@ export class DashboardService {
   ) {}
 
   getStudentSummary(userId: number): Observable<StudentSummary> {
-    console.log(`Fetching student summary for userId: ${userId}`);
     const summary = this.http
       .get<ApiResponse<StudentSummary>>(
         `${this.apiBaseUrl}/Students/${userId}/summary`
       )
       .pipe(
         map((res) => {
-          console.log('API Response for Student Summary:', res);
           return res.data;
         })
       );
