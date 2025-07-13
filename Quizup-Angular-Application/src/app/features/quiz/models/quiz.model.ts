@@ -1,6 +1,7 @@
 import { QuizSubmissionModel } from '../../../shared/models/quiz-submission.model';
 import { ClassModel } from '../../class/models/class.model';
 import { SubjectModel } from '../../subject/models/subject.model';
+import { TeacherModel } from '../../teacher/models/teacher.model';
 import { QuestionModel } from './question.model';
 import { QuizQuestionModel } from './quizQuestion.model';
 export class QuizModel {
@@ -14,7 +15,7 @@ export class QuizModel {
     public classe?: ClassModel,
     public tags?: string[],
     public teacherId: number = 0,
-    public createdBy: string = '',
+    public teacher: TeacherModel = new TeacherModel(),
     public createdAt: Date = new Date(),
     public dueDate: Date = new Date(),
     public isActive: boolean = true

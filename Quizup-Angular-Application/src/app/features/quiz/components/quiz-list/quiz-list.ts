@@ -5,6 +5,9 @@ import { QuizModel } from '../../models/quiz.model';
 import { QuizCard } from '../quiz-card/quiz-card';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { selectUser } from '../../../../store/auth/state/auth.selectors';
+import { Store } from '@ngrx/store';
+import { User } from '../../../../store/auth/auth.model';
 
 @Component({
   selector: 'app-quiz-list',
@@ -14,6 +17,8 @@ import { FormsModule } from '@angular/forms';
 })
 export class QuizList implements OnInit {
   quizzes: QuizModel[] = [];
+  user$ = this.store.select(selectUser);
+  user: User | null = null;
 
   searchString: string = '';
   createdAtMin?: Date;
@@ -28,8 +33,11 @@ export class QuizList implements OnInit {
   filterToggle: boolean = false;
   lastScrollTop: number = 0;
 
-  constructor(private quizService: QuizService) {
+  constructor(private quizService: QuizService, private store: Store) {
     window.addEventListener('scroll', this.onScroll.bind(this));
+    this.user$.subscribe((user) => {
+      this.user = user;
+    });
   }
 
   handleSearchQuizzes() {
@@ -64,7 +72,9 @@ export class QuizList implements OnInit {
             this.createdAtMax,
             this.dueDateMin,
             this.dueDateMax,
-            this.isActive
+            this.isActive,
+            this.user?.role,
+            this.user?.userId
           )
         ),
         tap(() => (this.loading = false))

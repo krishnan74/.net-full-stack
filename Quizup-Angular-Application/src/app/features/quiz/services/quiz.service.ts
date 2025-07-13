@@ -42,8 +42,21 @@ export class QuizService {
     createdAtMax?: Date,
     dueDateMin?: Date,
     dueDateMax?: Date,
-    isActive?: boolean
+    isActive?: boolean,
+    userRole?: string,
+    searchId?: number
   ): Observable<QuizModel[]> {
+    console.log('Searching quizzes with parameters:', {
+      searchTerm,
+      createdAtMin,
+      createdAtMax,
+      dueDateMin,
+      dueDateMax,
+      isActive,
+      userRole,
+      searchId,
+    });
+
     const quizzes = this.http.get<QuizModel[]>(`
         
         ${
@@ -54,7 +67,7 @@ export class QuizService {
       dueDateMin || ''
     }&DueDateMax=${dueDateMax || ''}&IsActive=${
       isActive !== undefined ? isActive : ''
-    }`);
+    }&Role=${userRole || ''}&SearchId=${searchId || ''}`);
 
     return quizzes;
   }

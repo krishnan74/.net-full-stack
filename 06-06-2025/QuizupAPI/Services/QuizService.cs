@@ -7,6 +7,7 @@ using QuizupAPI.Models.SearchModels;
 using QuizupAPI.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using QuizupAPI.Misc.Mappers;
+using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace QuizupAPI.Services
@@ -17,18 +18,28 @@ namespace QuizupAPI.Services
         private readonly IRepository<long, Question> _questionRepository;
         private readonly IRepository<long, QuizQuestion> _quizQuestionRepository;
         private readonly IRepository<long, QuizSubmission> _quizSubmissionRepository;
+        private readonly IRepository<long, Teacher> _teacherRepository;
+        private readonly IRepository<long, Student> _studentRepository;
+        private readonly IRepository<long, Classe> _classRepository;
         public QuizMapper quizMapper;
         public QuestionMapper questionMapper;
 
         public QuizService(IRepository<long, Quiz> quizRepository,
                             IRepository<long, Question> questionRepository,
                             IRepository<long, QuizQuestion> quizQuestionRepository,
-                            IRepository<long, QuizSubmission> quizSubmissionRepository)
+                            IRepository<long, QuizSubmission> quizSubmissionRepository,
+                            IRepository<long, Teacher> teacherRepository, 
+                            IRepository<long, Student> studentRepository, 
+                            IRepository<long, Classe> classRepository
+                        )
         {
             _quizRepository = quizRepository;
             _questionRepository = questionRepository;
             _quizQuestionRepository = quizQuestionRepository;
             _quizSubmissionRepository = quizSubmissionRepository;
+            _teacherRepository = teacherRepository;
+            _studentRepository = studentRepository;
+            _classRepository = classRepository;
             quizMapper = new QuizMapper();
             questionMapper = new QuestionMapper();
         }
@@ -267,7 +278,25 @@ namespace QuizupAPI.Services
         {
             try
             {
-                var quizzes = await _quizRepository.GetAll();
+                IEnumerable<Quiz> quizzes;
+
+                if (quizSearchModel.Role == "Teacher" && quizSearchModel.SearchId != null)
+                {
+                    var teacher = await _teacherRepository.Get((long)quizSearchModel.SearchId);
+                    quizzes = teacher.Quizzes.AsEnumerable();
+                }
+                else if (quizSearchModel.Role == "Student" && quizSearchModel.SearchId != null)
+                {
+                    var student = await _studentRepository.Get((long)quizSearchModel.SearchId);
+                    var classe = await _classRepository.Get(student.ClassId);
+                    quizzes = classe.Quizzes.AsEnumerable();
+
+                }
+                else
+                {
+                    quizzes = await _quizRepository.GetAll();
+                    Console.WriteLine("Searching all quizzes");
+                }
 
                 // Apply OR logic for Title, Description, and TeacherName
                 if (!string.IsNullOrWhiteSpace(quizSearchModel.Title) ||

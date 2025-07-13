@@ -27,17 +27,14 @@ export class QuizCard {
   ) {
     this.user$.subscribe((user) => {
       this.user = user;
-      console.log('User fetched:', this.user);
     });
 
     this.studentService
       .checkIfQuizAttemptExists(this.user?.userId!, this.quiz?.id!)
       .subscribe((response) => {
         if (response != null) {
-          console.log('Quiz attempt already exists:', response);
           this.showAttempt = false;
         } else {
-          console.log('No existing quiz attempt found');
           this.showAttempt = true;
         }
       });

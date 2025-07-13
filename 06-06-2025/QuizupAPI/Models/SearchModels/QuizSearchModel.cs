@@ -12,6 +12,8 @@ namespace QuizupAPI.Models.SearchModels
         public DateTime? DueDateMin { get; set; }
         public DateTime? DueDateMax { get; set; }
         public bool IsActive { get; set; } = true;
+        public string Role { get; set; } = string.Empty;
+        public long? SearchId { get; set; }
     }
 
 }
