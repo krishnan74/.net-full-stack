@@ -8,6 +8,42 @@
       class="search-input"
     />
 
+    <!-- Subject/Class Dropdowns -->
+    <ng-container *ngIf="user?.role === 'Teacher'">
+      <select
+        class="dropdown-input"
+        [(ngModel)]="subjectId"
+        (ngModelChange)="handleSearchQuizzes()"
+      >
+        <option [ngValue]="undefined">All Subjects</option>
+        <option *ngFor="let sub of subjects" [ngValue]="sub.id">
+          {{ sub.name }}
+        </option>
+      </select>
+      <select
+        class="dropdown-input"
+        [(ngModel)]="classId"
+        (ngModelChange)="handleSearchQuizzes()"
+      >
+        <option [ngValue]="undefined">All Classes</option>
+        <option *ngFor="let cls of classes" [ngValue]="cls.id">
+          {{ cls.name }}
+        </option>
+      </select>
+    </ng-container>
+    <ng-container *ngIf="user?.role === 'Student'">
+      <select
+        class="dropdown-input"
+        [(ngModel)]="subjectId"
+        (ngModelChange)="handleSearchQuizzes()"
+      >
+        <option [ngValue]="undefined">All Subjects</option>
+        <option *ngFor="let sub of subjects" [ngValue]="sub.id">
+          {{ sub.name }}
+        </option>
+      </select>
+    </ng-container>
+
     <div class="filters-toggle" *ngIf="!showFilters">
       <button class="show-filters-btn" (click)="toggleFilters()">
         <span class="down-arrow">&#8595;</span> Show Filters
@@ -61,6 +97,7 @@
         class="date-input"
       />
     </div>
+
     <div class="checkbox-filter">
       <label> Active Only </label>
 

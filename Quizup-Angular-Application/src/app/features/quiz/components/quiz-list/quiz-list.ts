@@ -8,6 +8,11 @@ import { FormsModule } from '@angular/forms';
 import { selectUser } from '../../../../store/auth/state/auth.selectors';
 import { Store } from '@ngrx/store';
 import { User } from '../../../../store/auth/auth.model';
+import { ClassService } from '../../../class/services/class.service';
+import { SubjectService } from '../../../subject/services/subject.service';
+import { ProfileService } from '../../../profile/profile.service';
+import { ClassModel } from '../../../class/models/class.model';
+import { SubjectModel } from '../../../subject/models/subject.model';
 
 @Component({
   selector: 'app-quiz-list',
@@ -26,6 +31,8 @@ export class QuizList implements OnInit {
   dueDateMin?: Date;
   dueDateMax?: Date;
   isActive?: boolean = false;
+  subjectId?: number;
+  classId?: number;
 
   searchSubject = new Subject<void>();
   loading: boolean = false;
@@ -33,11 +40,38 @@ export class QuizList implements OnInit {
   filterToggle: boolean = false;
   lastScrollTop: number = 0;
 
-  constructor(private quizService: QuizService, private store: Store) {
+  subjects: SubjectModel[] = [];
+  classes: ClassModel[] = [];
+
+  constructor(
+    private quizService: QuizService,
+    private store: Store,
+    private profileService: ProfileService
+  ) {
     window.addEventListener('scroll', this.onScroll.bind(this));
     this.user$.subscribe((user) => {
       this.user = user;
     });
+
+    if (this.user?.role == 'Teacher') {
+      this.profileService.getSubjectsByTeacherId(this.user.userId).subscribe({
+        next: (subjects) => {
+          this.subjects = subjects;
+        },
+      });
+
+      this.profileService.getClassesByTeacherId(this.user.userId).subscribe({
+        next: (classes) => {
+          this.classes = classes;
+        },
+      });
+    } else if (this.user?.role == 'Student') {
+      this.profileService.getSubjectsByStudentId(this.user.userId).subscribe({
+        next: (subjects) => {
+          this.subjects = subjects;
+        },
+      });
+    }
   }
 
   handleSearchQuizzes() {
@@ -73,6 +107,8 @@ export class QuizList implements OnInit {
             this.dueDateMin,
             this.dueDateMax,
             this.isActive,
+            this.subjectId,
+            this.classId,
             this.user?.role,
             this.user?.userId
           )

@@ -14,6 +14,9 @@ namespace QuizupAPI.Models.SearchModels
         public bool IsActive { get; set; } = true;
         public string Role { get; set; } = string.Empty;
         public long? SearchId { get; set; }
+        public long? ClassId { get; set; }
+        public long? SubjectId { get; set; }
+        public string? Tags { get; set; } 
     }
 
 }

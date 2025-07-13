@@ -301,14 +301,21 @@ namespace QuizupAPI.Services
                 // Apply OR logic for Title, Description, and TeacherName
                 if (!string.IsNullOrWhiteSpace(quizSearchModel.Title) ||
                     !string.IsNullOrWhiteSpace(quizSearchModel.Description) ||
-                    !string.IsNullOrWhiteSpace(quizSearchModel.TeacherName))
+                    !string.IsNullOrWhiteSpace(quizSearchModel.TeacherName) || 
+                    !string.IsNullOrWhiteSpace(quizSearchModel.Tags)
+                    )
                 {
                     quizzes = quizzes.Where(q =>
                         (!string.IsNullOrWhiteSpace(quizSearchModel.Title) && q.Title.ToLower().Contains(quizSearchModel.Title.ToLower())) ||
                         (!string.IsNullOrWhiteSpace(quizSearchModel.Description) && q.Description.ToLower().Contains(quizSearchModel.Description.ToLower())) ||
                         (!string.IsNullOrWhiteSpace(quizSearchModel.TeacherName) &&
                             (q.Teacher.FirstName.ToLower().Contains(quizSearchModel.TeacherName.ToLower()) ||
-                             q.Teacher.LastName.ToLower().Contains(quizSearchModel.TeacherName.ToLower())))
+                             q.Teacher.LastName.ToLower().Contains(quizSearchModel.TeacherName.ToLower()))
+                        ) ||
+                        (!string.IsNullOrWhiteSpace(quizSearchModel.Tags) &&
+                            q.Tags != null &&
+                            q.Tags.Any(tag => tag != null && tag.ToLower().Contains(quizSearchModel.Tags.ToLower()))
+                        )
                     );
                 }
 
@@ -336,8 +343,20 @@ namespace QuizupAPI.Services
                     quizzes = quizzes.Where(q => q.DueDate <= quizSearchModel.DueDateMax);
                 }
 
+                // Apply ClassId filter
+                if (quizSearchModel.ClassId != null)
+                {
+                    Console.WriteLine($"Filtering quizzes for ClassId: {quizSearchModel.ClassId}");
+                    quizzes = SearchByClassId(quizzes, quizSearchModel.ClassId);
+                }
 
-                
+                // Apply SubjectId filter
+                if (quizSearchModel.SubjectId != null)
+                {
+                    Console.WriteLine($"Filtering quizzes for SubjectId: {quizSearchModel.SubjectId}");
+                    quizzes = SearchBySubjectId(quizzes, quizSearchModel.SubjectId);
+                }
+
                 quizzes = quizzes.Where(q => q.IsActive == quizSearchModel.IsActive);
 
                 return quizzes.ToList();
@@ -364,128 +383,28 @@ namespace QuizupAPI.Services
                 throw new Exception($"An error occurred while retrieving the quiz submission: {ex.Message}", ex);
             }
         }
-
-        private IEnumerable<Quiz> SearchByTitle(
-            IEnumerable<Quiz> quizzes, string title
+        private IEnumerable<Quiz> SearchByClassId(
+            IEnumerable<Quiz> quizzes, long? classId
         )
         {
-            if (title == "" || title == null)
+            if (classId == null)
             {
-                Console.WriteLine("No title provided, returning all quizzes.");
                 return quizzes;
             }
-            else
-            {
-                Console.WriteLine($"Searching quizzes with title containing: {title}");
-                var filteredQuizzes = quizzes.Where(q => q.Title.ToLower().Contains(title.ToLower())).ToList();
 
-
-
-                return filteredQuizzes;
-            }
-        }
-        
-        private IEnumerable<Quiz> SearchByDescription(
-            IEnumerable<Quiz> quizzes, string description
-        )
-        {
-            if (description == "" || description == null)
-            {
-                Console.WriteLine("No description provided, returning all quizzes.");
-                return quizzes;
-            }
-            else
-            {
-                Console.WriteLine($"Searching quizzes with description containing: {description}");
-                var filteredQuizzes = quizzes.Where(q => q.Description.ToLower().Contains(description.ToLower())).ToList();
-
-               
-                return filteredQuizzes;
-            }
+            return quizzes.Where(q => q.ClassId == classId).ToList();
         }
 
-        private IEnumerable<Quiz> SearchByTeacherName(
-            IEnumerable<Quiz> quizzes, string teacherName
+        private IEnumerable<Quiz> SearchBySubjectId(
+            IEnumerable<Quiz> quizzes, long? subjectId
         )
         {
-            if (teacherName == "" || teacherName == null)
-            {
-                Console.WriteLine("No teacher name provided, returning all quizzes.");
-                return quizzes;
-            }
-            else
-            {
-                Console.WriteLine($"Searching quizzes with teacher name containing: {teacherName}");
-
-                var filteredQuizzes = quizzes.Where(
-
-                    q => q.Teacher.FirstName.ToLower().Contains(teacherName.ToLower()) || 
-                    q.Teacher.LastName.ToLower().Contains(teacherName.ToLower()) 
-
-                    ).ToList();
-
-                return filteredQuizzes;
-            }
-        }
-
-        private IEnumerable<Quiz> SearchByCreatedAt(
-            IEnumerable<Quiz> quizzes, DateTime? createdAtMin, DateTime? createdAtMax
-        )
-        {
-            if (createdAtMin == null && createdAtMax == null)
-            {
-                Console.WriteLine("No created date provided, returning all quizzes.");
-
-                return quizzes;
-            }
-            else
-            {
-                Console.WriteLine($"Searching quizzes with created date containing: {createdAtMin} to {createdAtMax}");
-                var filteredQuizzes = quizzes.Where(q =>
-
-                (createdAtMin == null || q.CreatedAt >= createdAtMin) &&
-                (createdAtMax == null || q.CreatedAt <= createdAtMax)
-                ).ToList();
-                
-                return filteredQuizzes;
-                
-            }
-
-            
-        }
-
-        private IEnumerable<Quiz> SearchByDueDate(
-            IEnumerable<Quiz> quizzes, DateTime? dueDateMin, DateTime? dueDateMax
-        )
-        {
-            if (dueDateMin == null && dueDateMax == null)
-            {
-                Console.WriteLine("No due date provided, returning all quizzes.");
-                return quizzes;
-            }
-
-            else
-            {
-                Console.WriteLine($"Searching quizzes with due date containing: {dueDateMin} to {dueDateMax}");
-                return quizzes.Where(q =>
-                    (dueDateMin == null || q.DueDate >= dueDateMin) &&
-                    (dueDateMax == null || q.DueDate <= dueDateMax)
-                ).ToList();
-            }
-
-          
-        }
-
-        private IEnumerable<Quiz> SearchByIsActive(
-            IEnumerable<Quiz> quizzes, bool? isActive
-        )
-        {
-            if (isActive == null)
+            if (subjectId == null)
             {
                 return quizzes;
             }
 
-            return quizzes.Where(q => q.IsActive == isActive).ToList();
+            return quizzes.Where(q => q.SubjectId == subjectId).ToList();
         }
 
         private async Task MapAndAddQuestionsAsync(long quizId, QuizAddRequestDTO quizAddRequestDTO)
@@ -499,7 +418,8 @@ namespace QuizupAPI.Services
             {
                 long? questionId = questionDTO.Id;
 
-                if( questionId == null ){
+                if (questionId == null)
+                {
 
                     var question = questionMapper.MapQuestionAddRequestQuestion(questionDTO);
 
@@ -510,14 +430,14 @@ namespace QuizupAPI.Services
 
                     var addedQuestion = await _questionRepository.Add(question);
 
-                    if( addedQuestion == null )
+                    if (addedQuestion == null)
                     {
                         throw new Exception("Failed to add question");
                     }
 
                     questionId = addedQuestion.Id;
                 }
-                
+
                 var quizQuestion = new QuizQuestion
                 {
                     QuizId = quizId,
@@ -529,7 +449,7 @@ namespace QuizupAPI.Services
                 {
                     throw new Exception("Failed to add question to quiz");
                 }
-                
+
             }
         }
         
