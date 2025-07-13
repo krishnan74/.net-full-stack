@@ -20,4 +20,11 @@ export interface TeacherSummary {
   studentPerformanceSummary: any;
   recentQuizActivity: any;
   quizPerformanceTrend: any;
+  recentQuizStats?: {
+    quizTitle: string;
+    avgScore: number;
+    completionRate: number;
+    totalAttempts: number;
+    lastAttempted: string;
+  }[];
 }
