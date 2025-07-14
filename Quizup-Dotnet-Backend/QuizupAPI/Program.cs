@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Threading.RateLimiting;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,7 +66,13 @@ builder.Services.AddControllers()
 
 builder.Services.AddDbContext<QuizContext>((serviceProvider, opts) =>
 {
-    opts.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    var keyVaultUrl = configuration.GetValue<string>("Azure:KeyVaultUrl");
+    SecretClient secretClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+    KeyVaultSecret dbConnectionStringSecret = await secretClient.GetSecretAsync("db-connection-string");
+
+            
+    var dbConnectionString = dbConnectionStringSecret.Value?.ToString();
+    opts.UseNpgsql(dbConnectionString);
     opts.AddInterceptors(new DatabasePerformanceInterceptor());
 });
 
