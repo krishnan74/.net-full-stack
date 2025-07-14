@@ -3,20 +3,67 @@
     <input
       type="text"
       [(ngModel)]="searchString"
-      (input)="handleSearchQuizzes()"
+      (ngModelChange)="handleSearchQuizzes()"
       placeholder="Search quizzes..."
       class="search-input"
     />
+
+    <!-- Subject/Class Dropdowns -->
+    <ng-container *ngIf="user?.role === 'Teacher'">
+      <select
+        class="dropdown-input"
+        [(ngModel)]="subjectId"
+        (ngModelChange)="handleSearchQuizzes()"
+      >
+        <option [ngValue]="undefined">All Subjects</option>
+        <option *ngFor="let sub of subjects" [ngValue]="sub.id">
+          {{ sub.name }}
+        </option>
+      </select>
+      <select
+        class="dropdown-input"
+        [(ngModel)]="classId"
+        (ngModelChange)="handleSearchQuizzes()"
+      >
+        <option [ngValue]="undefined">All Classes</option>
+        <option *ngFor="let cls of classes" [ngValue]="cls.id">
+          {{ cls.name }}
+        </option>
+      </select>
+    </ng-container>
+    <ng-container *ngIf="user?.role === 'Student'">
+      <select
+        class="dropdown-input"
+        [(ngModel)]="subjectId"
+        (ngModelChange)="handleSearchQuizzes()"
+      >
+        <option [ngValue]="undefined">All Subjects</option>
+        <option *ngFor="let sub of subjects" [ngValue]="sub.id">
+          {{ sub.name }}
+        </option>
+      </select>
+    </ng-container>
+
+    <div class="filters-toggle" *ngIf="!showFilters">
+      <button class="show-filters-btn" (click)="toggleFilters()">
+        <span class="down-arrow">&#8595;</span> Show Filters
+      </button>
+    </div>
   </div>
 
-  <div class="filters-container">
+  <div
+    class="filters-container slide-filters"
+    [class.slide-out]="!showFilters"
+    [class.slide-in]="showFilters"
+    *ngIf="showFilters"
+  >
     <div class="date-filter">
       <label for="createdAtMin">Created At Min:</label>
       <input
         id="createdAtMin"
         type="date"
         [(ngModel)]="createdAtMin"
-        (change)="handleSearchQuizzes()"
+        (ngModelChange)="handleSearchQuizzes()"
         class="date-input"
       />
     </div>
@@ -26,7 +73,7 @@
         id="createdAtMax"
         type="date"
         [(ngModel)]="createdAtMax"
-        (change)="handleSearchQuizzes()"
+        (ngModelChange)="handleSearchQuizzes()"
         class="date-input"
       />
     </div>
@@ -36,7 +83,7 @@
         id="dueDateMin"
         type="date"
         [(ngModel)]="dueDateMin"
-        (change)="handleSearchQuizzes()"
+        (ngModelChange)="handleSearchQuizzes()"
         class="date-input"
       />
     </div>
@@ -46,19 +93,25 @@
         id="dueDateMax"
         type="date"
         [(ngModel)]="dueDateMax"
-        (change)="handleSearchQuizzes()"
+        (ngModelChange)="handleSearchQuizzes()"
         class="date-input"
       />
     </div>
+
     <div class="checkbox-filter">
-      <label>
-        <input
-          type="checkbox"
-          [(ngModel)]="isActive"
-          (change)="handleSearchQuizzes()"
-        />
-        Active Only
-      </label>
+      <label> Active Only </label>
+
+      <input
+        type="checkbox"
+        [(ngModel)]="isActive"
+        (ngModelChange)="handleSearchQuizzes()"
+      />
+    </div>
+
+    <div class="filters-toggle" *ngIf="showFilters">
+      <button class="show-filters-btn" (click)="toggleFilters()">
+        <span class="up-arrow">&#8593;</span> Hide Filters
+      </button>
     </div>
   </div>
 </div>
@@ -71,13 +124,12 @@
 </div>
 
 <div *ngIf="!loading || quizzes.length > 0" class="quizzes-list">
-  <app-quiz-card
-    *ngFor="let item of quizzes; trackBy: item.id"
-    [quiz]="item"
-    class="quiz-card"
-  ></app-quiz-card>
+  <app-quiz-card *ngFor="let item of quizzes" [quiz]="item"></app-quiz-card>
 </div>
 
-<div *ngIf="!loading && quizzes.length === 0 && searchString" class="no-results">
+<div
+  *ngIf="!loading && quizzes.length === 0 && searchString"
+  class="no-results"
+>
   <p>No quizzes found for "{{ searchString }}"</p>
 </div>

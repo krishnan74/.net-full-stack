@@ -9,5 +9,6 @@ namespace QuizupAPI.Interfaces
 
         public Task<UserLoginResponseDTO> RefreshTokenAsync(RefreshTokenRequestDTO refreshTokenRequest);
         public Task<bool> LogoutAsync(string username);
+        public Task<User> ChangePasswordAsync(string username,string currentPassword, string newPassword);
     }
 }

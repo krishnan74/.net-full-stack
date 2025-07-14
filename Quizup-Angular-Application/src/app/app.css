@@ -55,7 +55,7 @@
   inset: 0;
   border-radius: 50%;
 
-  background-image: url("./assets/grainy.png");
+  background-image: url("../assets/images/grainy.png");
   background-repeat: repeat;
   background-size: 180px 180px;
   background-position: 0 0;

@@ -7,10 +7,10 @@ export class QuizTimerService {
   private timer$ = new Subject<void>();
 
   startTimer(): Observable<number> {
-    return interval(100).pipe(
+    return interval(10000).pipe(
       takeUntil(this.timer$),
-      take(this.duration / 100),
-      map((i) => (i + 1) / (this.duration / 100))
+      take(this.duration / 10000),
+      map((i) => (i + 1) / (this.duration / 10000))
     );
   }
 

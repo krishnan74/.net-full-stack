@@ -1,0 +1,75 @@
+h2 {
+  margin-bottom: 1rem;
+}
+
+.confirm-dialog {
+  padding: 2rem 2.5rem 1.5rem 2.5rem;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(60, 30, 90, 0.18);
+  min-width: 320px;
+  text-align: center;
+  animation: pop-in 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes pop-in {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.confirm-dialog-title {
+  color: #e53e3e;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.confirm-dialog-content p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.confirm-dialog-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.cancel-button {
+  padding: 0.6rem 1.3rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+  background: #f3f3f3;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.cancel-button:hover {
+  background: #e2e8f0;
+}
+
+.delete-button {
+  padding: 0.6rem 1.3rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+  background: #e53e3ee1;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(229, 62, 62, 0.09);
+  transition: background 0.2s, color 0.2s;
+}
+
+.delete-button:hover {
+  background: #e53e3e;
+}

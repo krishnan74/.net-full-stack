@@ -1,3 +1,6 @@
+<app-breadcrumbs
+  [breadcrumbs]="[{ label: 'Admin', url: '/admin' }, { label: 'Subjects' }]"
+></app-breadcrumbs>
 <div class="table-list-container">
   <div class="header">
     <h2>Subjects List</h2>
@@ -19,6 +22,7 @@
         <td>{{ subject.code }}</td>
         <td>
           <button (click)="addOrUpdateSubject(subject)">Update</button>
+          <button (click)="deleteSubject(subject.id)">Delete</button>
         </td>
       </tr>
     </tbody>

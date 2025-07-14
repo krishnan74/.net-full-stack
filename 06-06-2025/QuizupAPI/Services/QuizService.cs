@@ -7,6 +7,7 @@ using QuizupAPI.Models.SearchModels;
 using QuizupAPI.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using QuizupAPI.Misc.Mappers;
+using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace QuizupAPI.Services
@@ -16,16 +17,29 @@ namespace QuizupAPI.Services
         private readonly IRepository<long, Quiz> _quizRepository;
         private readonly IRepository<long, Question> _questionRepository;
         private readonly IRepository<long, QuizQuestion> _quizQuestionRepository;
+        private readonly IRepository<long, QuizSubmission> _quizSubmissionRepository;
+        private readonly IRepository<long, Teacher> _teacherRepository;
+        private readonly IRepository<long, Student> _studentRepository;
+        private readonly IRepository<long, Classe> _classRepository;
         public QuizMapper quizMapper;
         public QuestionMapper questionMapper;
 
         public QuizService(IRepository<long, Quiz> quizRepository,
                             IRepository<long, Question> questionRepository,
-                            IRepository<long, QuizQuestion> quizQuestionRepository)
+                            IRepository<long, QuizQuestion> quizQuestionRepository,
+                            IRepository<long, QuizSubmission> quizSubmissionRepository,
+                            IRepository<long, Teacher> teacherRepository, 
+                            IRepository<long, Student> studentRepository, 
+                            IRepository<long, Classe> classRepository
+                        )
         {
             _quizRepository = quizRepository;
             _questionRepository = questionRepository;
             _quizQuestionRepository = quizQuestionRepository;
+            _quizSubmissionRepository = quizSubmissionRepository;
+            _teacherRepository = teacherRepository;
+            _studentRepository = studentRepository;
+            _classRepository = classRepository;
             quizMapper = new QuizMapper();
             questionMapper = new QuestionMapper();
         }
@@ -267,47 +281,86 @@ namespace QuizupAPI.Services
         {
             try
             {
-                var quizzes = await _quizRepository.GetAll();
+                IEnumerable<Quiz> quizzes;
+
+                if (quizSearchModel.Role == "Teacher" && quizSearchModel.SearchId != null)
+                {
+                    var teacher = await _teacherRepository.Get((long)quizSearchModel.SearchId);
+                    quizzes = teacher.Quizzes.AsEnumerable();
+                }
+                else if (quizSearchModel.Role == "Student" && quizSearchModel.SearchId != null)
+                {
+                    var student = await _studentRepository.Get((long)quizSearchModel.SearchId);
+                    var classe = await _classRepository.Get(student.ClassId);
+                    quizzes = classe.Quizzes.AsEnumerable();
+
+                }
+                else
+                {
+                    quizzes = await _quizRepository.GetAll();
+                    Console.WriteLine("Searching all quizzes");
+                }
 
                 // Apply OR logic for Title, Description, and TeacherName
                 if (!string.IsNullOrWhiteSpace(quizSearchModel.Title) ||
                     !string.IsNullOrWhiteSpace(quizSearchModel.Description) ||
-                    !string.IsNullOrWhiteSpace(quizSearchModel.TeacherName))
+                    !string.IsNullOrWhiteSpace(quizSearchModel.TeacherName) || 
+                    !string.IsNullOrWhiteSpace(quizSearchModel.Tags)
+                    )
                 {
                     quizzes = quizzes.Where(q =>
                         (!string.IsNullOrWhiteSpace(quizSearchModel.Title) && q.Title.ToLower().Contains(quizSearchModel.Title.ToLower())) ||
                         (!string.IsNullOrWhiteSpace(quizSearchModel.Description) && q.Description.ToLower().Contains(quizSearchModel.Description.ToLower())) ||
                         (!string.IsNullOrWhiteSpace(quizSearchModel.TeacherName) &&
                             (q.Teacher.FirstName.ToLower().Contains(quizSearchModel.TeacherName.ToLower()) ||
-                             q.Teacher.LastName.ToLower().Contains(quizSearchModel.TeacherName.ToLower())))
+                             q.Teacher.LastName.ToLower().Contains(quizSearchModel.TeacherName.ToLower()))
+                        ) ||
+                        (!string.IsNullOrWhiteSpace(quizSearchModel.Tags) &&
+                            q.Tags != null &&
+                            q.Tags.Any(tag => tag != null && tag.ToLower().Contains(quizSearchModel.Tags.ToLower()))
+                        )
                     );
                 }
 
                 // Apply CreatedAt filters
-                if (quizSearchModel.CreatedAtMin.HasValue)
+                if (quizSearchModel.CreatedAtMin != null)
                 {
-                    quizzes = quizzes.Where(q => q.CreatedAt >= quizSearchModel.CreatedAtMin.Value);
+                    Console.WriteLine($"Filtering quizzes created after: {quizSearchModel.CreatedAtMin}");
+                    quizzes = quizzes.Where(q => q.CreatedAt >= quizSearchModel.CreatedAtMin);
                 }
-                if (quizSearchModel.CreatedAtMax.HasValue)
+                if (quizSearchModel.CreatedAtMax != null)
                 {
-                    quizzes = quizzes.Where(q => q.CreatedAt <= quizSearchModel.CreatedAtMax.Value);
+                    Console.WriteLine($"Filtering quizzes created before: {quizSearchModel.CreatedAtMax}");
+                    quizzes = quizzes.Where(q => q.CreatedAt <= quizSearchModel.CreatedAtMax);
                 }
 
                 // Apply DueDate filters
-                if (quizSearchModel.DueDateMin.HasValue)
+                if (quizSearchModel.DueDateMin != null)
                 {
-                    quizzes = quizzes.Where(q => q.DueDate >= quizSearchModel.DueDateMin.Value);
+                    Console.WriteLine($"Filtering quizzes due after: {quizSearchModel.DueDateMin}");
+                    quizzes = quizzes.Where(q => q.DueDate >= quizSearchModel.DueDateMin);
                 }
-                if (quizSearchModel.DueDateMax.HasValue)
+                if (quizSearchModel.DueDateMax != null)
                 {
-                    quizzes = quizzes.Where(q => q.DueDate <= quizSearchModel.DueDateMax.Value);
+                    Console.WriteLine($"Filtering quizzes due before: {quizSearchModel.DueDateMax}");
+                    quizzes = quizzes.Where(q => q.DueDate <= quizSearchModel.DueDateMax);
                 }
 
-                // Apply IsActive filter
-                if (quizSearchModel.IsActive.HasValue)
+                // Apply ClassId filter
+                if (quizSearchModel.ClassId != null)
                 {
-                    quizzes = quizzes.Where(q => q.IsActive == quizSearchModel.IsActive.Value);
+                    Console.WriteLine($"Filtering quizzes for ClassId: {quizSearchModel.ClassId}");
+                    quizzes = SearchByClassId(quizzes, quizSearchModel.ClassId);
                 }
+
+                // Apply SubjectId filter
+                if (quizSearchModel.SubjectId != null)
+                {
+                    Console.WriteLine($"Filtering quizzes for SubjectId: {quizSearchModel.SubjectId}");
+                    quizzes = SearchBySubjectId(quizzes, quizSearchModel.SubjectId);
+                }
+
+                quizzes = quizzes.Where(q => q.IsActive == quizSearchModel.IsActive);
 
                 return quizzes.ToList();
             }
@@ -317,127 +370,44 @@ namespace QuizupAPI.Services
             }
         }
 
-        private IEnumerable<Quiz> SearchByTitle(
-            IEnumerable<Quiz> quizzes, string title
-        )
+        public async Task<QuizSubmission> GetQuizSubmissionByIdAsync(long quizSubmissionId)
         {
-            if (title == "" || title == null)
+            try
             {
-                Console.WriteLine("No title provided, returning all quizzes.");
-                return quizzes;
+                var quizSubmission = await _quizSubmissionRepository.Get(quizSubmissionId);
+                return quizSubmission;
             }
-            else
+            catch (KeyNotFoundException ex)
             {
-                Console.WriteLine($"Searching quizzes with title containing: {title}");
-                var filteredQuizzes = quizzes.Where(q => q.Title.ToLower().Contains(title.ToLower())).ToList();
-
-              
-
-                return filteredQuizzes;
+                throw new KeyNotFoundException($"Quiz submission with ID {quizSubmissionId} not found.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while retrieving the quiz submission: {ex.Message}", ex);
             }
         }
-        
-        private IEnumerable<Quiz> SearchByDescription(
-            IEnumerable<Quiz> quizzes, string description
+        private IEnumerable<Quiz> SearchByClassId(
+            IEnumerable<Quiz> quizzes, long? classId
         )
         {
-            if (description == "" || description == null)
+            if (classId == null)
             {
-                Console.WriteLine("No description provided, returning all quizzes.");
                 return quizzes;
             }
-            else
-            {
-                Console.WriteLine($"Searching quizzes with description containing: {description}");
-                var filteredQuizzes = quizzes.Where(q => q.Description.ToLower().Contains(description.ToLower())).ToList();
 
-               
-                return filteredQuizzes;
-            }
+            return quizzes.Where(q => q.ClassId == classId).ToList();
         }
 
-        private IEnumerable<Quiz> SearchByTeacherName(
-            IEnumerable<Quiz> quizzes, string teacherName
+        private IEnumerable<Quiz> SearchBySubjectId(
+            IEnumerable<Quiz> quizzes, long? subjectId
         )
         {
-            if (teacherName == "" || teacherName == null)
-            {
-                Console.WriteLine("No teacher name provided, returning all quizzes.");
-                return quizzes;
-            }
-            else
-            {
-                Console.WriteLine($"Searching quizzes with teacher name containing: {teacherName}");
-
-                var filteredQuizzes = quizzes.Where(
-
-                    q => q.Teacher.FirstName.ToLower().Contains(teacherName.ToLower()) || 
-                    q.Teacher.LastName.ToLower().Contains(teacherName.ToLower()) 
-
-                    ).ToList();
-
-                return filteredQuizzes;
-            }
-        }
-
-        private IEnumerable<Quiz> SearchByCreatedAt(
-            IEnumerable<Quiz> quizzes, Range<DateTime>? createdAt
-        )
-        {
-            if (createdAt == null || (createdAt.Min == null && createdAt.Max == null))
-            {
-                Console.WriteLine("No created date provided, returning all quizzes.");
-
-                return quizzes;
-            }
-            else
-            {
-                Console.WriteLine($"Searching quizzes with created date containing: {createdAt.Min} to {createdAt.Max}");
-                var filteredQuizzes = quizzes.Where(q =>
-
-                (createdAt.Min == null || q.CreatedAt >= createdAt.Min) &&
-                (createdAt.Max == null || q.CreatedAt <= createdAt.Max)
-                ).ToList();
-                
-                return filteredQuizzes;
-                
-            }
-
-            
-        }
-
-        private IEnumerable<Quiz> SearchByDueDate(
-            IEnumerable<Quiz> quizzes, Range<DateTime>? dueDate
-        )
-        {
-            if (dueDate == null || (dueDate.Min == null && dueDate.Max == null))
-            {
-                Console.WriteLine("No due date provided, returning all quizzes.");
-                return quizzes;
-            }
-
-            else
-            {
-                Console.WriteLine($"Searching quizzes with due date containing: {dueDate.Min} to {dueDate.Max}");
-                  return quizzes.Where(q =>
-                (dueDate.Min == null || q.DueDate >= dueDate.Min) &&
-                (dueDate.Max == null || q.DueDate <= dueDate.Max)
-            ).ToList();
-            }
-
-          
-        }
-
-        private IEnumerable<Quiz> SearchByIsActive(
-            IEnumerable<Quiz> quizzes, bool? isActive
-        )
-        {
-            if (isActive == null)
+            if (subjectId == null)
             {
                 return quizzes;
             }
 
-            return quizzes.Where(q => q.IsActive == isActive).ToList();
+            return quizzes.Where(q => q.SubjectId == subjectId).ToList();
         }
 
         private async Task MapAndAddQuestionsAsync(long quizId, QuizAddRequestDTO quizAddRequestDTO)
@@ -449,27 +419,40 @@ namespace QuizupAPI.Services
 
             foreach (var questionDTO in quizAddRequestDTO.Questions)
             {
-                var question = questionMapper.MapQuestionAddRequestQuestion(questionDTO);
-                if (question == null)
+                long? questionId = questionDTO.Id;
+
+                if (questionId == null)
                 {
-                    throw new Exception("Failed to map question from DTO.");
+
+                    var question = questionMapper.MapQuestionAddRequestQuestion(questionDTO);
+
+                    if (question == null)
+                    {
+                        throw new Exception("Failed to map question from DTO.");
+                    }
+
+                    var addedQuestion = await _questionRepository.Add(question);
+
+                    if (addedQuestion == null)
+                    {
+                        throw new Exception("Failed to add question");
+                    }
+
+                    questionId = addedQuestion.Id;
                 }
-                var addedQuestion = await _questionRepository.Add(question);
 
                 var quizQuestion = new QuizQuestion
                 {
                     QuizId = quizId,
-                    QuestionId = addedQuestion.Id
+                    QuestionId = questionId
                 };
+
                 var addedQuizQuestion = await _quizQuestionRepository.Add(quizQuestion);
                 if (addedQuizQuestion == null)
                 {
                     throw new Exception("Failed to add question to quiz");
                 }
-                if (addedQuestion == null)
-                {
-                    throw new Exception("Failed to add question");
-                }
+
             }
         }
         

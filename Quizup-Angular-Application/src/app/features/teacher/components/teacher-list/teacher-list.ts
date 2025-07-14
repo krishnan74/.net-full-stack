@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TeacherService } from '../../services/teacher.service';
-import { TeacherModel } from '../../models/teacher';
+import { TeacherModel } from '../../models/teacher.model';
 import { CommonModule } from '@angular/common';
 import { TeacherCard } from '../teacher-card/teacher-card';
 import { ApiResponse } from '../../../../shared/models/api-response';

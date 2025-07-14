@@ -22,6 +22,9 @@ namespace QuizupAPI.Services
         private readonly IRepository<string, User> _userRepository;
         private readonly IRepository<long, QuizSubmission> _quizSubmissionRepository;
         private readonly IRepository<long, Answer> _answerRepository;
+
+
+
         private readonly QuizContext _context;
 
         public UserMapper userMapper;
@@ -132,31 +135,39 @@ namespace QuizupAPI.Services
         {
             try
             {
+
                 if (studentDTO == null)
                 {
+                    Console.WriteLine("Student data is null.");
                     throw new ArgumentNullException(nameof(studentDTO), "Student data cannot be null.");
                 }
 
-                if (string.IsNullOrWhiteSpace(studentDTO.FirstName) || string.IsNullOrWhiteSpace(studentDTO.LastName) )
+                if (string.IsNullOrWhiteSpace(studentDTO.FirstName) || string.IsNullOrWhiteSpace(studentDTO.LastName))
                 {
+                    Console.WriteLine("First name or last name is missing.");
                     throw new ArgumentException("First name, last name are required fields.");
                 }
 
                 var existingStudent = await _studentRepository.Get(id);
                 if (existingStudent == null)
                 {
+                    Console.WriteLine($"Student with ID {id} not found.");
                     throw new KeyNotFoundException($"Student with ID {id} not found.");
                 }
 
+                Console.WriteLine("Mapping StudentUpdateRequestDTO to Student...");
                 var student = studentMapper.MapStudentUpdateRequestStudent(existingStudent, studentDTO);
+
                 if (student == null)
                 {
+                    Console.WriteLine("Failed to map StudentUpdateRequestDTO to Student.");
                     throw new Exception("Failed to map StudentUpdateRequestDTO to Student.");
                 }
 
                 var updatedStudent = await _studentRepository.Update(id, student);
                 if (updatedStudent == null)
                 {
+                    Console.WriteLine($"Failed to update student with ID {id}.");
                     throw new Exception($"Failed to update student with ID {id}.");
                 }
 
@@ -164,6 +175,7 @@ namespace QuizupAPI.Services
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"An error occurred while updating the student with ID {id}: {ex.Message}");
                 throw new Exception($"An error occurred while updating the student with ID {id}.", ex);
             }
         }
@@ -175,7 +187,7 @@ namespace QuizupAPI.Services
                 var existingStudent = await _studentRepository.Get(id);
 
                 await _userRepository.Delete(existingStudent.Email);
-                
+
                 return await _studentRepository.Delete(id);
             }
 
@@ -185,7 +197,7 @@ namespace QuizupAPI.Services
             }
             catch (Exception ex)
             {
-             
+
                 throw new Exception($"An error occurred while deleting the student with ID {id}.", ex);
             }
         }
@@ -195,7 +207,7 @@ namespace QuizupAPI.Services
             try
             {
                 var student = await _studentRepository.Get(id);
-                
+
                 var quizSubmissions = await _quizSubmissionRepository.GetAll();
                 if (quizSubmissions == null || !quizSubmissions.Any())
                 {
@@ -360,70 +372,70 @@ namespace QuizupAPI.Services
 
         }
 
-        private async Task MapAndAddAnswersAsync(List<Answer> existingAnswers, List<AnswerAddRequestDTO> currentAnswers, long quizSubmissionId )
+        private async Task MapAndAddAnswersAsync(List<Answer> existingAnswers, List<AnswerAddRequestDTO> currentAnswers, long quizSubmissionId)
         {
             Console.WriteLine("Starting MapAndAddAnswersAsync...");
 
             if (currentAnswers == null || currentAnswers.Count == 0)
             {
-            Console.WriteLine("No answers provided in currentAnswers.");
-            throw new ValidationException("At least one answer is required.");
+                Console.WriteLine("No answers provided in currentAnswers.");
+                throw new ValidationException("At least one answer is required.");
             }
 
             foreach (var answerDTO in currentAnswers)
             {
-            Console.WriteLine($"Processing answer for QuestionId: {answerDTO.QuestionId}");
+                Console.WriteLine($"Processing answer for QuestionId: {answerDTO.QuestionId}");
 
-            Answer existingAnswer = null;
+                Answer existingAnswer = null;
 
-            if (existingAnswers != null)
-            {
-                Console.WriteLine("Checking for existing answers...");
-                existingAnswer = existingAnswers.FirstOrDefault(a => a.QuestionId == answerDTO.QuestionId);
-                Console.WriteLine(existingAnswer != null ? "Existing answer found." : "No existing answer found.");
-            }
-
-            // Check if an answer for the same question already exists
-
-            // Add the answer if it doesn't exist
-            if (existingAnswer == null)
-            {
-                Console.WriteLine("No existing answer found. Mapping and adding new answer...");
-                var answer = answerMapper.MapAnswerDTOToAnswer(answerDTO, quizSubmissionId);
-                if (answer == null)
+                if (existingAnswers != null)
                 {
-                Console.WriteLine("Failed to map answer from DTO.");
-                throw new Exception("Failed to map answer from DTO.");
-                }
-                var addedAnswer = await _answerRepository.Add(answer);
-
-                if (addedAnswer == null)
-                {
-                Console.WriteLine("Failed to add answer.");
-                throw new Exception("Failed to add answer");
+                    Console.WriteLine("Checking for existing answers...");
+                    existingAnswer = existingAnswers.FirstOrDefault(a => a.QuestionId == answerDTO.QuestionId);
+                    Console.WriteLine(existingAnswer != null ? "Existing answer found." : "No existing answer found.");
                 }
 
-                Console.WriteLine("Answer added successfully.");
-                continue;
-            }
+                // Check if an answer for the same question already exists
 
-            // Update the existing answer if it exists
-            if (!string.Equals(existingAnswer.SelectedAnswer, answerDTO.SelectedAnswer, StringComparison.OrdinalIgnoreCase))
-            {
-                Console.WriteLine("Existing answer found but selected answer is different. Updating answer...");
-                existingAnswer.SelectedAnswer = answerDTO.SelectedAnswer;
-                var updatedAnswer = await _answerRepository.Update(existingAnswer.Id, existingAnswer);
-                if (updatedAnswer == null)
+                // Add the answer if it doesn't exist
+                if (existingAnswer == null)
                 {
-                Console.WriteLine("Failed to update answer.");
-                throw new Exception("Failed to update answer");
+                    Console.WriteLine("No existing answer found. Mapping and adding new answer...");
+                    var answer = answerMapper.MapAnswerDTOToAnswer(answerDTO, quizSubmissionId);
+                    if (answer == null)
+                    {
+                        Console.WriteLine("Failed to map answer from DTO.");
+                        throw new Exception("Failed to map answer from DTO.");
+                    }
+                    var addedAnswer = await _answerRepository.Add(answer);
+
+                    if (addedAnswer == null)
+                    {
+                        Console.WriteLine("Failed to add answer.");
+                        throw new Exception("Failed to add answer");
+                    }
+
+                    Console.WriteLine("Answer added successfully.");
+                    continue;
                 }
-                Console.WriteLine("Answer updated successfully.");
-            }
-            else
-            {
-                Console.WriteLine("Existing answer found and selected answer is the same. No update needed.");
-            }
+
+                // Update the existing answer if it exists
+                if (!string.Equals(existingAnswer.SelectedAnswer, answerDTO.SelectedAnswer, StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine("Existing answer found but selected answer is different. Updating answer...");
+                    existingAnswer.SelectedAnswer = answerDTO.SelectedAnswer;
+                    var updatedAnswer = await _answerRepository.Update(existingAnswer.Id, existingAnswer);
+                    if (updatedAnswer == null)
+                    {
+                        Console.WriteLine("Failed to update answer.");
+                        throw new Exception("Failed to update answer");
+                    }
+                    Console.WriteLine("Answer updated successfully.");
+                }
+                else
+                {
+                    Console.WriteLine("Existing answer found and selected answer is the same. No update needed.");
+                }
             }
 
         }
@@ -482,7 +494,7 @@ namespace QuizupAPI.Services
             {
                 // Verify student exists
                 var student = await _studentRepository.Get(studentId);
-                
+
 
                 // Execute the PostgreSQL function
                 var result = await _context.Set<StudentSummaryDTO>()
@@ -499,7 +511,7 @@ namespace QuizupAPI.Services
 
                 return result;
             }
-             catch (KeyNotFoundException ex)
+            catch (KeyNotFoundException ex)
             {
                 throw new KeyNotFoundException(ex.Message);
             }
@@ -508,7 +520,7 @@ namespace QuizupAPI.Services
                 throw new Exception($"An error occurred while retrieving quiz summary for student with ID {studentId}.", ex);
             }
         }
-        
+
         public async Task<IEnumerable<Student>> GetStudentsPaginationAsync(int pageNumber, int pageSize)
         {
             try
@@ -529,6 +541,29 @@ namespace QuizupAPI.Services
                 throw new Exception("An error occurred while retrieving paginated students.", ex);
             }
         }
+        
+        public async Task<IEnumerable<Subject>> GetSubjectsByStudentIdAsync(long studentId)
+        {
+            try
+            {
+                var student = await _studentRepository.Get(studentId);
+
+                var result = await _context.Set<Subject>()
+                        .FromSqlRaw(
+                            "select * from get_subjects_by_student_id({0})",
+                            studentId
+                        ).ToListAsync();
+
+                return result;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while retrieving subjects for student with ID {studentId}.", ex);
+            }
+        }
     }
-    
 }

@@ -112,7 +112,46 @@ namespace QuizupAPI.Services
                 throw new Exception("Logout failed");
             }
         }
-        
 
+        public async Task<User> ChangePasswordAsync(string username, string currentPassword, string newPassword)
+        { try
+            {
+                if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(newPassword) || string.IsNullOrEmpty(currentPassword))
+                {
+                    throw new ArgumentException("Username, current password, and new password cannot be null or empty.");
+                }
+
+                var user = await _userRepository.Get(username);
+
+
+                var isCurrentPasswordValid = _encryptionService.VerifyPassword(currentPassword, user.HashedPassword);
+                if (!isCurrentPasswordValid)
+                {
+                    throw new ArgumentException("Current password is incorrect.");
+                }
+
+                user.HashedPassword = _encryptionService.HashPassword(newPassword);
+                var updatedUser = await _userRepository.Update(username, user);
+                if (updatedUser == null)
+                {
+                    throw new Exception("Failed to update password.");
+                }
+                return updatedUser;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException("User not found.", ex);
+            }
+            catch (ArgumentException argEx)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Password change failed.", ex);
+            }
+        }
+        
+    
     }
 }

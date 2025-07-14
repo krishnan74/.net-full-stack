@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { TeacherModel } from '../../models/teacher';
+import { TeacherModel } from '../../models/teacher.model';
 import { QuizModel } from '../../../quiz/models/quiz.model';
 
 @Component({

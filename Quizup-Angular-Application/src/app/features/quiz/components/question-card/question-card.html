@@ -1,0 +1,11 @@
+<div class="question-card">
+  <span class="question-number">Q{{ index + 1 }}.</span> {{ question.text }}
+  <ul class="options-list">
+    <li
+      *ngFor="let option of question.options; let i = index"
+      [ngClass]="{ 'correct-answer': question.correctAnswer === option }"
+    >
+      {{ option }}
+    </li>
+  </ul>
+</div>

@@ -56,7 +56,7 @@ namespace QuizupAPI.Controllers
                 var subject = await _subjectService.GetSubjectByIdAsync(id);
                 return Ok(ApiResponse<Subject>.SuccessResponse(subject, "Subject fetched successfully"));
             }
-            catch(KeyNotFoundException ex)
+            catch (KeyNotFoundException ex)
             {
                 return NotFound(ApiResponse<object>.ErrorResponse(ex.Message));
             }
@@ -80,22 +80,22 @@ namespace QuizupAPI.Controllers
         [Authorize(Roles = "Admin, Teacher")]
         public async Task<IActionResult> CreateSubject([FromBody] SubjectDTO subjectDto)
         {
-             try
+            try
             {
-             if (!ModelState.IsValid)
-            {
-                var errors = ModelState
-                    .Where(x => x.Value?.Errors.Count > 0)
-                    .ToDictionary(
-                        kvp => kvp.Key,
-                        kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray()
-                    );
-                return BadRequest(ApiResponse<object>.ErrorResponse("Validation failed", errors));
-            }
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState
+                        .Where(x => x.Value?.Errors.Count > 0)
+                        .ToDictionary(
+                            kvp => kvp.Key,
+                            kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray()
+                        );
+                    return BadRequest(ApiResponse<object>.ErrorResponse("Validation failed", errors));
+                }
 
 
-           
-            var subject = await _subjectService.AddSubjectAsync(subjectDto);
+
+                var subject = await _subjectService.AddSubjectAsync(subjectDto);
                 return CreatedAtAction(nameof(GetSubjectById), new { id = subject.Id }, ApiResponse<Subject>.SuccessResponse(subject, "Subject created successfully"));
             }
             catch (ArgumentNullException ex)
@@ -146,10 +146,10 @@ namespace QuizupAPI.Controllers
                 }
 
                 var updatedSubject = await _subjectService.UpdateSubjectAsync(id, subjectDto);
-               
+
                 return Ok(ApiResponse<Subject>.SuccessResponse(updatedSubject, "Subject updated successfully"));
             }
-               catch (ArgumentNullException ex)
+            catch (ArgumentNullException ex)
             {
                 return BadRequest(ApiResponse<object>.ErrorResponse(ex.Message));
             }
@@ -182,7 +182,7 @@ namespace QuizupAPI.Controllers
             try
             {
                 var deletedSubject = await _subjectService.DeleteSubjectAsync(id);
-                
+
                 return Ok(ApiResponse<Subject>.SuccessResponse(deletedSubject, "Subject deleted successfully"));
             }
             catch (KeyNotFoundException ex)
@@ -194,6 +194,7 @@ namespace QuizupAPI.Controllers
                 return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while deleting the subject. " + ex.Message));
             }
         }
+
         
 
     }

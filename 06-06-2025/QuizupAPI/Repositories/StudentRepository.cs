@@ -14,7 +14,8 @@ namespace QuizupAPI.Repositories
         public override async Task<Student> Get(long key)
         {
             var student = await _quizContext.students.
-                Include(s => s.QuizSubmissions)
+                Include(s => s.QuizSubmissions).
+                Include(s => s.Classe)
                 .SingleOrDefaultAsync(p => p.Id == key);
 
             return student ?? throw new KeyNotFoundException($"No student with the given ID: {key}");

@@ -13,7 +13,15 @@ namespace QuizupAPI.Repositories
 
         public override async Task<Classe> Get(long key)
         {
-            var classe = await _quizContext.classes.SingleOrDefaultAsync(p => p.Id == key);
+            var classe = await _quizContext.classes
+                .Include(cl => cl.Quizzes)
+                .ThenInclude(q => q.QuizQuestions)
+                .Include(cl => cl.Quizzes)
+                .ThenInclude(q => q.Teacher)
+                .Include(cl => cl.Quizzes)
+                .ThenInclude(q => q.Subject)
+                
+                .SingleOrDefaultAsync(p => p.Id == key);
 
             return classe??throw new KeyNotFoundException($"No class with the given ID: {key}");
         }

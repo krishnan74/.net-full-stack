@@ -1,5 +1,5 @@
-import { ClassModel } from '../../features/class/models/class';
-import { TeacherModel } from '../../features/teacher/models/teacher';
+import { ClassModel } from '../../features/class/models/class.model';
+import { TeacherModel } from '../../features/teacher/models/teacher.model';
 
 export class TeacherClassModel {
   constructor(

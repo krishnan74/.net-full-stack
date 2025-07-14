@@ -4,7 +4,7 @@ import { API_BASE_URL } from '../../../core/tokens/api-url.token';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from '../../../shared/models/api-response';
 import { User } from '../../../store/auth/auth.model';
-import { SubjectModel } from '../models/subject';
+import { SubjectModel } from '../models/subject.model';
 
 @Injectable()
 export class SubjectService {
@@ -17,7 +17,6 @@ export class SubjectService {
     const subject = this.http.get<SubjectModel>(
       `${this.apiBaseUrl}/Subjects/${id}`
     );
-    console.log('Subject fetched:', subject);
     return subject;
   }
 
@@ -25,13 +24,11 @@ export class SubjectService {
     subject: Omit<SubjectModel, 'id' | 'createdAt' | 'updatedAt'>
   ): Observable<ApiResponse<SubjectModel>> {
     try {
-      console.log('Creating subject with data:', subject);
       const createdSubject = this.http.post<ApiResponse<SubjectModel>>(
         `${this.apiBaseUrl}/Subjects`,
         subject
       );
 
-      console.log('Subject created:', createdSubject);
       return createdSubject;
     } catch (error) {
       console.error('Error creating subject:', error);
@@ -44,17 +41,14 @@ export class SubjectService {
       `${this.apiBaseUrl}/Subjects`
     );
 
-    console.log('All subjects fetched:', subjects);
     return subjects;
   }
 
   deleteSubject(id: number): Observable<ApiResponse<SubjectModel>> {
-    console.log('Deleting subject with ID:', id);
     return this.http
       .delete<ApiResponse<SubjectModel>>(`${this.apiBaseUrl}/Subjects/${id}`)
       .pipe(
         map((response) => {
-          console.log('Subject deleted successfully:', response);
           return response;
         })
       );

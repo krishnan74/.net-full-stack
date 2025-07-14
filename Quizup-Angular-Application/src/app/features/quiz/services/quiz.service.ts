@@ -1,9 +1,10 @@
 import { BehaviorSubject, map, Observable } from 'rxjs';
-import { QuizModel } from '../models/quiz.model';
+import { QuizCreateModel, QuizModel } from '../models/quiz.model';
 import { Inject, inject, Injectable } from '@angular/core';
 import { API_BASE_URL } from '../../../core/tokens/api-url.token';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from '../../../shared/models/api-response';
+import { QuizSubmissionModel } from '../../../shared/models/quiz-submission.model';
 
 @Injectable()
 export class QuizService {
@@ -17,20 +18,21 @@ export class QuizService {
   quizzes$: Observable<QuizModel[]> = this.quizzesSubject.asObservable();
 
   getQuizById(id: number): Observable<ApiResponse<QuizModel>> {
-    const quiz = this.http.get<ApiResponse<QuizModel>>(
-      `${this.apiBaseUrl}/Quizzes/${id}`
-    );
+    const quiz = this.http
+      .get<ApiResponse<QuizModel>>(`${this.apiBaseUrl}/Quizzes/${id}`)
+      .pipe(
+        map((response) => {
+          return response;
+        })
+      );
     return quiz;
   }
 
-  createQuiz(
-    quiz: Omit<QuizModel, 'id' | 'createdAt' | 'createdBy' | 'isActive'>
-  ): Observable<QuizModel> {
-    const createdQuiz = this.http.post<QuizModel>(
-      `${this.apiBaseUrl}/quizzes`,
+  createQuiz(quiz: QuizCreateModel): Observable<ApiResponse<QuizModel>> {
+    const createdQuiz = this.http.post<ApiResponse<QuizModel>>(
+      `${this.apiBaseUrl}/Quizzes`,
       quiz
     );
-    console.log('Quiz created:', createdQuiz);
     return createdQuiz;
   }
 
@@ -40,31 +42,60 @@ export class QuizService {
     createdAtMax?: Date,
     dueDateMin?: Date,
     dueDateMax?: Date,
-    isActive?: boolean
+    isActive?: boolean,
+    subjectId?: number,
+    classId?: number,
+    userRole?: string,
+    searchId?: number
   ): Observable<QuizModel[]> {
+    console.log('Searching quizzes with parameters:', {
+      searchTerm,
+      createdAtMin,
+      createdAtMax,
+      dueDateMin,
+      dueDateMax,
+      isActive,
+      subjectId,
+      classId,
+      userRole,
+      searchId,
+    });
+
     const quizzes = this.http.get<QuizModel[]>(`
-        
         ${
           this.apiBaseUrl
         }/Quizzes/search?Title=${searchTerm}&Description=${searchTerm}&TeacherName=${searchTerm}&CreatedAtMin=${
-      createdAtMin?.toISOString() || ''
-    }&CreatedAtMax=${createdAtMax?.toISOString() || ''}&DueDateMin=${
-      dueDateMin?.toISOString() || ''
-    }&DueDateMax=${dueDateMax?.toISOString() || ''}&IsActive=${
+      createdAtMin || ''
+    }&CreatedAtMax=${createdAtMax || ''}&DueDateMin=${
+      dueDateMin || ''
+    }&DueDateMax=${dueDateMax || ''}&IsActive=${
       isActive !== undefined ? isActive : ''
-    }`);
+    }&Role=${userRole || ''}&SearchId=${searchId || ''}&SubjectId=${
+      subjectId || ''
+    }&ClassId=${classId || ''}&Tags=${searchTerm || ''}`);
 
-    console.log('Quizzes fetched:', quizzes);
     return quizzes;
   }
 
   deleteQuiz(id: number): Observable<ApiResponse<QuizModel>> {
-    console.log('Deleting quiz with ID:', id);
     return this.http
       .delete<ApiResponse<QuizModel>>(`${this.apiBaseUrl}/Quizzes/${id}`)
       .pipe(
         map((response) => {
-          console.log('Quiz deleted successfully:', response);
+          return response;
+        })
+      );
+  }
+
+  getQuizSubmissionId(
+    id: number
+  ): Observable<ApiResponse<QuizSubmissionModel>> {
+    return this.http
+      .get<ApiResponse<QuizSubmissionModel>>(
+        `${this.apiBaseUrl}/Quizzes/submissions/${id}`
+      )
+      .pipe(
+        map((response) => {
           return response;
         })
       );

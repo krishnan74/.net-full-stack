@@ -7,6 +7,4 @@ import { RouterLink } from '@angular/router';
   styleUrls: ['./admin-dashboard.component.css'],
   imports: [RouterLink],
 })
-export class AdminDashboardComponent {
-  // Dashboard logic here
-}
+export class AdminDashboardComponent {}

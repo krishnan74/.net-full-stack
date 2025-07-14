@@ -3,9 +3,8 @@ import { TeacherList } from './features/teacher/components/teacher-list/teacher-
 import { LoginComponent } from './features/auth/login/login';
 import { RegisterComponent } from './features/auth/register/register';
 import { AuthComponent } from './features/auth/auth';
-import { Quiz } from './features/quiz/quiz';
+import { QuizAttemptPage } from './features/quiz/pages/quiz-attempt/quiz-attempt-page';
 import { Landing } from './features/landing/landing';
-import { QuizList } from './features/quiz/components/quiz-list/quiz-list';
 import { ProfileComponent } from './features/profile/profile';
 import { DashboardComponent } from './features/dashboard/dashboard';
 import { NotificationComponent } from './features/notification/notification';
@@ -14,6 +13,11 @@ import { StudentsListComponent } from './features/admin/students-list/students-l
 import { TeachersListComponent } from './features/admin/teachers-list/teachers-list.component';
 import { SubjectsListComponent } from './features/admin/subjects-list/subjects-list.component';
 import { ClassesListComponent } from './features/admin/classes-list/classes-list.component';
+import { QuizComponent } from './features/quiz/quiz';
+import { QuizCreatePage } from './features/quiz/pages/create/quiz-create-page';
+import { QuizExplorePage } from './features/quiz/pages/explore/quiz-explore-page';
+import { QuizSubmissionPage } from './features/quiz/pages/quiz-submission/quiz-submission-page';
+import { QuizDetailPage } from './features/quiz/pages/quiz-detail/quiz-detail-page';
 
 export const routes: Routes = [
   {
@@ -21,16 +25,18 @@ export const routes: Routes = [
     component: Landing,
   },
   {
-    path: 'teachers',
-    component: TeacherList,
-  },
-  {
-    path: 'quiz/:id',
-    component: Quiz,
-  },
-  {
-    path: 'quizzes',
-    component: QuizList,
+    path: 'quiz',
+    component: QuizComponent,
+    children: [
+      { path: ':quizId/attempt/:submissionId', component: QuizAttemptPage },
+      { path: 'create', component: QuizCreatePage },
+      { path: 'explore', component: QuizExplorePage },
+      {
+        path: ':quizId/submission/:submissionId',
+        component: QuizSubmissionPage,
+      },
+      { path: ':quizId', component: QuizDetailPage },
+    ],
   },
   {
     path: 'auth',

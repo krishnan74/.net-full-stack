@@ -4,6 +4,7 @@ namespace QuizupAPI.Models.DTOs.Question
 {
     public class QuestionAddRequestDTO
     {
+        public long? Id { get; set; }
         [Required]
         [StringLength(500, ErrorMessage = "Question text cannot be longer than 500 characters.")]
         public string Text { get; set; } = string.Empty;

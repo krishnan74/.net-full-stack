@@ -12,9 +12,9 @@ import { CommonModule } from '@angular/common';
 import { TeacherService } from '../../teacher/services/teacher.service';
 import { StudentService } from '../../student/services/student.service';
 import { SubjectService } from '../../subject/services/subject.service';
-import { SubjectModel } from '../../subject/models/subject';
+import { SubjectModel } from '../../subject/models/subject.model';
 import { ClassService } from '../../class/services/class.service';
-import { ClassModel } from '../../class/models/class';
+import { ClassModel } from '../../class/models/class.model';
 
 @Component({
   selector: 'app-register',
@@ -27,7 +27,7 @@ export class RegisterComponent {
 
   availableSubjects: SubjectModel[] = [];
   availableClasses: ClassModel[] = [];
-    
+
   constructor(
     private fb: FormBuilder,
     private teacherService: TeacherService,
@@ -78,13 +78,12 @@ export class RegisterComponent {
   }
 
   addSubject(event: Event) {
-    console.log("Adding subject");
+    console.log('Adding subject');
     const value = (event.target as HTMLSelectElement).value;
     if (value && !this.subjectsArray.value.includes(value)) {
       this.subjectsArray.push(this.fb.control(value));
     }
     console.log(this.subjectsArray.value);
-
   }
 
   removeSubject(index: number) {
@@ -120,12 +119,12 @@ export class RegisterComponent {
   }
 
   getClassName(id: number): string {
-    const found = this.availableClasses.find(c => c.id == id);
+    const found = this.availableClasses.find((c) => c.id == id);
     return found ? found.name : '';
   }
 
   getSubjectName(id: number): string {
-    const found = this.availableSubjects.find(s => s.id == id);
+    const found = this.availableSubjects.find((s) => s.id == id);
     return found ? found.name : '';
   }
 }

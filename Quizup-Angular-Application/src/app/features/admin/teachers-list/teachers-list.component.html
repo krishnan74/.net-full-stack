@@ -1,3 +1,6 @@
+<app-breadcrumbs
+  [breadcrumbs]="[{ label: 'Admin', url: '/admin' }, { label: 'Teachers' }]"
+></app-breadcrumbs>
 <div class="table-list-container">
   <div class="header">
     <h2>Teachers List</h2>
@@ -31,7 +34,8 @@
           </ul>
         </td>
         <td>
-          <button (click)="updateTeacher(teacher)">Update</button>
+          <button (click)="updateTeacher(teacher)">Edit</button>
+          <button (click)="deleteTeacher(teacher.id)">Delete</button>
         </td>
       </tr>
     </tbody>

@@ -162,5 +162,53 @@ namespace QuizupAPI.Controllers
                 return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while retrieving user information. " + ex.Message));
             }
         }
+        
+        /// <summary>
+        /// Change the password for the current user
+        /// </summary>
+        /// <param name="changePasswordRequest">Current and new password</param>
+        /// <returns>Password change confirmation</returns>
+        [HttpPost("change-password")]
+        [ProducesResponseType(typeof(ApiResponse<object>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 400)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 401)]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestDTO changePasswordRequest)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState
+                        .Where(x => x.Value?.Errors.Count > 0)
+                        .ToDictionary(
+                            kvp => kvp.Key,
+                            kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray()
+                        );
+                    return BadRequest(ApiResponse<object>.ErrorResponse("Validation failed", errors));
+                }
+
+                var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(username))
+                {
+                    return Unauthorized(ApiResponse<object>.ErrorResponse("User not authenticated."));
+                }
+
+                await _authenticationService.ChangePasswordAsync(username, changePasswordRequest.CurrentPassword, changePasswordRequest.NewPassword);
+                return Ok(ApiResponse<object>.SuccessResponse(null, "Password changed successfully"));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ApiResponse<object>.ErrorResponse(ex.Message));
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ApiResponse<object>.ErrorResponse(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while changing password. " + ex.Message));
+            }
+        }
     }
 } 

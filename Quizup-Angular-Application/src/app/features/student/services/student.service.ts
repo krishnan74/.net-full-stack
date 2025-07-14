@@ -1,9 +1,11 @@
 import { BehaviorSubject, map, Observable } from 'rxjs';
-import { StudentModel } from '../models/student';
+import { StudentModel, StudentUpdateModel } from '../models/student.model';
 import { Inject, inject, Injectable } from '@angular/core';
 import { API_BASE_URL } from '../../../core/tokens/api-url.token';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from '../../../shared/models/api-response';
+import { AnswerModel } from '../../quiz/models/answer.model';
+import { QuizSubmissionModel } from '../../../shared/models/quiz-submission.model';
 
 @Injectable()
 export class StudentService {
@@ -14,14 +16,6 @@ export class StudentService {
     private http: HttpClient,
     @Inject(API_BASE_URL) private apiBaseUrl: string
   ) {}
-
-  getStudentById(id: number) {
-    const student = this.http.get<StudentModel>(
-      `${this.apiBaseUrl}/Students/${id}`
-    );
-    console.log('Student fetched:', student);
-    return student;
-  }
 
   createStudent(
     student: Omit<StudentModel, 'id' | 'createdAt' | 'quizzes'> & {
@@ -34,7 +28,6 @@ export class StudentService {
         student
       );
 
-      console.log('Student created:', createdStudent);
       return createdStudent;
     } catch (error) {
       console.error('Error creating student:', error);
@@ -42,23 +35,97 @@ export class StudentService {
     }
   }
 
+  getStudentById(id: number) {
+    const student = this.http.get<StudentModel>(
+      `${this.apiBaseUrl}/Students/${id}`
+    );
+    return student;
+  }
+
   getAllStudents(): Observable<ApiResponse<StudentModel[]>> {
     const students = this.http.get<ApiResponse<StudentModel[]>>(
       `${this.apiBaseUrl}/Students`
     );
 
-    console.log('All students fetched:', students);
     return students;
   }
 
+  updateStudent(
+    student: StudentUpdateModel
+  ): Observable<ApiResponse<StudentModel>> {
+    return this.http
+      .put<ApiResponse<StudentModel>>(
+        `${this.apiBaseUrl}/Students/${student.id}`,
+        student
+      )
+      .pipe(
+        map((response) => {
+          return response;
+        })
+      );
+  }
+
   deleteStudent(id: number): Observable<ApiResponse<StudentModel>> {
-    console.log('Deleting student with ID:', id);
     return this.http
       .delete<ApiResponse<StudentModel>>(`${this.apiBaseUrl}/Students/${id}`)
       .pipe(
         map((response) => {
-          console.log('Student deleted successfully:', response);
           return response;
+        })
+      );
+  }
+
+  attemptQuiz(
+    studentId: number,
+    quizId: number
+  ): Observable<ApiResponse<QuizSubmissionModel>> {
+    const attempt = this.http
+      .post<ApiResponse<QuizSubmissionModel>>(
+        `${this.apiBaseUrl}/Students/${studentId}/quizzes/${quizId}/start`,
+        {}
+      )
+      .pipe(
+        map((response) => {
+          return response;
+        })
+      );
+    return attempt;
+  }
+
+  submitQuiz(
+    studentId: number,
+    submissionId: number,
+    answers: Omit<AnswerModel, 'id' | 'quizSubmissionId'>[]
+  ): Observable<ApiResponse<QuizSubmissionModel>> {
+    const submission = this.http
+      .post<ApiResponse<QuizSubmissionModel>>(
+        `${this.apiBaseUrl}/Students/${studentId}/submissions/${submissionId}/submit`,
+        { answers }
+      )
+      .pipe(
+        map((response) => {
+          return response;
+        })
+      );
+    return submission;
+  }
+
+  checkIfQuizAttemptExists(
+    studentId: number,
+    quizId: number
+  ): Observable<number | null> {
+    return this.http
+      .get<ApiResponse<QuizSubmissionModel[]>>(
+        `${this.apiBaseUrl}/Students/${studentId}/submissions`
+      )
+      .pipe(
+        map((response) => {
+          const submissions = response.data;
+          const submissionId =
+            submissions.find((submission) => submission.quizId === quizId)
+              ?.id || null;
+
+          return submissionId;
         })
       );
   }

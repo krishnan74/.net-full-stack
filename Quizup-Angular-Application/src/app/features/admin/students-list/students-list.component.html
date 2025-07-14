@@ -1,3 +1,6 @@
+<app-breadcrumbs
+  [breadcrumbs]="[{ label: 'Admin', url: '/admin' }, { label: 'Students' }]"
+></app-breadcrumbs>
 <div class="table-list-container">
   <div class="header">
     <h2>Students List</h2>
@@ -18,6 +21,7 @@
         <td>{{ student.classe.name }}</td>
         <td class="actions">
           <button (click)="updateStudent(student)">Update</button>
+          <button (click)="deleteStudent(student.id)">Delete</button>
         </td>
       </tr>
     </tbody>

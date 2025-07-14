@@ -1,3 +1,6 @@
+<app-breadcrumbs
+  [breadcrumbs]="[{ label: 'Admin', url: '/admin' }, { label: 'Classes' }]"
+></app-breadcrumbs>
 <div class="table-list-container">
   <div class="header">
     <h2>Classes List</h2>
@@ -28,6 +31,7 @@
         <td>{{ classItem.updatedAt | date }}</td>
         <td class="actions">
           <button (click)="updateClass(classItem)">Update</button>
+          <button (click)="deleteClass(classItem.id)">Delete</button>
         </td>
       </tr>
     </tbody>

@@ -19,7 +19,7 @@ namespace QuizupAPI.Misc.Mappers
         {
             existingTeacher.FirstName = updateRequestDto.FirstName;
             existingTeacher.LastName = updateRequestDto.LastName;
-
+            existingTeacher.UpdatedAt = DateTime.UtcNow;
             return existingTeacher;
         }
     }

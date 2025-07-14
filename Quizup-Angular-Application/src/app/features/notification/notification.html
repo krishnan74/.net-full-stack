@@ -1,4 +1,12 @@
-<h2 class="notifications-title">Notifications</h2>
+<h2>Notifications</h2>
+
+<div
+  *ngIf="notifications.length === 0"
+  class="notification-card"
+  style="text-align: center; color: #888; font-style: italic"
+>
+  No notifications yet.
+</div>
 
 <div *ngFor="let notification of notifications" class="notification-card">
   <div class="notification-header">
