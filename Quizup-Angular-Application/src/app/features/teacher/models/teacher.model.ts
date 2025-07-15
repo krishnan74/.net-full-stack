@@ -28,3 +28,14 @@ export class TeacherUpdateModel {
     public removeClassIds?: number[]
   ) {}
 }
+
+export class TeacherCreateModel {
+  constructor(
+    public email: string = '',
+    public password: string = '',
+    public firstName: string = '',
+    public lastName: string = '',
+    public subjectIds?: number[],
+    public classIds?: number[]
+  ) {}
+}

@@ -1,5 +1,5 @@
 import { BehaviorSubject, map, Observable } from 'rxjs';
-import { TeacherModel, TeacherUpdateModel } from '../models/teacher.model';
+import { TeacherCreateModel, TeacherModel, TeacherUpdateModel } from '../models/teacher.model';
 import { Inject, inject, Injectable } from '@angular/core';
 import { API_BASE_URL } from '../../../core/tokens/api-url.token';
 import { HttpClient } from '@angular/common/http';
@@ -20,10 +20,7 @@ export class TeacherService {
   }
 
   createTeacher(
-    teacher: Omit<TeacherModel, 'id' | 'createdAt' | 'quizzes'> & {
-      password: string;
-      role: string;
-    }
+    teacher: TeacherCreateModel
   ): Observable<ApiResponse<TeacherModel>> {
     try {
       const createdTeacher = this.http.post<ApiResponse<TeacherModel>>(

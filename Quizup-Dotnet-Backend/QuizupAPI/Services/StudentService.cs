@@ -64,6 +64,13 @@ namespace QuizupAPI.Services
                     throw new ArgumentException("Invalid email format.");
                 }
 
+                var allStudents = await _studentRepository.GetAll();
+                var existingStudent = allStudents.FirstOrDefault(t => t.Email == studentDTO.Email);
+                if (existingStudent != null)
+                {
+                    throw new InvalidOperationException("A student with this email already exists.");
+                }
+
                 var user = userMapper.MapStudentAddRequestUser(studentDTO);
 
                 if (user == null)
@@ -82,12 +89,6 @@ namespace QuizupAPI.Services
                     throw new Exception("Failed to add user.");
                 }
 
-                var allStudents = await _studentRepository.GetAll();
-                var existingStudent = allStudents.FirstOrDefault(t => t.Email == studentDTO.Email);
-                if (existingStudent != null)
-                {
-                    throw new InvalidOperationException("A student with this email already exists.");
-                }
 
                 var student = studentMapper.MapStudentAddRequestStudent(studentDTO);
                 if (student == null)

@@ -1,5 +1,5 @@
 import { BehaviorSubject, map, Observable } from 'rxjs';
-import { StudentModel, StudentUpdateModel } from '../models/student.model';
+import { StudentCreateModel, StudentModel, StudentUpdateModel } from '../models/student.model';
 import { Inject, inject, Injectable } from '@angular/core';
 import { API_BASE_URL } from '../../../core/tokens/api-url.token';
 import { HttpClient } from '@angular/common/http';
@@ -18,11 +18,11 @@ export class StudentService {
   ) {}
 
   createStudent(
-    student: Omit<StudentModel, 'id' | 'createdAt' | 'quizzes'> & {
-      password: string;
-    }
+    student: StudentCreateModel
   ): Observable<StudentModel> {
     try {
+
+      console.log('Creating student with data:', student);
       const createdStudent = this.http.post<StudentModel>(
         `${this.apiBaseUrl}/Students`,
         student

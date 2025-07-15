@@ -93,7 +93,7 @@
     @if(userForm.get('role')?.value === 'Student' ) {
       <div class="form-group">
         <label>Class:</label>
-        <select class="form-control">
+        <select (change)="addClass($event)" class="form-control">
           <option value="" disabled selected>Select class</option>
           @for( c of availableClasses; track $index ) {
             <option [value]="c.id">{{ c.name }}</option>

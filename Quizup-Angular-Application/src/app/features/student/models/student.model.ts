@@ -21,3 +21,13 @@ export class StudentUpdateModel {
     public classId: number = 0
   ) {}
 }
+
+export class StudentCreateModel {
+  constructor(
+    public email: string = '',
+    public password: string = '',
+    public firstName: string = '',
+    public lastName: string = '',
+    public classId: number = 0,
+  ) {}
+}

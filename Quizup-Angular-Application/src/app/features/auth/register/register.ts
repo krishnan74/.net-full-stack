@@ -47,6 +47,18 @@ export class RegisterComponent {
 
     this.loadAvailableSubjects();
     this.loadAvailableClasses();
+
+    this.userForm.get('role')?.valueChanges.subscribe((role) => {
+      if (role === 'Student') {
+        this.userForm.get('subjectIds')?.clearValidators();
+        this.userForm.get('classIds')?.setValidators([Validators.required]);
+      } else if (role === 'Teacher') {
+        this.userForm.get('subjectIds')?.setValidators([Validators.required]);
+        this.userForm.get('classIds')?.setValidators([Validators.required]);
+      }
+      this.userForm.get('subjectIds')?.updateValueAndValidity();
+      this.userForm.get('classIds')?.updateValueAndValidity();
+    });
   }
 
   loadAvailableSubjects() {
@@ -92,9 +104,17 @@ export class RegisterComponent {
 
   addClass(event: Event) {
     const value = (event.target as HTMLSelectElement).value;
+
     if (value && !this.classesArray.value.includes(value)) {
-      this.classesArray.push(this.fb.control(value));
+      if (this.userForm.value.role === 'Student') {
+        this.classesArray.clear();
+        this.classesArray.push(this.fb.control(value));
+      } else {
+        this.classesArray.push(this.fb.control(value));
+      }
     }
+
+    console.log(this.classesArray.value);
   }
 
   removeClass(index: number) {
@@ -107,8 +127,32 @@ export class RegisterComponent {
     if (this.userForm.valid) {
       console.log('Form is valid');
       if (this.userForm.value.role === 'Teacher') {
-        this.teacherService.createTeacher(this.userForm.value).subscribe({
+        const createTeacherData = {
+          email: this.userForm.value.email,
+          password: this.userForm.value.password,
+          firstName: this.userForm.value.firstName,
+          lastName: this.userForm.value.lastName,
+          subjectIds: this.subjectsArray.value.map(Number),
+          classIds: this.classesArray.value.map(Number),
+        };
+        this.teacherService.createTeacher(createTeacherData).subscribe({
           next: (response) => console.log('Teacher created:', response),
+          error: (err) => console.error('Error:', err),
+        });
+      }
+      else if(this.userForm.value.role === 'Student') {
+
+        const createStudentData = {
+          email: this.userForm.value.email,
+          password: this.userForm.value.password,
+          firstName: this.userForm.value.firstName,
+          lastName: this.userForm.value.lastName,
+          classId: Number(this.classesArray.value[0])
+        };
+
+        console.log('Creating student with data:', createStudentData);
+        this.studentService.createStudent(createStudentData).subscribe({
+          next: (response) => console.log('Student created:', response),
           error: (err) => console.error('Error:', err),
         });
       }
