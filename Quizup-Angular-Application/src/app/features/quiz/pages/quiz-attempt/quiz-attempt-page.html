@@ -3,22 +3,6 @@
 >
   <p-toast />
 
-  <button
-    (click)="prevQuestion()"
-    class="absolute left-[5vw] scale-150 cursor-pointer"
-  >
-    <span aria-label="Previous question" title="Previous question"
-      >&#8592;</span
-    >
-  </button>
-
-  <button
-    (click)="nextQuestion()"
-    class="absolute right-[5vw] scale-150 cursor-pointer"
-  >
-    <span aria-label="Next question" title="Next question">&#8594;</span>
-  </button>
-
   <app-quiz-question
     [question]="questions[currentQuestionIndex]"
     (answerSelected)="selectAnswer($event.questionId, $event.selectedAnswer)"
@@ -28,6 +12,7 @@
     class="absolute bottom-[10px] h-20 w-full px-10"
     [progress]="progress"
   ></app-quiz-timer>
+  
 </div>
 
 <app-quiz-result-dialog

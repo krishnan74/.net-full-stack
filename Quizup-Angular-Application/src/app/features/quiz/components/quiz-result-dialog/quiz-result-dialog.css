@@ -52,17 +52,25 @@
 .result-dialog-actions button {
   padding: 0.7rem 1.5rem;
   border-radius: 8px;
-  border: none;
   font-size: 1.1rem;
   font-weight: 600;
-  background: linear-gradient(90deg, #7c3aed 0%, #f9e6f7 100%);
+  background: linear-gradient(to right, #f472b6, #fb7185, #f97316);
   color: #fff;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.09);
-  transition: background 0.2s, color 0.2s;
+  border: none;
+  transition: all 0.3s ease;
 }
 
 .result-dialog-actions button:hover {
-  background: linear-gradient(90deg, #f9e6f7 0%, #7c3aed 100%);
-  color: #7c3aed;
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+.quiz-card .btn-attempt {
+  background: linear-gradient(to right, #f472b6, #fb7185, #f97316);
+}
+
+.quiz-card .btn-attempt:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
 }

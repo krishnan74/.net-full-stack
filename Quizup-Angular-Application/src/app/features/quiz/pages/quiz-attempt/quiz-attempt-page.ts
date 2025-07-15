@@ -152,22 +152,7 @@ export class QuizAttemptPage implements OnInit {
   reviewAnswers() {
     this.showResultDialog = false;
     this.reviewMode = true;
-  }
-
-  getReviewStatus(
-    questionId: number,
-    option: string
-  ): 'correct' | 'incorrect' | null {
-    if (!this.reviewMode || !this.submissionAnswers.length) return null;
-    const answer = this.submissionAnswers.find(
-      (a) => a.questionId === questionId
-    );
-    if (!answer) return null;
-    if (answer.selectedAnswer === option) {
-      return 'correct';
-    } else {
-      return 'incorrect';
-    }
+    this.router.navigate(['quiz', this.quizId, 'submission', this.submissionId]);
   }
 
   goBackToQuizzes() {
