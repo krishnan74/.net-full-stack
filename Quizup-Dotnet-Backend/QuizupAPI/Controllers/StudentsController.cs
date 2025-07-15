@@ -256,6 +256,32 @@ namespace QuizupAPI.Controllers
         }
 
         /// <summary>
+        /// Get all quiz submissions for a student
+        /// </summary>
+        /// <param name="studentId">Student ID</param>
+        /// <returns>List of quiz submissions</returns>
+        [HttpGet("{studentId}/quizzes/{quizId}/submissions")]
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<QuizSubmission>>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 500)]
+        public async Task<IActionResult> GetStudentQuizSubmissions(long studentId, long quizId)
+        {
+            try
+            {
+                var submissions = await _studentService.GetQuizSubmissionsByStudentIdAsync(studentId, quizId);
+                return Ok(ApiResponse<IEnumerable<QuizSubmission>>.SuccessResponse(submissions, "Student quiz submissions fetched successfully"));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ApiResponse<object>.ErrorResponse(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while retrieving student quiz submissions. " + ex.Message));
+            }
+        }
+
+        /// <summary>
         /// Start a quiz for a student
         /// </summary>
         /// <param name="studentId">Student ID</param>

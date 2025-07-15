@@ -110,22 +110,17 @@ export class StudentService {
     return submission;
   }
 
-  checkIfQuizAttemptExists(
+  getQuizSubmissionsByStudentId(
     studentId: number,
     quizId: number
-  ): Observable<number | null> {
+  ): Observable<ApiResponse<QuizSubmissionModel[]>> {
     return this.http
       .get<ApiResponse<QuizSubmissionModel[]>>(
-        `${this.apiBaseUrl}/Students/${studentId}/submissions`
+        `${this.apiBaseUrl}/Students/${studentId}/quizzes/${quizId}/submissions`
       )
       .pipe(
         map((response) => {
-          const submissions = response.data;
-          const submissionId =
-            submissions.find((submission) => submission.quizId === quizId)
-              ?.id || null;
-
-          return submissionId;
+          return response;
         })
       );
   }

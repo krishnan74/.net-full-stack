@@ -232,6 +232,35 @@ namespace QuizupAPI.Services
             }
         }
 
+        public async Task<IEnumerable<QuizSubmission>> GetQuizSubmissionsByStudentIdAsync(long studentId, long quizId)
+        {
+            try
+            {
+                var student = await _studentRepository.Get(studentId);
+                var quiz = await _quizRepository.Get(quizId);
+
+                var quizSubmissions = await _quizSubmissionRepository.GetAll();
+
+                quizSubmissions = quizSubmissions
+                    .Where(qs => qs.StudentId == studentId && qs.QuizId == quizId)
+                    .ToList();
+                    
+                if (quizSubmissions == null || !quizSubmissions.Any())
+                {
+                    return Enumerable.Empty<QuizSubmission>();
+                }
+                return quizSubmissions;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while retrieving quiz submissions for student with ID {studentId} and quiz with ID {quizId}.", ex);
+            }
+        }
+
         public async Task<QuizSubmission> StartQuizAsync(long studentId, long quizId)
         {
             try

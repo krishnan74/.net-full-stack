@@ -15,72 +15,35 @@ import { Store } from '@ngrx/store';
 })
 export class QuizCard {
   @Input() quiz: QuizModel | null = new QuizModel();
-  showAttempt: boolean = true;
+  @Input() showAttempt: boolean = true;
+  @Input() userId: number | null = null;
 
-  user$ = this.store.select(selectUser);
-  user: User | null = null;
-
-  constructor(
-    private router: Router,
-    private studentService: StudentService,
-    private store: Store
-  ) {
-    this.user$.subscribe((user) => {
-      this.user = user;
-    });
-
-    this.studentService
-      .checkIfQuizAttemptExists(this.user?.userId!, this.quiz?.id!)
-      .subscribe((response) => {
-        if (response != null) {
-          this.showAttempt = false;
-        } else {
-          this.showAttempt = true;
-        }
-      });
-  }
+  constructor(private router: Router, private studentService: StudentService) {}
 
   viewResults() {
-    this.router.navigate(['/quiz/', this.quiz?.id, 'submission', 0]);
+    if (this.showAttempt) {
+      this.router.navigate(['/quiz/', this.quiz?.id, 'submissions']);
+    } else {
+      this.router.navigate(['/quiz/', this.quiz?.id]);
+    }
   }
 
   startQuiz() {
     if (this.quiz) {
-      this.studentService
-        .checkIfQuizAttemptExists(this.user?.userId!, this.quiz.id)
-        .subscribe(
-          (response) => {
-            if (response != null) {
-              console.log('Quiz attempt already exists:', response);
-              this.router.navigate([
-                '/quiz/',
-                this.quiz?.id,
-                'attempt',
-                response,
-              ]);
-            } else {
-              this.studentService
-                .attemptQuiz(this.user?.userId!, this.quiz?.id!)
-                .subscribe({
-                  next: (response) => {
-                    console.log('Quiz attempt started:', response);
-                    this.router.navigate([
-                      '/quiz/',
-                      this.quiz?.id,
-                      'attempt',
-                      response.data.id,
-                    ]);
-                  },
-                  error: (error) => {
-                    console.error('Error starting quiz attempt:', error);
-                  },
-                });
-            }
-          },
-          (error) => {
-            console.error('Error checking quiz attempt:', error);
-          }
-        );
+      this.studentService.attemptQuiz(this.userId!, this.quiz?.id!).subscribe({
+        next: (response) => {
+          console.log('Quiz attempt started:', response);
+          this.router.navigate([
+            '/quiz/',
+            this.quiz?.id,
+            'attempt',
+            response.data.id,
+          ]);
+        },
+        error: (error) => {
+          console.error('Error starting quiz attempt:', error);
+        },
+      });
     } else {
       console.error('Quiz data is not available');
     }

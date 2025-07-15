@@ -124,7 +124,7 @@
 </div>
 
 <div *ngIf="!loading || quizzes.length > 0" class="quizzes-list">
-  <app-quiz-card *ngFor="let item of quizzes" [quiz]="item"></app-quiz-card>
+  <app-quiz-card *ngFor="let item of quizzes" [quiz]="item" [userId]="user?.userId!" [showAttempt]="user?.role === 'Student'"></app-quiz-card>
 </div>
 
 <div

@@ -39,7 +39,7 @@ export class QuizSubmissionPage {
 
   loadQuizSubmission() {
     this.quizService
-      .getQuizSubmissionId(this.submissionId)
+      .getQuizSubmissionById(this.submissionId)
       .subscribe((response) => {
         this.quizSubmission = response.data;
         console.log('Quiz submission loaded:', this.quizSubmission);

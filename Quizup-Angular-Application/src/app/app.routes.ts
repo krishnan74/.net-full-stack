@@ -16,8 +16,9 @@ import { ClassesListComponent } from './features/admin/classes-list/classes-list
 import { QuizComponent } from './features/quiz/quiz';
 import { QuizCreatePage } from './features/quiz/pages/create/quiz-create-page';
 import { QuizExplorePage } from './features/quiz/pages/explore/quiz-explore-page';
-import { QuizSubmissionPage } from './features/quiz/pages/quiz-submission/quiz-submission-page';
+import { QuizSubmissionPage } from './features/quiz/pages/quiz-submission-detail/quiz-submission-page';
 import { QuizDetailPage } from './features/quiz/pages/quiz-detail/quiz-detail-page';
+import { QuizSubmissionsPage } from './features/quiz/pages/quiz-submissions/quiz-submissions-page';
 
 export const routes: Routes = [
   {
@@ -34,6 +35,10 @@ export const routes: Routes = [
       {
         path: ':quizId/submission/:submissionId',
         component: QuizSubmissionPage,
+      },
+      {
+        path: ':quizId/submissions',
+        component: QuizSubmissionsPage,
       },
       { path: ':quizId', component: QuizDetailPage },
     ],
