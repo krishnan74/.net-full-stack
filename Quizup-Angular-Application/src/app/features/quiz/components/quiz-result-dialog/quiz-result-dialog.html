@@ -3,8 +3,12 @@
     <h2>Quiz Submitted!</h2>
     <p>Your score: <b>{{ score }} %</b></p>
     <div class="result-dialog-actions">
-      <button (click)="handleReview()">Review Answers</button>
-      <button (click)="handleGoBack()">Go Back to Quizzes</button>
+      <button class="btn-review" (click)="handleReview()">
+        Review Answers
+      </button>
+      <button class="btn-go-back" (click)="handleGoBack()">
+        Go Back to Quizzes
+      </button>
     </div>
   </div>
 </div>
