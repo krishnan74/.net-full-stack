@@ -49,6 +49,7 @@ export class ClassesListComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         console.log('Class updated:', result);
+        this.loadClasses();
       }
     });
   }
@@ -59,6 +60,7 @@ export class ClassesListComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
+        console.log('Deleting class with ID:', classId);
         this.classService.deleteClass(classId).subscribe(() => {
           this.loadClasses();
         });

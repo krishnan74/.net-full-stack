@@ -1,5 +1,6 @@
-<h2>Add Class</h2>
 <form [formGroup]="classForm">
+  <h2>Update Class</h2>
+
   <label for="className">Class Name:</label>
   <input id="className" formControlName="className" />
 
@@ -37,6 +38,8 @@
     </div>
   </div>
 
-  <button type="button" (click)="onSave()">Save</button>
-  <button type="button" (click)="onCancel()">Cancel</button>
+  <button type="button" class="btn btn-primary" (click)="onSave()">Save</button>
+  <button type="button" class="btn btn-secondary" (click)="onCancel()">
+    Cancel
+  </button>
 </form>

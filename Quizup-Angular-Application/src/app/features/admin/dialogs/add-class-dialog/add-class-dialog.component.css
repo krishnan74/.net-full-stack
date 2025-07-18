@@ -1,6 +1,13 @@
+h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #222;
+}
+
 form {
   display: flex;
   flex-direction: column;
+  max-width: 600px;
   gap: 1.5rem;
   padding: 1.5rem;
   background-color: #f9f9f9;
@@ -11,27 +18,40 @@ form {
 
 label {
   font-weight: bold;
-  margin-bottom: 0.5rem;
 }
 
-input,
 select {
-  padding: 0.75rem;
+  margin-left: 10px;
+}
+
+.selected-list {
+  margin-top: 8px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 1rem;
+  box-sizing: border-box;
 }
 
-button {
-  padding: 0.75rem 1.5rem;
-  border: none;
+.btn {
+  background-color: #e1eaf6;
+  border: 1px solid #acafb3;
+  color: black;
+  padding: 10px 15px;
   border-radius: 4px;
-  font-size: 1rem;
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #0056b3;
+.btn-primary {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
   color: white;
 }
 
@@ -42,18 +62,18 @@ button:hover {
 }
 
 .badge {
-  display: flex;
+  margin-right: 6px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  display: inline-flex;
   align-items: center;
-  background-color: #007bff;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+  background-color: #e1eaf6;
+  color: #333;
 }
 
-.badge button {
-  background: none;
-  border: none;
-  color: white;
-  margin-left: 0.5rem;
-  cursor: pointer;
+.btn-danger {
+  margin-left: 4px;
+  padding: 0 6px;
+  font-size: 14px;
+  line-height: 1;
 }
