@@ -93,16 +93,14 @@
         <!-- Recent Activity -->
         <div class="summary-section">
           <h4 class="section-title">Recent Activity</h4>
-          <table
-            class="activity-table"
-            *ngIf="studentSummary.recentActivity?.length"
-          >
+          <table *ngIf="studentSummary.recentActivity?.length">
             <thead>
               <tr>
                 <th>Quiz</th>
                 <th>Status</th>
                 <th>Score</th>
                 <th>Date</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -111,6 +109,13 @@
                 <td>{{ activity.status }}</td>
                 <td>{{ activity.score }}</td>
                 <td>{{ activity.submission_date | date:'mediumDate' }}</td>
+                <td class="actions">
+                  <button
+                    (click)="viewSubmissionDetails(activity.quiz_id, activity.submission_id)"
+                  >
+                    View
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -213,7 +218,7 @@
           *ngIf="teacherSummary.recentQuizStats?.length"
         >
           <h4 class="section-title">Recent Quiz Stats</h4>
-          <table class="activity-table">
+          <table>
             <thead>
               <tr>
                 <th>Quiz Title</th>

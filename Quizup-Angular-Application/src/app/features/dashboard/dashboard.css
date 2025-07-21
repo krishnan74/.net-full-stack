@@ -1,3 +1,24 @@
+button {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid #c6c4ca;
+  color: #2e2932;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #333;
+}
+
+button:first-child {
+  margin-right: 0.5rem;
+}
+
+button:hover {
+  background-color: #2d2431;
+  color: white;
+}
+
 .dashboard-title {
   font-size: 1.5rem;
   font-weight: 700;
@@ -96,39 +117,64 @@
   margin-bottom: 1rem;
 }
 
-.activity-table {
+table {
   width: 100%;
+  margin-top: 20px;
   border-collapse: separate;
-  border-spacing: 0;
-  background: #fff;
-  border-radius: 1rem;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  margin-bottom: 1.5rem;
+  border-spacing: 0 0.2rem;
+  background-color: transparent;
+  background-color: #f8f9fc;
+  border: 1px solid #b9b9b9;
+  border-radius: 12px;
 }
 
-.activity-table thead tr {
-  background-color: #f9fafb;
+table thead {
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  color: #6c757d;
 }
 
-.activity-table th {
+table th,
+table td {
+  padding: 0.5rem;
   text-align: left;
-  padding: 0.75rem 1rem;
+}
+
+table th {
+  background-color: transparent;
   font-weight: 600;
-  color: #374151;
-  font-size: 1rem;
+  border-bottom: 1px solid #dee2e6;
 }
 
-.activity-table td {
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 0.75rem 1rem;
-  color: #111827;
-  font-size: 0.98rem;
+table td {
+  background-color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  font-size: 0.95rem;
+  color: #333;
 }
 
-.activity-table tbody tr:hover {
-  background-color: #f3f4f6;
+table tbody tr {
+  transition: all 0.2s ease;
+}
+
+table tbody tr:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 8px;
+}
+
+table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 8px;
+}
+
+table th:last-child,
+table td:last-child {
+  width: 1%;
+  gap: 0.5rem;
+  white-space: nowrap;
 }
 
 @media (max-width: 900px) {

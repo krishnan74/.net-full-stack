@@ -32,6 +32,20 @@
   }
 }
 
+button {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #fff;
+  margin-top: 1rem;
+  font-family: "Poppins";
+}
+
 .result-dialog h2 {
   color: #7c3aed;
   font-size: 2rem;
@@ -49,28 +63,15 @@
   justify-content: center;
 }
 
-.result-dialog-actions button {
-  padding: 0.7rem 1.5rem;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  background: linear-gradient(to right, #f472b6, #fb7185, #f97316);
-  color: #fff;
-  cursor: pointer;
-  border: none;
-  transition: all 0.3s ease;
+.btn-review {
+  background: #ff647c;
+}
+.btn-go-back {
+  background: #3b82f6;
 }
 
-.result-dialog-actions button:hover {
-  transform: scale(1.05);
-  filter: brightness(1.1);
-}
-
-.quiz-card .btn-attempt {
-  background: linear-gradient(to right, #f472b6, #fb7185, #f97316);
-}
-
-.quiz-card .btn-attempt:hover {
+.btn-review:hover,
+.btn-go-back:hover {
   transform: scale(1.05);
   filter: brightness(1.1);
 }

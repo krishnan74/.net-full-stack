@@ -89,6 +89,7 @@ BEGIN
             json_agg(
                 json_build_object(
                     'quiz_id', qs."QuizId",
+                    'submission_id', qs."Id",
                     'quiz_title', q."Title",
                     'submission_date', qs."SubmissionDate",
                     'status', qs."SubmissionStatus",

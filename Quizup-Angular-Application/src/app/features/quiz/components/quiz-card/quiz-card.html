@@ -14,10 +14,11 @@
     </p>
     <p><strong>Subject:</strong> {{ quiz?.subject?.name }}</p>
     <p><strong>Class:</strong> {{ quiz?.classe?.name }}</p>
-    @if(showAttempt) {
-    <button class="btn-attempt" (click)="startQuiz()">Attempt Quiz</button>
-    } @else {
-    <button class="btn-results" (click)="viewResults()">View Results</button>
-    }
+    <div class="btn-container">
+      @if( showAttempt ){
+      <button class="btn-attempt" (click)="startQuiz()">Attempt Quiz</button>
+      }
+      <button class="btn-results" (click)="viewResults()">View Results</button>
+    </div>
   </div>
 </div>

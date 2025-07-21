@@ -1,0 +1,89 @@
+<div class="quiz-submissions-container">
+  <h2>My Submissions</h2>
+
+  <div class="quiz-detail-container">
+    <div class="quiz-info">
+      <h3><strong>Title: </strong> {{ quiz.title }}</h3>
+      <p><strong>Description: </strong> {{ quiz.description }}</p>
+      <p *ngIf="quiz.subject">
+        <strong>Subject:</strong> {{ quiz.subject.name }}
+      </p>
+      <p *ngIf="quiz.classe"><strong>Class:</strong> {{ quiz.classe.name }}</p>
+      <p><strong>Due Date:</strong> {{ quiz.dueDate | date: 'short' }}</p>
+      <p><strong>Created At:</strong> {{ quiz.createdAt | date: 'short' }}</p>
+      <p>
+        <strong>Status:</strong>
+        <span
+          [ngClass]="{ 'active': quiz.isActive, 'inactive': !quiz.isActive }"
+          >{{ quiz.isActive ? 'Active' : 'Inactive' }}</span
+        >
+      </p>
+    </div>
+
+    <div class="quiz-questions">
+      <h4>Questions</h4>
+      <ul>
+        <li *ngFor="let qq of quiz.quizQuestions; let i = index">
+          <app-question-card
+            [question]="qq.question"
+            [index]="i"
+          ></app-question-card>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="quiz-submissions-container">
+    <h3>Quiz Submissions</h3>
+    <ng-container *ngIf="quizSubmissions as submissions">
+      <div *ngIf="submissions.length === 0">
+        <p>No submissions yet.</p>
+      </div>
+      <div *ngIf="submissions.length > 0" class="quiz-submissions-list">
+        <table>
+          <thead>
+            <tr>
+              <th>
+                Score
+                <button (click)="sortSubmissions('score')">
+                  @if( sortKey === 'score' ) {
+                  <span>{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                  }@else{
+                  <span>-</span>
+                  }
+                </button>
+              </th>
+              <th>Status</th>
+              <th>
+                Submitted At
+                <button (click)="sortSubmissions('submissionDate')">
+                  @if( sortKey === 'submissionDate' ) {
+                  <span>{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                  }@else{
+                  <span>-</span>
+                  }
+                </button>
+              </th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let submission of submissions">
+              <td>{{ submission.score }}</td>
+              <td>{{ submission.submissionStatus }}</td>
+              <td>{{ submission.submissionDate | date: 'short' }}</td>
+              <td class="actions">
+                <button (click)="viewSubmissionDetails(submission.id)">
+                  View
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+  </div>
+  <div class="no-submissions" *ngIf="quizSubmissions.length === 0">
+    <p>No submissions found for this quiz.</p>
+  </div>
+</div>

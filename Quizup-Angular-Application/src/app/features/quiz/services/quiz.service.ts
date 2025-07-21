@@ -87,7 +87,7 @@ export class QuizService {
       );
   }
 
-  getQuizSubmissionId(
+  getQuizSubmissionById(
     id: number
   ): Observable<ApiResponse<QuizSubmissionModel>> {
     return this.http

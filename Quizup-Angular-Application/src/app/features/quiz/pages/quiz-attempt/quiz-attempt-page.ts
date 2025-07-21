@@ -115,6 +115,7 @@ export class QuizAttemptPage implements OnInit {
       this.quizTimerService.startTimer().subscribe({
         next: (value) => {
           this.progress = value * 100;
+          console.log('Progress updated:', this.progress);
         },
         complete: () => {
           this.nextQuestion();
@@ -150,13 +151,12 @@ export class QuizAttemptPage implements OnInit {
   }
 
   reviewAnswers() {
-    this.showResultDialog = false;
-    this.reviewMode = true;
-    this.router.navigate(['quiz', this.quizId, 'submission', this.submissionId]);
+    this.router.navigate([
+      `/quiz/${this.quizId}/submission/${this.submissionId}`,
+    ]);
   }
 
   goBackToQuizzes() {
-    this.showResultDialog = false;
     this.router.navigate(['/quiz/explore']);
   }
 }

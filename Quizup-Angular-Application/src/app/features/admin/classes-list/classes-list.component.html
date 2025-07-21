@@ -30,8 +30,12 @@
         <td>{{ classItem.createdAt | date }}</td>
         <td>{{ classItem.updatedAt | date }}</td>
         <td class="actions">
-          <button (click)="updateClass(classItem)">Update</button>
-          <button (click)="deleteClass(classItem.id)">Delete</button>
+          <button class="btn btn-primary" (click)="updateClass(classItem)">
+            Update
+          </button>
+          <button class="btn btn-danger" (click)="deleteClass(classItem.id)">
+            Delete
+          </button>
         </td>
       </tr>
     </tbody>

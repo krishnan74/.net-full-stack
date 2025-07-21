@@ -39,6 +39,7 @@
 }
 
 .quiz-card button {
+  flex: 1;
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 10px;
@@ -50,19 +51,21 @@
   margin-top: 1rem;
 }
 
-.quiz-card .btn-attempt {
-  background: linear-gradient(to right, #f472b6, #fb7185, #f97316);
+.btn-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
-.quiz-card .btn-attempt:hover {
-  transform: scale(1.05);
-  filter: brightness(1.1);
+.quiz-card .btn-attempt {
+  background: #ff647c;
 }
 
 .quiz-card .btn-results {
-  background: linear-gradient(to right, #34d399, #10b981, #14b8a6);
+  background: #3b82f6;
 }
 
+.quiz-card .btn-attempt:hover,
 .quiz-card .btn-results:hover {
   transform: scale(1.05);
   filter: brightness(1.1);

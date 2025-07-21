@@ -9,6 +9,7 @@ import { TeacherSummary } from '../teacher/models/teacher-summary.model';
 import { ChartConfiguration } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -39,6 +40,10 @@ export class DashboardComponent {
     scales: { x: {}, y: { beginAtZero: true, max: 100 } },
   };
 
+  viewSubmissionDetails(quizId: number, submissionId: number) {
+    this.router.navigate(['/quiz/', quizId, 'submission', submissionId]);
+  }
+
   studentSummary$: Observable<StudentSummary | null> = this.user$.pipe(
     switchMap((user) =>
       user?.role === 'Student'
@@ -57,7 +62,8 @@ export class DashboardComponent {
 
   constructor(
     private store: Store,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private router: Router
   ) {
     // Handle Student Summary
     this.studentSummary$.subscribe((summary) => {
