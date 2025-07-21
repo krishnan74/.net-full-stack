@@ -49,7 +49,7 @@ builder.Services.AddSwaggerGen(opt =>
 builder.Services.AddControllers()
                 .AddJsonOptions(opts =>
                 {
-                    opts.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+                    opts.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
                     opts.JsonSerializerOptions.WriteIndented = true;
                 });
 
@@ -87,7 +87,21 @@ builder.Services.AddTransient<IAuthenticationService, AuthenticationService>();
 // #endregion
 
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins(["http://127.0.0.1:5500", "http://127.0.1:4200", "http://localhost:4200", "http://localhost:5500", "http://localhost:8080", "http://127.0.1:8080"])
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
+
 var app = builder.Build();
+
+app.UseCors();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

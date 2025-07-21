@@ -1,0 +1,13 @@
+<div class="upload-form">
+  <h2>Upload Training Video</h2>
+  <form (ngSubmit)="upload()">
+    <label>Title</label>
+    <input type="text" [(ngModel)]="title" name="title" required />
+    <label>Description</label>
+    <textarea [(ngModel)]="description" name="description" required></textarea>
+    <label>Video File</label>
+    <input type="file" (change)="onFileChange($event)" accept="video/*" required />
+    <button type="submit" [disabled]="uploading">{{ uploading ? 'Uploading...' : 'Upload' }}</button>
+    <div class="error" *ngIf="error">{{ error }}</div>
+  </form>
+</div>

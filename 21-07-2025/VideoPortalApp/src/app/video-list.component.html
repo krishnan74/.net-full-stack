@@ -1,0 +1,11 @@
+<div class="video-list">
+  <h2>Training Videos</h2>
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="!loading && videos.length === 0">No videos found.</div>
+  <div *ngFor="let video of videos" class="video-card">
+    <h3>{{ video.title }}</h3>
+    <p>{{ video.description }}</p>
+    <video width="480" controls [src]="video.blobUrl"></video>
+    <p><small>Uploaded: {{ video.uploadDate | date:'medium' }}</small></p>
+  </div>
+</div>
