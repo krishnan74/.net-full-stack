@@ -112,10 +112,10 @@ export class QuizAttemptPage implements OnInit {
   nextQuestion(): void {
     if (this.currentQuestionIndex < this.questions.length - 1) {
       this.currentQuestionIndex++;
+      this.quizTimerService.stopTimer(); // Stop previous timer
       this.quizTimerService.startTimer().subscribe({
         next: (value) => {
           this.progress = value * 100;
-          console.log('Progress updated:', this.progress);
         },
         complete: () => {
           this.nextQuestion();

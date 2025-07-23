@@ -9,13 +9,18 @@
       <li>
         <a routerLink="/quiz/explore">Quizzes</a>
       </li>
+
+      @if( user?.role === 'Student' ) {
       <li>
         <a routerLink="/notifications">Notifications</a>
       </li>
+      }
+
+      @if( user?.role !== 'Admin' ) {
       <li>
         <a routerLink="/dashboard">Dashboard</a>
       </li>
-
+      }
       @if( user?.role === 'Admin') {
       <li>
         <a routerLink="/admin">Admin</a>
@@ -30,8 +35,13 @@
     <div class="flex gap-2">
       @if(user?.username){
       <button class="logout-button" (click)="onLogout()">Logout</button>
+       @if(user?.role === 'Admin'){
+          <button class="signup-button" routerLink="/auth/register">Create User</button>
+        }
       } @else{
       <button class="login-button" routerLink="/auth/login">Login</button>
+
+       
       }
     </div>
   </div>

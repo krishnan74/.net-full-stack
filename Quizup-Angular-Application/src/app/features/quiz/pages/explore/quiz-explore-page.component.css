@@ -1,6 +1,41 @@
 h2 {
   font-size: 1.5rem;
   font-weight: 700;
-  margin-bottom: 1rem;
   text-align: center;
+}
+
+.header {
+  width: 90%;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+#add-button {
+  background-color: #2d2431;
+  color: white;
+}
+
+
+button {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid #c6c4ca;
+  color: #2c3229;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #333;
+}
+
+button:first-child {
+  margin-right: 0.5rem;
+}
+
+.btn-primary {
+  background-color: #4a90e2;
+  color: white;
 }

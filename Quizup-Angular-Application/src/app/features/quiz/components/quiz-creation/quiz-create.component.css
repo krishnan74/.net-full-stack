@@ -15,6 +15,7 @@ form {
   gap: 1.5rem;
 }
 
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -93,18 +94,13 @@ button[type="submit"] {
   padding: 0.9rem 2.2rem;
   font-size: 1.1rem;
   border-radius: 8px;
-  background: linear-gradient(90deg, #7c3aed 0%, #f9e6f7 100%);
+   background: #5b21b6;
   color: #fff;
   border: none;
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(124, 58, 237, 0.09);
   transition: background 0.2s, color 0.2s;
-}
-
-button[type="submit"]:hover {
-  background: linear-gradient(90deg, #f9e6f7 0%, #7c3aed 100%);
-  color: #7c3aed;
 }
 
 .correct-answer {

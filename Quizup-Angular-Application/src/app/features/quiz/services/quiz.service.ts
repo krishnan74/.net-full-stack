@@ -77,6 +77,26 @@ export class QuizService {
     return quizzes;
   }
 
+  startQuiz(quizId: number, teacherId: number): Observable<ApiResponse<QuizModel>> {
+    return this.http
+      .post<ApiResponse<QuizModel>>(`${this.apiBaseUrl}/Teachers/${teacherId}/quizzes/${quizId}/start`, {})
+      .pipe(
+        map((response) => {
+          return response;
+        })
+      );
+  }
+
+  endQuiz(quizId: number, teacherId: number): Observable<ApiResponse<QuizModel>> {
+    return this.http
+      .post<ApiResponse<QuizModel>>(`${this.apiBaseUrl}/Teachers/${teacherId}/quizzes/${quizId}/end`, {})
+      .pipe(
+        map((response) => {
+          return response;
+        })
+      );
+  }
+
   deleteQuiz(id: number): Observable<ApiResponse<QuizModel>> {
     return this.http
       .delete<ApiResponse<QuizModel>>(`${this.apiBaseUrl}/Quizzes/${id}`)
