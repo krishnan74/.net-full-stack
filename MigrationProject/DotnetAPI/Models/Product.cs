@@ -17,7 +17,7 @@ namespace ChienVHShopOnline.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Product()
         {
-            this.OrderDetails = new HashSet<OrderDetail>();
+            // this.OrderDetails = new HashSet<OrderDetail>();
         }
     
         public int ProductId { get; set; }
@@ -34,10 +34,10 @@ namespace ChienVHShopOnline.Models
         public Nullable<int> IsNew { get; set; }
     
         public virtual Category Category { get; set; }
-        public virtual Color Color { get; set; }
-        public virtual Model Model { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
-        public virtual User User { get; set; }
+        // public virtual Color Color { get; set; }
+        // public virtual Model Model { get; set; }
+        // [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        // public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        // public virtual User User { get; set; }
     }
 }
