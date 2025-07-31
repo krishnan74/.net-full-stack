@@ -1,22 +1,20 @@
-using ChienVHShopOnline.Interfaces;
-using ChienVHShopOnline.Models;
-using ChienVHShopOnline.Contexts;
-using ChienVHShopOnline.Models.DTOs.Category;
-using ChienVHShopOnline.Misc.Mappers;
+using DotnetAPI.Interfaces;
+using DotnetAPI.Models;
+using DotnetAPI.Contexts;
+using DotnetAPI.DTOs.Category;
+using DotnetAPI.Misc.Mappers;
 
-namespace ChienVHShopOnline.Services
+namespace DotnetAPI.Services
 {
     public class CategoryService : ICategoryService
     {
         private readonly IRepository<int, Category> _categoryRepository;
 
         public CategoryMapper categoryMapper;
-        private readonly ChienVHShopOnlineContext _context;
-        public CategoryService(IRepository<int, Category> categoryRepository, ChienVHShopOnlineContext context)
+        public CategoryService(IRepository<int, Category> categoryRepository)
         {
             _categoryRepository = categoryRepository;
             categoryMapper = new CategoryMapper();
-            _context = context;
         }
 
         public async Task<Category> AddCategoryAsync(AddCategoryDTO categoryDTO)

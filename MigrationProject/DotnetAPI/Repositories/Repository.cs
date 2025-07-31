@@ -1,16 +1,16 @@
 ﻿
-using ChienVHShopOnline.Contexts;
-using ChienVHShopOnline.Interfaces;
+using DotnetAPI.Contexts;
+using DotnetAPI.Interfaces;
 
-namespace ChienVHShopOnline.Repositories
+namespace DotnetAPI.Repositories
 {
     public  abstract class Repository<K, T> : IRepository<K, T> where T:class
     {
-        protected readonly ChienVHShopOnlineContext _context;
+        protected readonly DotnetAPIContext _context;
 
-        public Repository(ChienVHShopOnlineContext chienVHShopOnlineContext)
+        public Repository(DotnetAPIContext DotnetAPIContext)
         {
-            _context = chienVHShopOnlineContext;
+            _context = DotnetAPIContext;
         }
 
         public async Task<T> Add(T item)

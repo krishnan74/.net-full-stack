@@ -1,4 +1,4 @@
-namespace ChienVHShopOnline.Models.DTOs.Response
+namespace DotnetAPI.DTOs.Response
 {
     public class PaginationInfo
     {

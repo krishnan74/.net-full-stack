@@ -1,4 +1,4 @@
-namespace ChienVHShopOnline.Models.DTOs.Category
+namespace DotnetAPI.DTOs.Category
 {
     public class UpdateCategoryDTO
     {

@@ -1,13 +1,13 @@
-using ChienVHShopOnline.Contexts;
-using ChienVHShopOnline.Interfaces;
-using ChienVHShopOnline.Models;
+using DotnetAPI.Contexts;
+using DotnetAPI.Interfaces;
+using DotnetAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ChienVHShopOnline.Repositories
+namespace DotnetAPI.Repositories
 {
     public class CategoryRepository : Repository<int, Category>
     {
-        public CategoryRepository(ChienVHShopOnlineContext context) : base(context)
+        public CategoryRepository(DotnetAPIContext context) : base(context)
         {
         }
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ChienVHShopOnline.Interfaces
+namespace DotnetAPI.Interfaces
 {
     public interface IRepository<K, T> where T : class
     {

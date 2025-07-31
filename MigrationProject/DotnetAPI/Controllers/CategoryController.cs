@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ChienVHShopOnline.Interfaces;
-using ChienVHShopOnline.Models;
-using ChienVHShopOnline.Models.DTOs.Response;
-using ChienVHShopOnline.Models.DTOs.Category;
+using DotnetAPI.Interfaces;
+using DotnetAPI.Models;
+using DotnetAPI.DTOs.Response;
+using DotnetAPI.DTOs.Category;
 
-namespace ChienVHShopOnline.Controllers
+namespace DotnetAPI.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]

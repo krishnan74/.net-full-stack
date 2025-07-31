@@ -1,10 +1,10 @@
 using System.Text;
-using ChienVHShopOnline.Contexts;
-using ChienVHShopOnline.Interfaces;
-using ChienVHShopOnline.Misc;
-using ChienVHShopOnline.Models;
-using ChienVHShopOnline.Repositories;
-using ChienVHShopOnline.Services;
+using DotnetAPI.Contexts;
+using DotnetAPI.Interfaces;
+using DotnetAPI.Misc;
+using DotnetAPI.Models;
+using DotnetAPI.Repositories;
+using DotnetAPI.Services;
 // using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 // using Microsoft.IdentityModel.Tokens;
@@ -16,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opt =>
 {
-    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "ChienVHShopOnline API", Version = "v1" });
+    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "DotnetAPI API", Version = "v1" });
     // opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     // {
     //     In = ParameterLocation.Header,
@@ -50,18 +50,20 @@ builder.Services.AddControllers()
 
 
 
-builder.Services.AddDbContext<ChienVHShopOnlineContext>(opts =>
+builder.Services.AddDbContext<DotnetAPIContext>(opts =>
 {
     opts.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 #region  Repositories
 builder.Services.AddTransient<IRepository<int, Category>, CategoryRepository>();
+builder.Services.AddTransient<IRepository<int, Color>, ColorRepository>();
 
 #endregion
 
 #region Services
 builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IColorService, ColorService>();
 
 #endregion
 

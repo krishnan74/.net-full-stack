@@ -1,7 +1,7 @@
-using ChienVHShopOnline.Models;
-using ChienVHShopOnline.Models.DTOs.Category;
+using DotnetAPI.Models;
+using DotnetAPI.DTOs.Category;
 
-namespace ChienVHShopOnline.Misc.Mappers
+namespace DotnetAPI.Misc.Mappers
 {
     public class CategoryMapper
     {

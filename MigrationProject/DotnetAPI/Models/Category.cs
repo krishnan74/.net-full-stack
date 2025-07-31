@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ChienVHShopOnline.Models
+namespace DotnetAPI.Models
 {
     using System;
     using System.Collections.Generic;
