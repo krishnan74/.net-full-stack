@@ -93,10 +93,12 @@ export class QuizAttemptPage implements OnInit {
   }
 
   selectAnswer(questionId: number, selectedAnswer: string) {
-    this.quizAnswers[this.currentQuestionIndex] = {
-      questionId: questionId,
-      selectedAnswer: selectedAnswer,
-    };
+    const existing = this.quizAnswers.find((a) => a.questionId === questionId);
+    if (existing) {
+      existing.selectedAnswer = selectedAnswer;
+    } else {
+      this.quizAnswers.push({ questionId, selectedAnswer });
+    }
 
     console.log('Selected answers', this.quizAnswers);
   }

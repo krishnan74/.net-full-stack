@@ -11,7 +11,11 @@
       </div>
       <div class="form-group">
         <label>Due Date</label>
-        <input formControlName="dueDate" type="datetime-local" />
+        <input
+          formControlName="dueDate"
+          type="datetime-local"
+          [min]="minDueDate"
+        />
       </div>
       <div class="form-group">
         <label>Subject</label>

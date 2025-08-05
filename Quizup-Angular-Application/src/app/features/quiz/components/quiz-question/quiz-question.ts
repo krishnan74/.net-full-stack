@@ -15,20 +15,30 @@ export class QuizQuestion implements OnInit {
     questionId: number;
     selectedAnswer: string;
   }>();
+  @Output() next = new EventEmitter<void>();
+
+  selectedOption: string | null = null;
 
   ngOnChanges() {}
 
   ngOnInit() {}
 
+  @Input() isLastQuestion: boolean = false;
+
   selectOption(option: string) {
     if (this.question) {
-      console.log(
-        `Selected option: ${option} for question ID: ${this.question.id}`
-      );
+      this.selectedOption = option;
       this.answerSelected.emit({
         questionId: this.question.id!,
         selectedAnswer: option,
       });
+      if (!this.isLastQuestion) {
+        // Only disable and auto-advance for non-last questions
+        setTimeout(() => {
+          this.next.emit();
+          this.selectedOption = null; // reset for next question
+        }, 250);
+      }
     }
   }
 }

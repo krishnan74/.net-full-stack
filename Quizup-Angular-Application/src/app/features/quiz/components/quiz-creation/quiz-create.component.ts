@@ -7,6 +7,7 @@ import {
   FormArray,
   ReactiveFormsModule,
   FormsModule,
+  AbstractControl,
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { User } from '../../../../store/auth/auth.model';
@@ -27,6 +28,7 @@ import { QuestionCard } from '../question-card/question-card';
   imports: [ReactiveFormsModule, CommonModule, FormsModule, QuestionCard],
 })
 export class QuizCreateComponent implements OnInit {
+  minDueDate: string = '';
   user$ = this.store.select(selectUser);
   user: User | null = null;
 
@@ -52,13 +54,31 @@ export class QuizCreateComponent implements OnInit {
     this.quizForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
-      dueDate: ['', Validators.required],
+      dueDate: ['', [Validators.required, this.futureDateTimeValidator]],
       subjectId: [0, Validators.required],
       classId: [0, Validators.required],
     });
   }
 
+  // Validator to ensure due date is in the future (date and time)
+  futureDateTimeValidator(control: AbstractControl) {
+    if (!control.value) return null;
+    const selected = new Date(control.value);
+    const now = new Date();
+    // Block any date/time in the past (including today with past time)
+    if (selected.getTime() <= now.getTime()) {
+      return { pastDateTime: true };
+    }
+    return null;
+  }
+
   ngOnInit(): void {
+    // Set minDueDate to now in local datetime-local format
+    const now = new Date();
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    this.minDueDate = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(
+      now.getDate()
+    )}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
     this.questions.subscribe((questions) => {
       if (questions) {
         this.availableQuestions = questions;
