@@ -8,11 +8,11 @@ namespace DotnetAPI.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class CategorysController : ControllerBase
+    public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
 
-        public CategorysController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
         }

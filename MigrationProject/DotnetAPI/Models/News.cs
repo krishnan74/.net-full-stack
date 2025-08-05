@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DotnetAPI.Models
 {
-    public partial class News
+    public class News
     {
         public int NewsId { get; set; }
         public int? UserId { get; set; }
@@ -13,6 +13,6 @@ namespace DotnetAPI.Models
         public string Content { get; set; }
         public DateTime? CreatedDate { get; set; }
         public int? Status { get; set; }
-        public virtual User User { get; set; }
+        public User User { get; set; }
     }
 }

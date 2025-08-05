@@ -44,7 +44,7 @@ builder.Services.AddSwaggerGen(opt =>
 builder.Services.AddControllers()
                 .AddJsonOptions(opts =>
                 {
-                    opts.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+                    opts.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
                     opts.JsonSerializerOptions.WriteIndented = true;
                 });
 
@@ -56,14 +56,27 @@ builder.Services.AddDbContext<DotnetAPIContext>(opts =>
 });
 
 #region  Repositories
+builder.Services.AddTransient<IRepository<int, Cart>, CartRepository>();
 builder.Services.AddTransient<IRepository<int, Category>, CategoryRepository>();
 builder.Services.AddTransient<IRepository<int, Color>, ColorRepository>();
+builder.Services.AddTransient<IRepository<int, ContactUs>, ContactUsRepository>();
+builder.Services.AddTransient<IRepository<int, News>, NewsRepository>();
+builder.Services.AddTransient<IRepository<int, Order>, OrderRepository>();
+builder.Services.AddTransient<IRepository<int, Product>, ProductRepository>();
+builder.Services.AddTransient<IRepository<int, Model>, ModelRepository>();
+builder.Services.AddTransient<IRepository<int, User>, UserRepository>();
 
 #endregion
 
 #region Services
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IColorService, ColorService>();
+builder.Services.AddTransient<IContactUsService, ContactUsService>();
+builder.Services.AddTransient<INewsService, NewsService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
+builder.Services.AddTransient<IProductService, ProductService>();
+builder.Services.AddTransient<IShoppingCartService, ShoppingCartService>();
+builder.Services.AddTransient<IUserService, UserService>();
 
 #endregion
 

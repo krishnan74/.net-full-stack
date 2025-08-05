@@ -20,13 +20,14 @@ namespace DotnetAPI.Services
             _context = context;
         }
 
-        public async Task<News> AddNewsAsync(AddNewsDTO newsDTO)
+        public async Task<News> AddNewsAsync(AddNewsDTO newsDTO, string filePath = null)
         {
             if (newsDTO == null)
                 throw new ArgumentNullException(nameof(newsDTO));
             if (string.IsNullOrWhiteSpace(newsDTO.Title))
                 throw new ArgumentException("Title cannot be null or empty.");
-            var newNews = newsMapper.MapAddNews(newsDTO);
+
+            var newNews = newsMapper.MapAddNews(newsDTO, filePath);
             if (newNews == null)
                 throw new Exception("Failed to map AddNewsDTO to News.");
             var addedNews = await _newsRepository.Add(newNews);
@@ -35,14 +36,14 @@ namespace DotnetAPI.Services
             return addedNews;
         }
 
-        public async Task<News> UpdateNewsAsync(int id, UpdateNewsDTO newsDTO)
+        public async Task<News> UpdateNewsAsync(int id, UpdateNewsDTO newsDTO, string filePath = null)
         {
             if (newsDTO == null)
                 throw new ArgumentNullException(nameof(newsDTO));
             var news = await _newsRepository.Get(id);
             if (news == null)
                 throw new KeyNotFoundException($"No news with the given ID: {id}");
-            var updatedNews = newsMapper.MapUpdateNews(news, newsDTO);
+            var updatedNews = newsMapper.MapUpdateNews(news, newsDTO, filePath);
             if (updatedNews == null)
                 throw new Exception("Failed to map UpdateNewsDTO to News.");
             var result = await _newsRepository.Update(id, updatedNews);

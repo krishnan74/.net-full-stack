@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using DotnetAPI.Interfaces;
 using DotnetAPI.Models;
 using DotnetAPI.DTOs.Response;
-using DotnetAPI.DTOs.ContactU;
+using DotnetAPI.DTOs.ContactUs;
 
 namespace DotnetAPI.Controllers
 {
@@ -10,20 +10,20 @@ namespace DotnetAPI.Controllers
     [Route("api/v1/[controller]")]
     public class ContactUsController : ControllerBase
     {
-        private readonly IContactUService _contactUService;
-        public ContactUsController(IContactUService contactUService)
+        private readonly IContactUsService _contactUsService;
+        public ContactUsController(IContactUsService contactUsService)
         {
-            _contactUService = contactUService;
+            _contactUsService = contactUsService;
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse<IEnumerable<ContactU>>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<ContactUs>>), 200)]
         public async Task<IActionResult> GetAllContactUs([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             try
             {
-                var contacts = await _contactUService.GetAllContactUsAsync(pageNumber, pageSize);
-                return Ok(ApiResponse<IEnumerable<ContactU>>.SuccessResponse(contacts, "Contacts fetched successfully"));
+                var contacts = await _contactUsService.GetAllContactUsAsync(pageNumber, pageSize);
+                return Ok(ApiResponse<IEnumerable<ContactUs>>.SuccessResponse(contacts, "Contacts fetched successfully"));
             }
             catch (Exception ex)
             {
@@ -32,15 +32,15 @@ namespace DotnetAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ApiResponse<ContactU>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<ContactUs>), 200)]
         [ProducesResponseType(typeof(ApiResponse<object>), 404)]
         [ProducesResponseType(typeof(ApiResponse<object>), 500)]
-        public async Task<IActionResult> GetContactUById(int id)
+        public async Task<IActionResult> GetContactUsById(int id)
         {
             try
             {
-                var contact = await _contactUService.GetContactUByIdAsync(id);
-                return Ok(ApiResponse<ContactU>.SuccessResponse(contact, "Contact fetched successfully"));
+                var contact = await _contactUsService.GetContactUsByIdAsync(id);
+                return Ok(ApiResponse<ContactUs>.SuccessResponse(contact, "Contact fetched successfully"));
             }
             catch (KeyNotFoundException ex)
             {
@@ -53,14 +53,14 @@ namespace DotnetAPI.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(ApiResponse<ContactU>), 201)]
+        [ProducesResponseType(typeof(ApiResponse<ContactUs>), 201)]
         [ProducesResponseType(typeof(ApiResponse<object>), 400)]
-        public async Task<IActionResult> AddContactU([FromBody] AddContactUDTO contactDTO)
+        public async Task<IActionResult> AddContactUs([FromBody] AddContactUsDTO contactDTO)
         {
             try
             {
-                var contact = await _contactUService.AddContactUAsync(contactDTO);
-                return CreatedAtAction(nameof(GetContactUById), new { id = contact.id }, ApiResponse<ContactU>.SuccessResponse(contact, "Contact created successfully"));
+                var contact = await _contactUsService.AddContactUsAsync(contactDTO);
+                return CreatedAtAction(nameof(GetContactUsById), new { id = contact.Id }, ApiResponse<ContactUs>.SuccessResponse(contact, "Contact created successfully"));
             }
             catch (ArgumentException ex)
             {
@@ -73,15 +73,15 @@ namespace DotnetAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(ApiResponse<ContactU>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<ContactUs>), 200)]
         [ProducesResponseType(typeof(ApiResponse<object>), 400)]
         [ProducesResponseType(typeof(ApiResponse<object>), 404)]
-        public async Task<IActionResult> UpdateContactU(int id, [FromBody] UpdateContactUDTO contactDTO)
+        public async Task<IActionResult> UpdateContactUs(int id, [FromBody] UpdateContactUsDTO contactDTO)
         {
             try
             {
-                var contact = await _contactUService.UpdateContactUAsync(id, contactDTO);
-                return Ok(ApiResponse<ContactU>.SuccessResponse(contact, "Contact updated successfully"));
+                var contact = await _contactUsService.UpdateContactUsAsync(id, contactDTO);
+                return Ok(ApiResponse<ContactUs>.SuccessResponse(contact, "Contact updated successfully"));
             }
             catch (KeyNotFoundException ex)
             {
@@ -98,14 +98,14 @@ namespace DotnetAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(ApiResponse<ContactU>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<ContactUs>), 200)]
         [ProducesResponseType(typeof(ApiResponse<object>), 404)]
-        public async Task<IActionResult> DeleteContactU(int id)
+        public async Task<IActionResult> DeleteContactUs(int id)
         {
             try
             {
-                var contact = await _contactUService.DeleteContactUAsync(id);
-                return Ok(ApiResponse<ContactU>.SuccessResponse(contact, "Contact deleted successfully"));
+                var contact = await _contactUsService.DeleteContactUsAsync(id);
+                return Ok(ApiResponse<ContactUs>.SuccessResponse(contact, "Contact deleted successfully"));
             }
             catch (KeyNotFoundException ex)
             {

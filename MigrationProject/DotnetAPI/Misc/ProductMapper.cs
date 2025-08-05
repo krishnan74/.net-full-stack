@@ -5,18 +5,18 @@ namespace DotnetAPI.Misc.Mappers
 {
     public class ProductMapper
     {
-        public Product? MapAddProduct(AddProductDTO addRequestDto)
+        public Product? MapAddProduct(AddProductDTO addRequestDto, int modelId, string filePath = null)
         {
             if (addRequestDto == null)
                 return null;
             Product product = new();
             product.ProductName = addRequestDto.ProductName;
-            product.Image = addRequestDto.Image;
+            product.Image = filePath;
             product.Price = addRequestDto.Price;
             product.UserId = addRequestDto.UserId;
             product.CategoryId = addRequestDto.CategoryId;
             product.ColorId = addRequestDto.ColorId;
-            product.ModelId = addRequestDto.ModelId;
+            product.ModelId = modelId;
             product.StorageId = addRequestDto.StorageId;
             product.SellStartDate = addRequestDto.SellStartDate;
             product.SellEndDate = addRequestDto.SellEndDate;
@@ -24,12 +24,12 @@ namespace DotnetAPI.Misc.Mappers
             return product;
         }
 
-        public Product? MapUpdateProduct(Product existingProduct, UpdateProductDTO updateRequestDto)
+        public Product? MapUpdateProduct(Product existingProduct, UpdateProductDTO updateRequestDto, string filePath = null)
         {
             if (existingProduct == null || updateRequestDto == null)
                 return null;
             existingProduct.ProductName = updateRequestDto.ProductName;
-            existingProduct.Image = updateRequestDto.Image;
+            existingProduct.Image = filePath;
             existingProduct.Price = updateRequestDto.Price;
             existingProduct.UserId = updateRequestDto.UserId;
             existingProduct.CategoryId = updateRequestDto.CategoryId;
