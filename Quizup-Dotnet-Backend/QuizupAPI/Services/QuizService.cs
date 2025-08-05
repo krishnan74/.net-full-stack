@@ -360,7 +360,11 @@ namespace QuizupAPI.Services
                     quizzes = SearchBySubjectId(quizzes, quizSearchModel.SubjectId);
                 }
 
-                quizzes = quizzes.Where(q => q.IsActive == quizSearchModel.IsActive);
+                if (quizSearchModel.IsActive != null)
+                {
+                    Console.WriteLine($"Filtering quizzes by IsActive: {quizSearchModel.IsActive}");
+                    quizzes = quizzes.Where(q => q.IsActive == true);
+                }
 
                 return quizzes.ToList();
             }

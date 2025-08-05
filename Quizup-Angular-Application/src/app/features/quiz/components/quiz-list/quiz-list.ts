@@ -30,7 +30,7 @@ export class QuizList implements OnInit {
   createdAtMax?: Date;
   dueDateMin?: Date;
   dueDateMax?: Date;
-  isActive?: boolean = false;
+  isActive?: boolean;
   subjectId?: number;
   classId?: number;
 
@@ -121,5 +121,8 @@ export class QuizList implements OnInit {
           this.quizzes = data.data as QuizModel[];
         },
       });
+
+    // Trigger initial search to list all quizzes on page load
+    this.handleSearchQuizzes();
   }
 }

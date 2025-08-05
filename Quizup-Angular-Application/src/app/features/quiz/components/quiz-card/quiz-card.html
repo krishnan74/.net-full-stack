@@ -17,8 +17,10 @@
     <div class="btn-container">
       @if( showAttempt ){
       <button class="btn-attempt" (click)="startQuiz()">Attempt Quiz</button>
-      }
       <button class="btn-results" (click)="viewResults()">View Results</button>
+      }@else{
+      <button class="btn-results" (click)="viewResults()">View Details</button>
+      }
     </div>
   </div>
 </div>

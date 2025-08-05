@@ -61,25 +61,42 @@ export class QuizService {
       searchId,
     });
 
-    const quizzes = this.http.get<QuizModel[]>(`
-        ${
-          this.apiBaseUrl
-        }/Quizzes/search?Title=${searchTerm}&Description=${searchTerm}&TeacherName=${searchTerm}&CreatedAtMin=${
-      createdAtMin || ''
-    }&CreatedAtMax=${createdAtMax || ''}&DueDateMin=${
-      dueDateMin || ''
-    }&DueDateMax=${dueDateMax || ''}&IsActive=${
-      isActive !== undefined ? isActive : ''
-    }&Role=${userRole || ''}&SearchId=${searchId || ''}&SubjectId=${
-      subjectId || ''
-    }&ClassId=${classId || ''}&Tags=${searchTerm || ''}`);
-
+    // Build query params, only include IsActive if not undefined/null
+    let params = [
+      `Title=${searchTerm}`,
+      `Description=${searchTerm}`,
+      `TeacherName=${searchTerm}`,
+      `CreatedAtMin=${createdAtMin || ''}`,
+      `CreatedAtMax=${createdAtMax || ''}`,
+      `DueDateMin=${dueDateMin || ''}`,
+      `DueDateMax=${dueDateMax || ''}`,
+      userRole ? `Role=${userRole}` : '',
+      searchId ? `SearchId=${searchId}` : '',
+      subjectId ? `SubjectId=${subjectId}` : '',
+      classId ? `ClassId=${classId}` : '',
+      `Tags=${searchTerm || ''}`,
+    ];
+    if (isActive !== undefined && isActive !== null) {
+      params.push(`IsActive=${isActive}`);
+    }
+    // Remove empty params
+    params = params.filter((p) => p !== '');
+    const queryString = params.join('&');
+    const quizzes = this.http.get<QuizModel[]>(
+      `${this.apiBaseUrl}/Quizzes/search?${queryString}`
+    );
     return quizzes;
   }
 
-  startQuiz(quizId: number, teacherId: number): Observable<ApiResponse<QuizModel>> {
+  startQuiz(
+    quizId: number,
+    teacherId: number
+  ): Observable<ApiResponse<QuizModel>> {
     return this.http
-      .post<ApiResponse<QuizModel>>(`${this.apiBaseUrl}/Teachers/${teacherId}/quizzes/${quizId}/start`, {})
+      .post<ApiResponse<QuizModel>>(
+        `${this.apiBaseUrl}/Teachers/${teacherId}/quizzes/${quizId}/start`,
+        {}
+      )
       .pipe(
         map((response) => {
           return response;
@@ -87,9 +104,15 @@ export class QuizService {
       );
   }
 
-  endQuiz(quizId: number, teacherId: number): Observable<ApiResponse<QuizModel>> {
+  endQuiz(
+    quizId: number,
+    teacherId: number
+  ): Observable<ApiResponse<QuizModel>> {
     return this.http
-      .post<ApiResponse<QuizModel>>(`${this.apiBaseUrl}/Teachers/${teacherId}/quizzes/${quizId}/end`, {})
+      .post<ApiResponse<QuizModel>>(
+        `${this.apiBaseUrl}/Teachers/${teacherId}/quizzes/${quizId}/end`,
+        {}
+      )
       .pipe(
         map((response) => {
           return response;
