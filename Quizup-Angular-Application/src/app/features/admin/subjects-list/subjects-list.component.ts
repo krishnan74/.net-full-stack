@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SubjectService } from '../../subject/services/subject.service';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { SubjectModel } from '../../subject/models/subject.model';
 import { MatDialog } from '@angular/material/dialog';
 import { AddSubjectDialogComponent } from '../dialogs/add-subject-dialog/add-subject-dialog.component';
@@ -11,11 +12,13 @@ import { ToastService } from '../../../core/services/toast.service';
 @Component({
   selector: 'app-subjects-list',
   templateUrl: './subjects-list.component.html',
-  imports: [CommonModule, BreadcrumbsComponent],
+  imports: [CommonModule, FormsModule, BreadcrumbsComponent],
   styleUrls: ['./subjects-list.component.css'],
 })
 export class SubjectsListComponent implements OnInit {
   subjects: SubjectModel[] = [];
+  filteredSubjects: SubjectModel[] = [];
+  searchTerm: string = '';
 
   constructor(
     private subjectService: SubjectService,
@@ -31,12 +34,27 @@ export class SubjectsListComponent implements OnInit {
     this.subjectService.getAllSubjects().subscribe({
       next: (data) => {
         this.subjects = data.data;
+        this.filteredSubjects = [...this.subjects];
       },
       error: (error) => {
         console.error('Error loading subjects:', error);
         this.toastService.showError('Loading Subjects', error);
       },
     });
+  }
+
+  filterSubjects(): void {
+    if (!this.searchTerm.trim()) {
+      this.filteredSubjects = [...this.subjects];
+      return;
+    }
+
+    const searchLower = this.searchTerm.toLowerCase();
+    this.filteredSubjects = this.subjects.filter(
+      (subject) =>
+        subject.name.toLowerCase().includes(searchLower) ||
+        subject.code.toLowerCase().includes(searchLower)
+    );
   }
 
   addOrUpdateSubject(subjectData: SubjectModel | null): void {

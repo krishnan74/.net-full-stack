@@ -1,43 +1,243 @@
 <app-breadcrumbs
   [breadcrumbs]="[{ label: 'Admin', url: '/admin' }, { label: 'Classes' }]"
 ></app-breadcrumbs>
-<div class="table-list-container">
-  <div class="header">
-    <h2>Classes List</h2>
-    <button id="add-button" (click)="addClass()">Add New Class</button>
+
+<div class="classes-container">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1 class="page-title">Classes Management</h1>
+        <p class="page-subtitle">Create and organize class structures</p>
+      </div>
+      <div class="header-actions">
+        <button class="add-button" (click)="addClass()">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+              fill="currentColor"
+            />
+          </svg>
+          Add Class
+        </button>
+      </div>
+    </div>
   </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Class Name</th>
-        <th>Subjects</th>
-        <th>Created At</th>
-        <th>Updated At</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let classItem of classes">
-        <td>{{ classItem.name }}</td>
-        <td>
-          <ul id="subjects-list">
-            <li *ngFor="let classSubject of classItem.classSubjects">
-              {{ classSubject.subject.name }}
-            </li>
-          </ul>
-        </td>
-        <td>{{ classItem.createdAt | date }}</td>
-        <td>{{ classItem.updatedAt | date }}</td>
-        <td class="actions">
-          <button class="btn btn-primary" (click)="updateClass(classItem)">
-            Update
-          </button>
-          <button class="btn btn-danger" (click)="deleteClass(classItem.id)">
-            Delete
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="content-card">
+    <div class="table-container">
+      <div class="table-header">
+        <div class="search-section">
+          <div class="search-input-wrapper">
+            <svg
+              class="search-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3S3 5.91 3 9.5S5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5S14 7.01 14 9.5S11.99 14 9.5 14Z"
+                fill="currentColor"
+              />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search classes..."
+              class="search-input"
+              [(ngModel)]="searchTerm"
+              (input)="filterClasses()"
+            />
+          </div>
+        </div>
+        <div class="table-info">
+          <span class="class-count"
+            >{{ filteredClasses.length }} class{{
+              filteredClasses.length !== 1 ? "es" : ""
+            }}</span
+          >
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="th-name">
+                <div class="th-content">
+                  <span>Class Name</span>
+                  <svg
+                    class="sort-icon"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M7 10L12 15L17 10H7Z" fill="currentColor" />
+                  </svg>
+                </div>
+              </th>
+              <th class="th-subjects">
+                <div class="th-content">
+                  <span>Subjects</span>
+                </div>
+              </th>
+              <th class="th-created">
+                <div class="th-content">
+                  <span>Created At</span>
+                </div>
+              </th>
+              <th class="th-updated">
+                <div class="th-content">
+                  <span>Updated At</span>
+                </div>
+              </th>
+              <th class="th-actions">
+                <div class="th-content">
+                  <span>Actions</span>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let classItem of filteredClasses" class="table-row">
+              <td class="td-name">
+                <div class="class-info">
+                  <div class="class-avatar">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V4C20 2.9 19.1 2 18 2ZM18 20H6V4H18V20Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="class-details">
+                    <span class="class-name">{{ classItem.name }}</span>
+                  </div>
+                </div>
+              </td>
+              <td class="td-subjects">
+                <div class="tags-container">
+                  <span
+                    *ngFor="let classSubject of classItem.classSubjects"
+                    class="tag subject-tag"
+                  >
+                    {{ classSubject.subject.name }}
+                  </span>
+                  <span
+                    *ngIf="classItem.classSubjects?.length === 0"
+                    class="no-data"
+                    >No subjects assigned</span
+                  >
+                </div>
+              </td>
+              <td class="td-created">
+                <span class="date-text">{{
+                  classItem.createdAt | date : "short"
+                }}</span>
+              </td>
+              <td class="td-updated">
+                <span class="date-text">{{
+                  classItem.updatedAt | date : "short"
+                }}</span>
+              </td>
+              <td class="td-actions">
+                <div class="action-buttons">
+                  <button
+                    class="action-btn edit-btn"
+                    (click)="updateClass(classItem)"
+                    title="Edit Class"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M3 17.25V21H6.75L17.81 9.94L14.06 6.19L3 17.25ZM20.71 7.04C21.1 6.65 21.1 6.02 20.71 5.63L18.37 3.29C17.98 2.9 17.35 2.9 16.96 3.29L15.13 5.12L18.88 8.87L20.71 7.04Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    class="action-btn delete-btn"
+                    (click)="deleteClass(classItem.id)"
+                    title="Delete Class"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM8 9H16V19H8V9ZM15.5 4L14.5 3H9.5L8.5 4H5V6H19V4H15.5Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="filteredClasses.length === 0" class="empty-state">
+        <div class="empty-icon">
+          <svg
+            width="64"
+            height="64"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M18 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V4C20 2.9 19.1 2 18 2ZM18 20H6V4H18V20Z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
+        <h3>No classes found</h3>
+        <p>
+          {{
+            searchTerm
+              ? "Try adjusting your search terms"
+              : "Get started by adding your first class"
+          }}
+        </p>
+        <button *ngIf="!searchTerm" class="add-button" (click)="addClass()">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+              fill="currentColor"
+            />
+          </svg>
+          Add First Class
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

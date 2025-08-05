@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
 
 import { ClassService } from '../../class/services/class.service';
 import { ClassModel } from '../../class/models/class.model';
@@ -14,11 +15,13 @@ import { ToastService } from '../../../core/services/toast.service';
 @Component({
   selector: 'app-classes-list',
   templateUrl: './classes-list.component.html',
-  imports: [CommonModule, BreadcrumbsComponent],
+  imports: [CommonModule, FormsModule, BreadcrumbsComponent],
   styleUrls: ['./classes-list.component.css'],
 })
 export class ClassesListComponent implements OnInit {
   classes: ClassModel[] = [];
+  filteredClasses: ClassModel[] = [];
+  searchTerm: string = '';
 
   constructor(
     private classService: ClassService,
@@ -34,6 +37,7 @@ export class ClassesListComponent implements OnInit {
     this.classService.getAllClasses().subscribe({
       next: (data) => {
         this.classes = data.data;
+        this.filteredClasses = [...this.classes];
         console.log('Classes loaded:', this.classes);
       },
       error: (error) => {
@@ -41,6 +45,22 @@ export class ClassesListComponent implements OnInit {
         this.toastService.showError('Loading Classes', error);
       },
     });
+  }
+
+  filterClasses(): void {
+    if (!this.searchTerm.trim()) {
+      this.filteredClasses = [...this.classes];
+      return;
+    }
+
+    const searchLower = this.searchTerm.toLowerCase();
+    this.filteredClasses = this.classes.filter(
+      (classItem) =>
+        classItem.name.toLowerCase().includes(searchLower) ||
+        classItem.classSubjects?.some((cs) =>
+          cs.subject.name.toLowerCase().includes(searchLower)
+        )
+    );
   }
 
   addClass(): void {

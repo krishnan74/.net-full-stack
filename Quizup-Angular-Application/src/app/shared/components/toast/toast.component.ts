@@ -201,7 +201,7 @@ import { CommonModule } from '@angular/common';
         .custom-toast
         .p-toast-message-success
         .p-toast-message-icon::before {
-        content: '✓' !important;
+
         font-weight: bold !important;
       }
 
@@ -210,7 +210,7 @@ import { CommonModule } from '@angular/common';
         .custom-toast
         .p-toast-message-error
         .p-toast-message-icon::before {
-        content: '✕' !important;
+       
         font-weight: bold !important;
       }
 
@@ -219,7 +219,7 @@ import { CommonModule } from '@angular/common';
         .custom-toast
         .p-toast-message-warn
         .p-toast-message-icon::before {
-        content: '⚠' !important;
+
         font-weight: bold !important;
       }
 
@@ -228,7 +228,7 @@ import { CommonModule } from '@angular/common';
         .custom-toast
         .p-toast-message-info
         .p-toast-message-icon::before {
-        content: 'ℹ' !important;
+
         font-weight: bold !important;
       }
 
