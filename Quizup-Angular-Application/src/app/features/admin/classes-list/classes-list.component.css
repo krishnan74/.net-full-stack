@@ -11,7 +11,7 @@
   font-size: 2rem;
   font-weight: 600;
   word-spacing: 1px;
-  color: #2e2932;
+  color: var(--text-primary);
 }
 
 .table-list-container {
@@ -27,15 +27,15 @@ table {
   border-collapse: separate;
   border-spacing: 0 0.2rem;
   background-color: transparent;
-  background-color: #f8f9fc;
-  border: 1px solid #b9b9b9;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
   border-radius: 12px;
 }
 
 table thead {
   text-transform: uppercase;
   font-size: 0.9rem;
-  color: #6c757d;
+  color: var(--text-tertiary);
 }
 
 table th,
@@ -47,14 +47,15 @@ table td {
 table th {
   background-color: transparent;
   font-weight: 600;
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 1px solid var(--border-tertiary);
+  color: var(--text-primary);
 }
 
 table td {
-  background-color: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  background-color: var(--bg-card);
+  box-shadow: 0 2px 6px var(--shadow-light);
   font-size: 0.95rem;
-  color: #333;
+  color: var(--text-secondary);
 }
 
 table tbody tr {
@@ -63,7 +64,7 @@ table tbody tr {
 
 table tbody tr:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 10px var(--shadow-light);
 }
 
 table tbody tr:last-child td:last-child {
@@ -75,42 +76,48 @@ table tbody tr:last-child td:first-child {
 }
 
 #add-button {
-  background-color: #2d2431;
-  color: white;
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
 }
 
 button {
   padding: 0.4rem 0.9rem;
-  border: 1px solid #c6c4ca;
-  color: #2c3229;
+  border: 1px solid var(--btn-secondary-border);
+  color: var(--btn-secondary-text);
+  background-color: var(--btn-secondary-bg);
   border-radius: 4px;
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: #333;
 }
 
 button:first-child {
   margin-right: 0.5rem;
 }
 
+button:hover {
+  background-color: var(--accent-primary);
+  color: var(--btn-primary-text);
+}
+
 .btn-primary {
-  background-color: #4a90e2;
-  color: white;
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
 }
 
 .btn-primary:hover {
-  background-color: #357ae8;
+  background-color: var(--accent-secondary);
 }
 
 .btn-danger {
-  background-color: #dc3545;
-  color: white;
+  background-color: var(--accent-error);
+  color: var(--btn-primary-text);
 }
 
 .btn-danger:hover {
-  background-color: #c82333;
+  background-color: var(--accent-error);
+  filter: brightness(0.9);
 }
 
 table th:last-child,
@@ -130,5 +137,8 @@ table td:last-child {
 
 #subjects-list li {
   padding: 0.2rem 0.4rem;
-  border: 1px solid #dadada;
+  border: 1px solid var(--border-primary);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: 4px;
 }

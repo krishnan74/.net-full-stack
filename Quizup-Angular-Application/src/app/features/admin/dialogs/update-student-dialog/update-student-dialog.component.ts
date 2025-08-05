@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { ClassModel } from '../../../class/models/class.model';
 import { ClassService } from '../../../class/services/class.service';
 import { StudentService } from '../../../student/services/student.service';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-update-student-dialog',
@@ -31,7 +32,8 @@ export class UpdateStudentDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: StudentModel,
     private fb: FormBuilder,
     private classService: ClassService,
-    private studentService: StudentService
+    private studentService: StudentService,
+    private toastService: ToastService
   ) {
     this.studentUpdateForm = this.fb.group({
       firstName: [data.firstName, Validators.required],
@@ -48,6 +50,7 @@ export class UpdateStudentDialogComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading classes:', err);
+        this.toastService.showError('Loading Classes', err);
       },
     });
   }
@@ -66,14 +69,26 @@ export class UpdateStudentDialogComponent implements OnInit {
       this.studentService.updateStudent(updatedStudent).subscribe({
         next: (response) => {
           console.log('Student updated:', response);
+          this.toastService.showSuccess(
+            'Student Updated',
+            `Student ${updatedStudent.firstName} ${updatedStudent.lastName} updated successfully`
+          );
           this.dialogRef.close(response.data);
         },
         error: (err) => {
           console.error('Error updating student:', err);
+          this.toastService.showError('Update Student', err);
         },
       });
+    } else {
+      this.toastService.showValidationError(
+        'Student Form',
+        'Please fill in all required fields correctly'
+      );
+      this.studentUpdateForm.markAllAsTouched();
     }
   }
+
   onCancel() {
     this.dialogRef.close();
   }

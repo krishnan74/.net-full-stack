@@ -10,6 +10,7 @@ import { ChartConfiguration } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -63,114 +64,127 @@ export class DashboardComponent {
   constructor(
     private store: Store,
     private dashboardService: DashboardService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {
     // Handle Student Summary
-    this.studentSummary$.subscribe((summary) => {
-      if (!summary) return;
+    this.studentSummary$.subscribe({
+      next: (summary) => {
+        if (!summary) return;
 
-      // Pie chart
-      if (summary.quizzesByStatus) {
-        const labels = Object.keys(summary.quizzesByStatus);
-        const data = Object.values(summary.quizzesByStatus) as number[];
-        this.pieCharData = {
-          labels,
-          datasets: [
-            {
-              data,
-              backgroundColor: ['#4caf50', '#ff9800', '#03a9f4'],
-            },
-          ],
-        };
-      }
+        // Pie chart
+        if (summary.quizzesByStatus) {
+          const labels = Object.keys(summary.quizzesByStatus);
+          const data = Object.values(summary.quizzesByStatus) as number[];
+          this.pieCharData = {
+            labels,
+            datasets: [
+              {
+                data,
+                backgroundColor: ['#4caf50', '#ff9800', '#03a9f4'],
+              },
+            ],
+          };
+        }
 
-      // Line chart
-      if (summary.performanceTrend) {
-        const labels = summary.performanceTrend.map((p: any) =>
-          new Date(p.month).toLocaleString('default', {
-            month: 'short',
-            year: 'numeric',
-          })
-        );
+        // Line chart
+        if (summary.performanceTrend) {
+          const labels = summary.performanceTrend.map((p: any) =>
+            new Date(p.month).toLocaleString('default', {
+              month: 'short',
+              year: 'numeric',
+            })
+          );
 
-        const avgScoreData = summary.performanceTrend.map(
-          (p: any) => p.avg_score
-        );
+          const avgScoreData = summary.performanceTrend.map(
+            (p: any) => p.avg_score
+          );
 
-        this.lineChartData = {
-          labels,
-          datasets: [
-            {
-              label: 'Average Score',
-              data: avgScoreData,
-              borderColor: '#3f51b5',
-              backgroundColor: 'rgba(63,81,181,0.3)',
-              fill: true,
-              tension: 0.3,
-            },
-          ],
-        };
-      }
+          this.lineChartData = {
+            labels,
+            datasets: [
+              {
+                label: 'Average Score',
+                data: avgScoreData,
+                borderColor: '#3f51b5',
+                backgroundColor: 'rgba(63,81,181,0.3)',
+                fill: true,
+                tension: 0.3,
+              },
+            ],
+          };
+        }
+      },
+      error: (error) => {
+        console.error('Error loading student summary:', error);
+        this.toastService.showError('Loading Dashboard', error);
+      },
     });
 
     // Handle Teacher Summary
-    this.teacherSummary$.subscribe((summary) => {
-      if (!summary) return;
+    this.teacherSummary$.subscribe({
+      next: (summary) => {
+        if (!summary) return;
 
-      // Pie chart for quiz status
-      if (summary.quizzesByStatus) {
-        const labels = Object.keys(summary.quizzesByStatus);
-        const data = Object.values(summary.quizzesByStatus) as number[];
-        this.pieCharData = {
-          labels,
-          datasets: [
-            {
-              data,
-              backgroundColor: ['#4caf50', '#f44336'],
-            },
-          ],
-        };
-      }
+        // Pie chart for quiz status
+        if (summary.quizzesByStatus) {
+          const labels = Object.keys(summary.quizzesByStatus);
+          const data = Object.values(summary.quizzesByStatus) as number[];
+          this.pieCharData = {
+            labels,
+            datasets: [
+              {
+                data,
+                backgroundColor: ['#4caf50', '#f44336'],
+              },
+            ],
+          };
+        }
 
-      // Line chart for performance trend
-      if (summary.quizPerformanceTrend) {
-        const labels = summary.quizPerformanceTrend.map((p: any) =>
-          new Date(p.month).toLocaleString('default', {
-            month: 'short',
-            year: 'numeric',
-          })
-        );
+        // Line chart for performance trend
+        if (summary.quizPerformanceTrend) {
+          const labels = summary.quizPerformanceTrend.map((p: any) =>
+            new Date(p.month).toLocaleString('default', {
+              month: 'short',
+              year: 'numeric',
+            })
+          );
 
-        const avgScoreData = summary.quizPerformanceTrend.map(
-          (p: any) => p.avg_score
-        );
+          const avgScoreData = summary.quizPerformanceTrend.map(
+            (p: any) => p.avg_score
+          );
 
-        const completionRateData = summary.quizPerformanceTrend.map(
-          (p: any) => p.completion_rate
-        );
+          const completionRateData = summary.quizPerformanceTrend.map(
+            (p: any) => p.completion_rate
+          );
 
-        this.lineChartData = {
-          labels,
-          datasets: [
-            {
-              label: 'Average Score',
-              data: avgScoreData,
-              borderColor: '#3f51b5',
-              backgroundColor: 'rgba(63,81,181,0.2)',
-              fill: true,
-              tension: 0.3,
-            },
-            {
-              label: 'Completion Rate (%)',
-              data: completionRateData,
-              borderColor: '#ff9800',
-              backgroundColor: 'rgba(255,152,0,0.2)',
-              fill: true,
-              tension: 0.3,
-            },
-          ],
-        };
-      }
+          this.lineChartData = {
+            labels,
+            datasets: [
+              {
+                label: 'Average Score',
+                data: avgScoreData,
+                borderColor: '#3f51b5',
+                backgroundColor: 'rgba(63,81,181,0.2)',
+                fill: true,
+                tension: 0.3,
+              },
+              {
+                label: 'Completion Rate (%)',
+                data: completionRateData,
+                borderColor: '#ff9800',
+                backgroundColor: 'rgba(255,152,0,0.2)',
+                fill: true,
+                tension: 0.3,
+              },
+            ],
+          };
+        }
+      },
+      error: (error) => {
+        console.error('Error loading teacher summary:', error);
+        this.toastService.showError('Loading Dashboard', error);
+      },
     });
   }
 }

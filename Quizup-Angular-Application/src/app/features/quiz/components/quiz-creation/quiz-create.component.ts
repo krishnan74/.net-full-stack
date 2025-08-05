@@ -20,6 +20,7 @@ import { QuestionModel } from '../../models/question.model';
 import { QuizService } from '../../services/quiz.service';
 import { QuizCreateModel } from '../../models/quiz.model';
 import { QuestionCard } from '../question-card/question-card';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-quiz-create',
@@ -45,7 +46,8 @@ export class QuizCreateComponent implements OnInit {
     private fb: FormBuilder,
     private profileService: ProfileService,
     private store: Store,
-    private quizService: QuizService
+    private quizService: QuizService,
+    private toastService: ToastService
   ) {
     this.user$.subscribe((user) => {
       this.user = user;
@@ -130,11 +132,24 @@ export class QuizCreateComponent implements OnInit {
   addQuestion(question: QuestionModel) {
     if (!this.selectedQuestions.find((q) => q.id === question.id)) {
       this.selectedQuestions.push(question);
+      this.toastService.showInfo(
+        'Question Added',
+        'Question added to the quiz'
+      );
+    } else {
+      this.toastService.showWarning(
+        'Question Already Added',
+        'This question is already in the quiz'
+      );
     }
   }
 
   removeQuestion(index: number) {
     this.selectedQuestions.splice(index, 1);
+    this.toastService.showInfo(
+      'Question Removed',
+      'Question removed from the quiz'
+    );
   }
 
   searchQuestions() {
@@ -163,11 +178,23 @@ export class QuizCreateComponent implements OnInit {
     this.questionSearch = '';
     this.newQuestionOptions = ['', '', '', '']; // Reset to four empty options
     this.newQuestionCorrectAnswer = null;
+    this.toastService.showSuccess(
+      'Question Created',
+      'New question created and added to quiz'
+    );
   }
 
   onSubmit() {
     console.log('Form Submitted:', this.quizForm.value);
     if (this.quizForm.valid) {
+      if (this.selectedQuestions.length === 0) {
+        this.toastService.showWarning(
+          'No Questions',
+          'Please add at least one question to the quiz'
+        );
+        return;
+      }
+
       const quizData: QuizCreateModel = {
         title: this.quizForm.value.title,
         description: this.quizForm.value.description,
@@ -180,6 +207,10 @@ export class QuizCreateComponent implements OnInit {
       this.quizService.createQuiz(quizData).subscribe({
         next: (response) => {
           console.log('Quiz created successfully:', response.data);
+          this.toastService.showSuccess(
+            'Quiz Created',
+            `Quiz "${quizData.title}" created successfully!`
+          );
           this.quizForm.reset();
           this.selectedQuestions = [];
           this.questionSearch = '';
@@ -188,9 +219,16 @@ export class QuizCreateComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error creating quiz:', error);
+          this.toastService.showError('Quiz Creation', error);
         },
       });
       console.log('Quiz Data:', quizData);
+    } else {
+      this.toastService.showValidationError(
+        'Quiz Form',
+        'Please fill in all required fields correctly.'
+      );
+      this.quizForm.markAllAsTouched();
     }
   }
 

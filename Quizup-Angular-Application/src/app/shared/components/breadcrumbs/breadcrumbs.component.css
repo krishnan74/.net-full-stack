@@ -5,22 +5,25 @@
   gap: 0.3rem;
   padding-left: 2.5rem;
 }
+
 .breadcrumb-label {
-  color: #7c3aed;
+  color: var(--accent-primary);
   font-weight: 500;
 }
+
 .breadcrumb-separator {
-  color: #333;
+  color: var(--text-primary);
   margin: 0 0.2rem;
 }
 
 .breadcrumbs a {
-  color: #333;
+  color: var(--text-primary);
   text-decoration: underline;
   font: bold;
   transition: color 0.2s;
 }
+
 a:hover {
-  color: #7c3aed;
+  color: var(--accent-primary);
   text-decoration: underline;
 }

@@ -5,19 +5,22 @@
   width: 90%;
   text-align: center;
   margin: auto;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-secondary);
+  box-shadow: 0 4px 20px var(--shadow-medium);
 }
 
 .admin-dashboard h2 {
   font-size: 2.4rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
-  color: #2e2932;
+  color: var(--text-primary);
 }
 
 .subheading {
   font-size: 1.2rem;
   margin-bottom: 2rem;
-  color: #2e2932;
+  color: var(--text-primary);
 }
 
 .admin-nav ul {
@@ -34,28 +37,17 @@
   align-items: center;
   justify-content: center;
   border-radius: 12px;
-  border: 1px solid #fc99f5;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--accent-warning);
+  box-shadow: 0 6px 14px var(--shadow-light);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background-color: var(--bg-card);
 }
 
 .admin-nav li:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  color: white;
-  background: linear-gradient(
-    135deg,
-    #fc99f5bf 0%,
-    #ff98e5a0 15%,
-    #fcc2eea0 20%,
-    #ff99d8 30%,
-    #ff9acdcd 40%,
-    #ff9acdcd 50%,
-    #ff9dbfac 60%,
-    #fca0b7 75%,
-    #fca8a7a6 90%,
-    #f2be90c0 100%
-  );
+  box-shadow: 0 8px 20px var(--shadow-medium);
+  color: var(--btn-primary-text);
+  background: var(--gradient-primary);
 }
 
 .admin-nav a {
@@ -64,11 +56,15 @@
   justify-content: center;
   padding: 1.2rem;
   text-decoration: none;
-  color: #2e2932;
+  color: var(--text-primary);
   font-size: 1.4rem;
   font-weight: 600;
   border-radius: 12px;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+}
+
+.admin-nav a:hover {
+  color: var(--btn-primary-text);
 }
 
 .admin-nav a span {

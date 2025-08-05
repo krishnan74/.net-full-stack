@@ -13,6 +13,7 @@ import { SubjectService } from '../../../subject/services/subject.service';
 import { ProfileService } from '../../../profile/profile.service';
 import { ClassModel } from '../../../class/models/class.model';
 import { SubjectModel } from '../../../subject/models/subject.model';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-quiz-list',
@@ -46,17 +47,33 @@ export class QuizList implements OnInit {
   constructor(
     private quizService: QuizService,
     private store: Store,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private toastService: ToastService
   ) {
     window.addEventListener('scroll', this.onScroll.bind(this));
-    this.user$.subscribe((user) => {
-      this.user = user;
+    this.user$.subscribe({
+      next: (user) => {
+        this.user = user;
+        if (user) {
+          this.loadUserData();
+        }
+      },
+      error: (error) => {
+        console.error('Error loading user:', error);
+        this.toastService.showError('Loading User', error);
+      },
     });
+  }
 
+  loadUserData() {
     if (this.user?.role == 'Teacher') {
       this.profileService.getSubjectsByTeacherId(this.user.userId).subscribe({
         next: (subjects) => {
           this.subjects = subjects;
+        },
+        error: (error) => {
+          console.error('Error loading teacher subjects:', error);
+          this.toastService.showError('Loading Subjects', error);
         },
       });
 
@@ -64,11 +81,19 @@ export class QuizList implements OnInit {
         next: (classes) => {
           this.classes = classes;
         },
+        error: (error) => {
+          console.error('Error loading teacher classes:', error);
+          this.toastService.showError('Loading Classes', error);
+        },
       });
     } else if (this.user?.role == 'Student') {
       this.profileService.getSubjectsByStudentId(this.user.userId).subscribe({
         next: (subjects) => {
           this.subjects = subjects;
+        },
+        error: (error) => {
+          console.error('Error loading student subjects:', error);
+          this.toastService.showError('Loading Subjects', error);
         },
       });
     }
@@ -119,6 +144,15 @@ export class QuizList implements OnInit {
         next: (data: any) => {
           console.log('Quizzes fetched:', data.data);
           this.quizzes = data.data as QuizModel[];
+          this.toastService.showInfo(
+            'Quizzes Loaded',
+            `Found ${this.quizzes.length} quizzes`
+          );
+        },
+        error: (error) => {
+          console.error('Error fetching quizzes:', error);
+          this.toastService.showError('Loading Quizzes', error);
+          this.loading = false;
         },
       });
 

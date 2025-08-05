@@ -17,6 +17,7 @@ import { SubjectModel } from '../../../subject/models/subject.model';
 import { ClassModel } from '../../../class/models/class.model';
 import { ClassService } from '../../../class/services/class.service';
 import { SubjectService } from '../../../subject/services/subject.service';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-update-teacher-dialog',
@@ -47,7 +48,8 @@ export class UpdateTeacherDialogComponent implements OnInit {
     private fb: FormBuilder,
     private teacherService: TeacherService,
     private subjectService: SubjectService,
-    private classService: ClassService
+    private classService: ClassService,
+    private toastService: ToastService
   ) {
     this.teacherUpdateForm = this.fb.group({
       firstName: [data.firstName, Validators.required],
@@ -75,6 +77,7 @@ export class UpdateTeacherDialogComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading subjects:', err);
+        this.toastService.showError('Loading Subjects', err);
       },
     });
   }
@@ -86,6 +89,7 @@ export class UpdateTeacherDialogComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading classes:', err);
+        this.toastService.showError('Loading Classes', err);
       },
     });
   }
@@ -103,6 +107,15 @@ export class UpdateTeacherDialogComponent implements OnInit {
     if (value && !this.subjectsArray.value.includes(value)) {
       this.subjectsArray.push(this.fb.control(value));
       this.addSubjectIds.push(value);
+      this.toastService.showInfo(
+        'Subject Added',
+        'Subject added to the teacher'
+      );
+    } else {
+      this.toastService.showWarning(
+        'Subject Already Added',
+        'This subject is already assigned to the teacher'
+      );
     }
   }
 
@@ -110,6 +123,10 @@ export class UpdateTeacherDialogComponent implements OnInit {
     const removedId = this.subjectsArray.at(index).value;
     this.subjectsArray.removeAt(index);
     this.removeSubjectIds.push(removedId);
+    this.toastService.showInfo(
+      'Subject Removed',
+      'Subject removed from the teacher'
+    );
   }
 
   addClass(event: Event): void {
@@ -117,6 +134,12 @@ export class UpdateTeacherDialogComponent implements OnInit {
     if (value && !this.classesArray.value.includes(value)) {
       this.classesArray.push(this.fb.control(value));
       this.addClassIds.push(value);
+      this.toastService.showInfo('Class Added', 'Class added to the teacher');
+    } else {
+      this.toastService.showWarning(
+        'Class Already Added',
+        'This class is already assigned to the teacher'
+      );
     }
   }
 
@@ -124,6 +147,10 @@ export class UpdateTeacherDialogComponent implements OnInit {
     const removedId = this.classesArray.at(index).value;
     this.classesArray.removeAt(index);
     this.removeClassIds.push(removedId);
+    this.toastService.showInfo(
+      'Class Removed',
+      'Class removed from the teacher'
+    );
   }
 
   getSubjectName(id: number): string {
@@ -151,12 +178,23 @@ export class UpdateTeacherDialogComponent implements OnInit {
       this.teacherService.updateTeacher(updatedTeacher).subscribe({
         next: (response) => {
           console.log('Teacher updated:', response);
+          this.toastService.showSuccess(
+            'Teacher Updated',
+            `Teacher ${updatedTeacher.firstName} ${updatedTeacher.lastName} updated successfully`
+          );
           this.dialogRef.close(response.data);
         },
         error: (err) => {
           console.error('Error updating teacher:', err);
+          this.toastService.showError('Update Teacher', err);
         },
       });
+    } else {
+      this.toastService.showValidationError(
+        'Teacher Form',
+        'Please fill in all required fields correctly'
+      );
+      this.teacherUpdateForm.markAllAsTouched();
     }
   }
 

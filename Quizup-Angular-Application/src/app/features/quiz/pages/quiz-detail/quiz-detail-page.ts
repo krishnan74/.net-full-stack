@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../../../../store/auth/auth.model';
 import { Store } from '@ngrx/store';
 import { selectUser } from '../../../../store/auth/state/auth.selectors';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-quiz-detail-page',
@@ -27,10 +28,17 @@ export class QuizDetailPage {
     private quizService: QuizService,
     private router: Router,
     private route: ActivatedRoute,
-    private store: Store
+    private store: Store,
+    private toastService: ToastService
   ) {
-    this.user$.subscribe((user) => {
-      this.user = user;
+    this.user$.subscribe({
+      next: (user) => {
+        this.user = user;
+      },
+      error: (error) => {
+        console.error('Error loading user:', error);
+        this.toastService.showError('Loading User', error);
+      },
     });
     this.quizId = Number(this.route.snapshot.params['quizId']);
     this.loadQuiz();
@@ -70,9 +78,19 @@ export class QuizDetailPage {
   }
 
   loadQuiz() {
-    this.quizService.getQuizById(this.quizId).subscribe((quiz) => {
-      this.quiz = quiz.data;
-      console.log('Quiz loaded:', this.quiz);
+    this.quizService.getQuizById(this.quizId).subscribe({
+      next: (quiz) => {
+        this.quiz = quiz.data;
+        console.log('Quiz loaded:', this.quiz);
+        this.toastService.showInfo(
+          'Quiz Loaded',
+          `Quiz "${this.quiz.title}" loaded successfully`
+        );
+      },
+      error: (error) => {
+        console.error('Error loading quiz:', error);
+        this.toastService.showError('Loading Quiz', error);
+      },
     });
   }
 
@@ -82,21 +100,33 @@ export class QuizDetailPage {
         next: (response) => {
           console.log('Quiz ended successfully:', response);
           this.quiz.isActive = false;
+          this.toastService.showSuccess(
+            'Quiz Ended',
+            `Quiz "${this.quiz.title}" has been ended`
+          );
         },
         error: (error) => {
           console.error('Error ending quiz:', error);
-        }
+          this.toastService.showError('End Quiz', error);
+        },
       });
     } else {
-      this.quizService.startQuiz(this.quizId, this.user?.userId || 0).subscribe({
-        next: (response) => {
-          console.log('Quiz started successfully:', response);
-          this.quiz.isActive = true;
-        },
-        error: (error) => {
-          console.error('Error starting quiz:', error);
-        }
-      });
+      this.quizService
+        .startQuiz(this.quizId, this.user?.userId || 0)
+        .subscribe({
+          next: (response) => {
+            console.log('Quiz started successfully:', response);
+            this.quiz.isActive = true;
+            this.toastService.showSuccess(
+              'Quiz Started',
+              `Quiz "${this.quiz.title}" has been started`
+            );
+          },
+          error: (error) => {
+            console.error('Error starting quiz:', error);
+            this.toastService.showError('Start Quiz', error);
+          },
+        });
     }
 
     this.loadQuiz();

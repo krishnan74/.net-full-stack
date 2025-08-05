@@ -1,24 +1,20 @@
 .quiz-questions {
-  background-color: #fff;
+  background-color: var(--bg-card);
   border-radius: 16px;
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 8px var(--shadow-light);
+  border: 1px solid var(--border-secondary);
 }
 
 .quiz-info {
   padding: 2rem;
-  background: linear-gradient(
-    135deg,
-    #c0bdc02f 0%,
-    #fca8a738 60%,
-    #f2be9034 100%
-  );
+  background: var(--gradient-secondary);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.801);
+  box-shadow: 0 8px 20px var(--shadow-heavy);
+  border: 1px solid var(--bg-overlay);
   margin-bottom: 2rem;
 }
 
@@ -27,19 +23,19 @@ h2 {
   font-weight: 700;
   text-align: center;
   margin: 1rem 0 2rem 0;
-  color: #222;
+  color: var(--text-primary);
 }
 
 h3 {
   font-size: 1.6rem;
   margin-bottom: 1rem;
-  color: #111;
+  color: var(--text-secondary);
 }
 
 h4 {
   font-size: 1.25rem;
   margin-bottom: 0.75rem;
-  color: #333;
+  color: var(--text-secondary);
 }
 
 .quiz-detail-container {
@@ -62,26 +58,26 @@ h4 {
 
 p {
   font-size: 1rem;
-  color: #444;
+  color: var(--text-tertiary);
   line-height: 1.5;
 }
 
 strong {
   font-weight: 600;
-  color: #222;
+  color: var(--text-primary);
 }
 
 .active {
-  color: #0e7c3a;
-  background-color: #eaf7ed;
+  color: var(--status-active-text);
+  background-color: var(--status-active-bg);
   padding: 4px 10px;
   border-radius: 6px;
   font-size: 0.9rem;
 }
 
 .inactive {
-  color: #b30000;
-  background-color: #fdecea;
+  color: var(--status-inactive-text);
+  background-color: var(--status-inactive-bg);
   padding: 4px 10px;
   border-radius: 6px;
   font-size: 0.9rem;
@@ -101,26 +97,26 @@ strong {
 
 button {
   padding: 0.4rem 0.8rem;
-  border: 1px solid #ccc;
-  background-color: transparent;
+  border: 1px solid var(--btn-secondary-border);
+  background-color: var(--btn-secondary-bg);
   border-radius: 6px;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  color: #2e2932;
+  color: var(--btn-secondary-text);
   transition: all 0.2s ease-in-out;
 }
 
 button:hover {
-  background-color: #2e2932;
-  color: #fff;
+  background-color: var(--accent-primary);
+  color: var(--btn-primary-text);
 }
 
 .quiz-submissions-container h2 {
   font-size: 1.5rem;
   font-weight: 700;
-  margin-bottom: 1.5rem;
-  color: #1a202c;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
 }
 .header {
   width: 90%;

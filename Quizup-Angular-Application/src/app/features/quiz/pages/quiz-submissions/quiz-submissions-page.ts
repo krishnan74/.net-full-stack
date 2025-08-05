@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { QuizService } from '../../services/quiz.service';
 import { QuizModel } from '../../models/quiz.model';
 import { QuestionCard } from '../../components/question-card/question-card';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-quiz-submissions-page',
@@ -30,29 +31,55 @@ export class QuizSubmissionsPage {
     private route: ActivatedRoute,
     private store: Store,
     private studentService: StudentService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {
-    this.user$.subscribe((user) => {
-      this.user = user;
+    this.user$.subscribe({
+      next: (user) => {
+        this.user = user;
+        if (user) {
+          this.loadQuizSubmissions();
+        }
+      },
+      error: (error) => {
+        console.error('Error loading user:', error);
+        this.toastService.showError('Loading User', error);
+      },
     });
     this.quizId = Number(this.route.snapshot.params['quizId']);
     this.loadQuiz();
+  }
+
+  loadQuizSubmissions() {
+    if (!this.user?.userId) return;
+
     this.studentService
-      .getQuizSubmissionsByStudentId(this.user?.userId!, this.quizId)
+      .getQuizSubmissionsByStudentId(this.user.userId, this.quizId)
       .subscribe({
         next: (data) => {
           this.quizSubmissions = data.data;
+          this.toastService.showInfo(
+            'Submissions Loaded',
+            `Loaded ${this.quizSubmissions.length} quiz submissions`
+          );
         },
         error: (err) => {
           console.error('Error fetching quiz submissions:', err);
+          this.toastService.showError('Loading Submissions', err);
         },
       });
   }
 
   loadQuiz() {
-    this.quizService.getQuizById(this.quizId).subscribe((quiz) => {
-      this.quiz = quiz.data;
-      console.log('Quiz loaded:', this.quiz);
+    this.quizService.getQuizById(this.quizId).subscribe({
+      next: (quiz) => {
+        this.quiz = quiz.data;
+        console.log('Quiz loaded:', this.quiz);
+      },
+      error: (error) => {
+        console.error('Error loading quiz:', error);
+        this.toastService.showError('Loading Quiz', error);
+      },
     });
   }
 

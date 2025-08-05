@@ -6,6 +6,7 @@ import { SubjectService } from '../../../subject/services/subject.service';
 import { SubjectModel } from '../../../subject/models/subject.model';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-update-subject-dialog',
@@ -21,7 +22,8 @@ export class UpdateSubjectDialogComponent {
     public dialogRef: MatDialogRef<UpdateSubjectDialogComponent>,
     private classService: ClassService,
     private subjectService: SubjectService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private toastService: ToastService
   ) {
     this.classForm = this.fb.group({
       className: ['', Validators.required],
@@ -38,6 +40,7 @@ export class UpdateSubjectDialogComponent {
       },
       error: (err) => {
         console.error('Error loading subjects:', err);
+        this.toastService.showError('Loading Subjects', err);
       },
     });
   }
@@ -50,11 +53,21 @@ export class UpdateSubjectDialogComponent {
     const value = (event.target as HTMLSelectElement).value;
     if (value && !this.subjectsArray.value.includes(value)) {
       this.subjectsArray.push(this.fb.control(value));
+      this.toastService.showInfo('Subject Added', 'Subject added to the class');
+    } else {
+      this.toastService.showWarning(
+        'Subject Already Added',
+        'This subject is already in the class'
+      );
     }
   }
 
   removeSubject(index: number): void {
     this.subjectsArray.removeAt(index);
+    this.toastService.showInfo(
+      'Subject Removed',
+      'Subject removed from the class'
+    );
   }
 
   onSave(): void {
@@ -62,12 +75,23 @@ export class UpdateSubjectDialogComponent {
       this.classService.createClass(this.classForm.value).subscribe({
         next: (response) => {
           console.log('Class created:', response);
+          this.toastService.showSuccess(
+            'Class Created',
+            `Class "${this.classForm.value.className}" created successfully`
+          );
           this.dialogRef.close(response.data);
         },
         error: (err) => {
           console.error('Error creating class:', err);
+          this.toastService.showError('Create Class', err);
         },
       });
+    } else {
+      this.toastService.showValidationError(
+        'Class Form',
+        'Please fill in all required fields correctly'
+      );
+      this.classForm.markAllAsTouched();
     }
   }
 

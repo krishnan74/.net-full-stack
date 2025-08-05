@@ -5,6 +5,8 @@ import { Router, RouterLink } from '@angular/router';
 import * as AuthActions from '../../../store/auth/state/auth.actions';
 import { User } from '../../../store/auth/auth.model';
 import { CommonModule } from '@angular/common';
+import { ThemeService } from '../../../core/services/theme.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-navbar',
@@ -17,8 +19,14 @@ export class Navbar {
   user: User | null = null;
   isScrolled: boolean = false;
   lastScrollTop: number = 0;
+  currentTheme$ = this.themeService.theme$;
 
-  constructor(private store: Store, private router: Router) {
+  constructor(
+    private store: Store,
+    private router: Router,
+    private themeService: ThemeService,
+    private toastService: ToastService
+  ) {
     window.addEventListener('scroll', this.onScroll.bind(this));
   }
 
@@ -48,5 +56,19 @@ export class Navbar {
 
   onLogout() {
     this.store.dispatch(AuthActions.logout());
+    this.toastService.showInfo(
+      'Logout',
+      'You have been successfully logged out.'
+    );
+  }
+
+  toggleTheme() {
+    this.themeService.toggleTheme();
+    const currentTheme = this.themeService.getCurrentTheme();
+    const themeName = currentTheme === 'light' ? 'Light' : 'Dark';
+    this.toastService.showInfo(
+      'Theme Changed',
+      `Switched to ${themeName} mode`
+    );
   }
 }

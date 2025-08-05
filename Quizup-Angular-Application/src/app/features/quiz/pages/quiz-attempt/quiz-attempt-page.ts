@@ -12,9 +12,9 @@ import { Store } from '@ngrx/store';
 import { StudentService } from '../../../student/services/student.service';
 import { User } from '../../../../store/auth/auth.model';
 import { Toast } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
 import { QuizResultDialog } from '../../components/quiz-result-dialog/quiz-result-dialog';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-quiz-attempt',
@@ -27,7 +27,6 @@ import { QuizResultDialog } from '../../components/quiz-result-dialog/quiz-resul
   ],
   templateUrl: './quiz-attempt-page.html',
   styleUrl: './quiz-attempt-page.css',
-  providers: [MessageService],
 })
 export class QuizAttemptPage implements OnInit {
   user$ = this.store.select(selectUser);
@@ -43,6 +42,7 @@ export class QuizAttemptPage implements OnInit {
   quizScore: number = 0;
   reviewMode: boolean = false;
   submissionAnswers: any[] = [];
+
   constructor(
     private quizService: QuizService,
     private quizTimerService: QuizTimerService,
@@ -50,7 +50,7 @@ export class QuizAttemptPage implements OnInit {
     private store: Store,
     private route: ActivatedRoute,
     private router: Router,
-    private messageService: MessageService
+    private toastService: ToastService
   ) {
     this.user$.subscribe((user) => {
       this.user = user;
@@ -71,14 +71,23 @@ export class QuizAttemptPage implements OnInit {
           this.questions = quizResponse.data.quizQuestions.map(
             (q: QuizQuestionModel) => q.question
           );
+          this.toastService.showInfo(
+            'Quiz Loaded',
+            `Quiz "${quizResponse.data.title}" loaded successfully`
+          );
         } else {
           this.questions = [];
+          this.toastService.showWarning(
+            'No Questions',
+            'This quiz has no questions'
+          );
         }
 
         console.log('Questions loaded:', this.questions[0]);
       },
       error: (err) => {
         console.error('Error fetching quiz questions:', err);
+        this.toastService.showError('Loading Quiz', err);
       },
     });
 
@@ -107,7 +116,10 @@ export class QuizAttemptPage implements OnInit {
     if (this.currentQuestionIndex > 0) {
       this.currentQuestionIndex--;
     } else {
-      console.log('No previous question available.');
+      this.toastService.showWarning(
+        'Navigation',
+        'No previous question available.'
+      );
     }
   }
 
@@ -131,20 +143,16 @@ export class QuizAttemptPage implements OnInit {
             this.quizScore = response.data.score;
             this.showResultDialog = true;
             this.submissionAnswers = response.data.answers || [];
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Quiz Submitted',
-              detail: `Quiz submitted successfully! Your score is: ${response.data.score}`,
-              life: 3000,
-            });
+            this.toastService.showSuccess(
+              'Quiz Submitted',
+              `Quiz submitted successfully! Your score is: ${response.data.score}`
+            );
           },
           error: (error) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Submission Error',
-              detail: 'Error submitting quiz. Please try again.',
-              life: 3000,
-            });
+            this.toastService.showError(
+              'Quiz Submission',
+              'Error submitting quiz. Please try again.'
+            );
             console.error('Error submitting quiz:', error);
           },
         });

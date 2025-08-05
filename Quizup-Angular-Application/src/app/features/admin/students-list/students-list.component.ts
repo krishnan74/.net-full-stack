@@ -6,6 +6,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../dialogs/confirm-dialog/confirm-dialog.component';
 import { BreadcrumbsComponent } from '../../../shared/components/breadcrumbs/breadcrumbs.component';
 import { UpdateStudentDialogComponent } from '../dialogs/update-student-dialog/update-student-dialog.component';
+import { ToastService } from '../../../core/services/toast.service';
+
 @Component({
   selector: 'app-students-list',
   templateUrl: './students-list.component.html',
@@ -17,7 +19,8 @@ export class StudentsListComponent implements OnInit {
 
   constructor(
     private studentService: StudentService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -25,9 +28,15 @@ export class StudentsListComponent implements OnInit {
   }
 
   loadStudents(): void {
-    this.studentService.getAllStudents().subscribe((data) => {
-      this.students = data.data;
-      console.log('Students loaded:', this.students);
+    this.studentService.getAllStudents().subscribe({
+      next: (data) => {
+        this.students = data.data;
+        console.log('Students loaded:', this.students);
+      },
+      error: (error) => {
+        console.error('Error loading students:', error);
+        this.toastService.showError('Loading Students', error);
+      },
     });
   }
 
@@ -37,8 +46,18 @@ export class StudentsListComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.studentService.updateStudent(result).subscribe(() => {
-          this.loadStudents();
+        this.studentService.updateStudent(result).subscribe({
+          next: () => {
+            this.loadStudents();
+            this.toastService.showSuccess(
+              'Student Updated',
+              `Student ${result.firstName} ${result.lastName} updated successfully`
+            );
+          },
+          error: (error) => {
+            console.error('Error updating student:', error);
+            this.toastService.showError('Update Student', error);
+          },
         });
       }
     });
@@ -50,8 +69,18 @@ export class StudentsListComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.studentService.deleteStudent(studentId).subscribe(() => {
-          this.loadStudents();
+        this.studentService.deleteStudent(studentId).subscribe({
+          next: () => {
+            this.loadStudents();
+            this.toastService.showSuccess(
+              'Student Deleted',
+              'Student deleted successfully'
+            );
+          },
+          error: (error) => {
+            console.error('Error deleting student:', error);
+            this.toastService.showError('Delete Student', error);
+          },
         });
       }
     });

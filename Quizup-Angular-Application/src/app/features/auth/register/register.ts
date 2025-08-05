@@ -15,6 +15,7 @@ import { SubjectService } from '../../subject/services/subject.service';
 import { SubjectModel } from '../../subject/models/subject.model';
 import { ClassService } from '../../class/services/class.service';
 import { ClassModel } from '../../class/models/class.model';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-register',
@@ -33,7 +34,8 @@ export class RegisterComponent {
     private teacherService: TeacherService,
     private studentService: StudentService,
     private subjectService: SubjectService,
-    private classService: ClassService
+    private classService: ClassService,
+    private toastService: ToastService
   ) {
     this.userForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -67,7 +69,10 @@ export class RegisterComponent {
         this.availableSubjects = response.data;
         console.log('Available subjects:', this.availableSubjects);
       },
-      error: (err) => console.error('Error loading subjects:', err),
+      error: (err) => {
+        console.error('Error loading subjects:', err);
+        this.toastService.showError('Loading Subjects', err);
+      },
     });
   }
 
@@ -77,7 +82,10 @@ export class RegisterComponent {
         this.availableClasses = response.data;
         console.log('Available classes:', this.availableClasses);
       },
-      error: (err) => console.error('Error loading classes:', err),
+      error: (err) => {
+        console.error('Error loading classes:', err);
+        this.toastService.showError('Loading Classes', err);
+      },
     });
   }
 
@@ -94,12 +102,17 @@ export class RegisterComponent {
     const value = (event.target as HTMLSelectElement).value;
     if (value && !this.subjectsArray.value.includes(value)) {
       this.subjectsArray.push(this.fb.control(value));
+      this.toastService.showInfo('Subject Added', `Subject added to the list`);
     }
     console.log(this.subjectsArray.value);
   }
 
   removeSubject(index: number) {
     this.subjectsArray.removeAt(index);
+    this.toastService.showInfo(
+      'Subject Removed',
+      'Subject removed from the list'
+    );
   }
 
   addClass(event: Event) {
@@ -112,6 +125,7 @@ export class RegisterComponent {
       } else {
         this.classesArray.push(this.fb.control(value));
       }
+      this.toastService.showInfo('Class Added', `Class added to the list`);
     }
 
     console.log(this.classesArray.value);
@@ -119,6 +133,7 @@ export class RegisterComponent {
 
   removeClass(index: number) {
     this.classesArray.removeAt(index);
+    this.toastService.showInfo('Class Removed', 'Class removed from the list');
   }
 
   onSubmit() {
@@ -136,29 +151,55 @@ export class RegisterComponent {
           classIds: this.classesArray.value.map(Number),
         };
         this.teacherService.createTeacher(createTeacherData).subscribe({
-          next: (response) => console.log('Teacher created:', response),
-          error: (err) => console.error('Error:', err),
+          next: (response) => {
+            console.log('Teacher created:', response);
+            this.toastService.showSuccess(
+              'Teacher Registration',
+              'Teacher account created successfully!'
+            );
+            this.userForm.reset();
+            this.subjectsArray.clear();
+            this.classesArray.clear();
+          },
+          error: (err) => {
+            console.error('Error:', err);
+            this.toastService.showError('Teacher Registration', err);
+          },
         });
-      }
-      else if(this.userForm.value.role === 'Student') {
-
+      } else if (this.userForm.value.role === 'Student') {
         const createStudentData = {
           email: this.userForm.value.email,
           password: this.userForm.value.password,
           firstName: this.userForm.value.firstName,
           lastName: this.userForm.value.lastName,
-          classId: Number(this.classesArray.value[0])
+          classId: Number(this.classesArray.value[0]),
         };
 
         console.log('Creating student with data:', createStudentData);
         this.studentService.createStudent(createStudentData).subscribe({
-          next: (response) => console.log('Student created:', response),
-          error: (err) => console.error('Error:', err),
+          next: (response) => {
+            console.log('Student created:', response);
+            this.toastService.showSuccess(
+              'Student Registration',
+              'Student account created successfully!'
+            );
+            this.userForm.reset();
+            this.subjectsArray.clear();
+            this.classesArray.clear();
+          },
+          error: (err) => {
+            console.error('Error:', err);
+            this.toastService.showError('Student Registration', err);
+          },
         });
       }
     } else {
       console.log('Form is invalid');
       this.userForm.markAllAsTouched();
+      this.toastService.showValidationError(
+        'Registration Form',
+        'Please fill in all required fields correctly.'
+      );
     }
   }
 

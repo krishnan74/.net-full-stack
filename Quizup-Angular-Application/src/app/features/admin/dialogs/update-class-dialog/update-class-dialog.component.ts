@@ -7,6 +7,7 @@ import { SubjectModel } from '../../../subject/models/subject.model';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ClassModel } from '../../../class/models/class.model';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-update-class-dialog',
@@ -26,6 +27,7 @@ export class UpdateClassDialogComponent implements OnInit {
     private classService: ClassService,
     private subjectService: SubjectService,
     private fb: FormBuilder,
+    private toastService: ToastService,
     @Inject(MAT_DIALOG_DATA)
     public data: ClassModel
   ) {
@@ -50,6 +52,7 @@ export class UpdateClassDialogComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading subjects:', err);
+        this.toastService.showError('Loading Subjects', err);
       },
     });
   }
@@ -63,6 +66,12 @@ export class UpdateClassDialogComponent implements OnInit {
     if (value && !this.subjectsArray.value.includes(value)) {
       this.subjectsArray.push(this.fb.control(value));
       this.addSubjectIds.push(value);
+      this.toastService.showInfo('Subject Added', 'Subject added to the class');
+    } else {
+      this.toastService.showWarning(
+        'Subject Already Added',
+        'This subject is already in the class'
+      );
     }
   }
 
@@ -70,6 +79,10 @@ export class UpdateClassDialogComponent implements OnInit {
     const removedId = this.subjectsArray.at(index).value;
     this.subjectsArray.removeAt(index);
     this.removeSubjectIds.push(removedId);
+    this.toastService.showInfo(
+      'Subject Removed',
+      'Subject removed from the class'
+    );
   }
 
   getSubjectName(id: number): string {
@@ -89,12 +102,23 @@ export class UpdateClassDialogComponent implements OnInit {
       this.classService.updateClass(updatedClass).subscribe({
         next: (response) => {
           console.log('Class updated:', response);
+          this.toastService.showSuccess(
+            'Class Updated',
+            `Class "${this.classForm.value.className}" updated successfully`
+          );
           this.dialogRef.close(response.data);
         },
         error: (err) => {
           console.error('Error updating class:', err);
+          this.toastService.showError('Update Class', err);
         },
       });
+    } else {
+      this.toastService.showValidationError(
+        'Class Form',
+        'Please fill in all required fields correctly'
+      );
+      this.classForm.markAllAsTouched();
     }
   }
 

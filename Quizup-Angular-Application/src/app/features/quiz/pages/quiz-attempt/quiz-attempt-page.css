@@ -4,7 +4,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(60, 30, 90, 0.25);
+  background: rgba(0, 0, 0, 0.5);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -12,13 +12,15 @@
 }
 
 .result-dialog {
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(60, 30, 90, 0.18);
+  box-shadow: 0 8px 32px var(--shadow-heavy);
   padding: 2.5rem 2.5rem 2rem 2.5rem;
   min-width: 340px;
   text-align: center;
   animation: pop-in 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--border-secondary);
+  color: var(--text-primary);
 }
 
 @keyframes pop-in {
@@ -33,7 +35,7 @@
 }
 
 .result-dialog h2 {
-  color: #7c3aed;
+  color: var(--accent-primary);
   font-size: 2rem;
   margin-bottom: 1rem;
 }
@@ -41,6 +43,7 @@
 .result-dialog p {
   font-size: 1.2rem;
   margin-bottom: 1.5rem;
+  color: var(--text-primary);
 }
 
 .result-dialog-actions {
@@ -55,14 +58,15 @@
   border: none;
   font-size: 1.1rem;
   font-weight: 600;
-  background: linear-gradient(90deg, #7c3aed 0%, #f9e6f7 100%);
-  color: #fff;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.09);
-  transition: background 0.2s, color 0.2s;
+  box-shadow: 0 2px 8px var(--shadow-light);
+  transition: all 0.3s ease;
 }
 
 .result-dialog-actions button:hover {
-  background: linear-gradient(90deg, #f9e6f7 0%, #7c3aed 100%);
-  color: #7c3aed;
+  background: var(--accent-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-medium);
 }

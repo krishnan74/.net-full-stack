@@ -6,6 +6,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../dialogs/confirm-dialog/confirm-dialog.component';
 import { BreadcrumbsComponent } from '../../../shared/components/breadcrumbs/breadcrumbs.component';
 import { UpdateTeacherDialogComponent } from '../dialogs/update-teacher-dialog/update-teacher-dialog.component';
+import { ToastService } from '../../../core/services/toast.service';
+
 @Component({
   selector: 'app-teachers-list',
   templateUrl: './teachers-list.component.html',
@@ -17,7 +19,8 @@ export class TeachersListComponent implements OnInit {
 
   constructor(
     private teacherService: TeacherService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -25,9 +28,15 @@ export class TeachersListComponent implements OnInit {
   }
 
   loadTeachers(): void {
-    this.teacherService.getAllTeachers().subscribe((data) => {
-      this.teachers = data.data;
-      console.log('Teachers loaded:', this.teachers);
+    this.teacherService.getAllTeachers().subscribe({
+      next: (data) => {
+        this.teachers = data.data;
+        console.log('Teachers loaded:', this.teachers);
+      },
+      error: (error) => {
+        console.error('Error loading teachers:', error);
+        this.toastService.showError('Loading Teachers', error);
+      },
     });
   }
 
@@ -37,8 +46,18 @@ export class TeachersListComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.teacherService.updateTeacher(result).subscribe(() => {
-          this.loadTeachers();
+        this.teacherService.updateTeacher(result).subscribe({
+          next: () => {
+            this.loadTeachers();
+            this.toastService.showSuccess(
+              'Teacher Updated',
+              `Teacher ${result.firstName} ${result.lastName} updated successfully`
+            );
+          },
+          error: (error) => {
+            console.error('Error updating teacher:', error);
+            this.toastService.showError('Update Teacher', error);
+          },
         });
       }
     });
@@ -50,8 +69,18 @@ export class TeachersListComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.teacherService.deleteTeacher(teacherId).subscribe(() => {
-          this.loadTeachers();
+        this.teacherService.deleteTeacher(teacherId).subscribe({
+          next: () => {
+            this.loadTeachers();
+            this.toastService.showSuccess(
+              'Teacher Deleted',
+              'Teacher deleted successfully'
+            );
+          },
+          error: (error) => {
+            console.error('Error deleting teacher:', error);
+            this.toastService.showError('Delete Teacher', error);
+          },
         });
       }
     });

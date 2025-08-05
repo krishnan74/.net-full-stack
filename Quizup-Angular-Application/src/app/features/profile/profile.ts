@@ -15,6 +15,7 @@ import { selectUser } from '../../store/auth/state/auth.selectors';
 import { Observable, of, switchMap } from 'rxjs';
 import { SubjectModel } from '../subject/models/subject.model';
 import { ClassModel } from '../class/models/class.model';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-profile',
@@ -31,7 +32,8 @@ export class ProfileComponent {
   constructor(
     private profileService: ProfileService,
     private store: Store,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private toastService: ToastService
   ) {
     this.passwordForm = this.fb.group({
       currentPassword: ['', Validators.required],
@@ -39,34 +41,80 @@ export class ProfileComponent {
       confirmNewPassword: ['', Validators.required],
     });
 
-    this.studentSubjects$.subscribe((subjects) => {
-      console.log('Fetched subjects:', subjects);
+    this.studentSubjects$.subscribe({
+      next: (subjects) => {
+        console.log('Fetched subjects:', subjects);
+      },
+      error: (error) => {
+        console.error('Error loading student subjects:', error);
+        this.toastService.showError('Loading Subjects', error);
+      },
     });
 
-    this.teacherClasses$.subscribe((classes) => {
-      console.log('Fetched classes:', classes);
+    this.teacherClasses$.subscribe({
+      next: (classes) => {
+        console.log('Fetched classes:', classes);
+      },
+      error: (error) => {
+        console.error('Error loading teacher classes:', error);
+        this.toastService.showError('Loading Classes', error);
+      },
     });
 
-    this.teacherSubjects$.subscribe((subjects) => {
-      console.log('Fetched teacher subjects:', subjects);
+    this.teacherSubjects$.subscribe({
+      next: (subjects) => {
+        console.log('Fetched teacher subjects:', subjects);
+      },
+      error: (error) => {
+        console.error('Error loading teacher subjects:', error);
+        this.toastService.showError('Loading Subjects', error);
+      },
     });
   }
 
   changePassword() {
     if (this.passwordForm.valid) {
+      const { currentPassword, newPassword, confirmNewPassword } =
+        this.passwordForm.value;
+
+      if (newPassword !== confirmNewPassword) {
+        this.toastService.showValidationError(
+          'Password',
+          'New password and confirm password do not match'
+        );
+        return;
+      }
+
+      if (newPassword.length < 6) {
+        this.toastService.showValidationError(
+          'Password',
+          'New password must be at least 6 characters long'
+        );
+        return;
+      }
+
       this.profileService
-        .changePassword(
-          this.passwordForm.value.currentPassword,
-          this.passwordForm.value.newPassword
-        )
+        .changePassword(currentPassword, newPassword)
         .subscribe({
           next: () => {
             console.log('Password changed successfully');
+            this.toastService.showSuccess(
+              'Password Changed',
+              'Password updated successfully'
+            );
+            this.passwordForm.reset();
           },
           error: (err) => {
             console.error('Error changing password:', err);
+            this.toastService.showError('Password Change', err);
           },
         });
+    } else {
+      this.toastService.showValidationError(
+        'Password Form',
+        'Please fill in all required fields correctly'
+      );
+      this.passwordForm.markAllAsTouched();
     }
   }
 

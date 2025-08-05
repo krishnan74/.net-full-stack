@@ -5,7 +5,11 @@ import {
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { API_BASE_URL } from './core/tokens/api-url.token';
-import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
+import {
+  provideCharts,
+  ThemeService,
+  withDefaultRegisterables,
+} from 'ng2-charts';
 import { routes } from './app.routes';
 import {
   HTTP_INTERCEPTORS,
@@ -28,12 +32,13 @@ import { DashboardService } from './features/dashboard/services/dashboard.servic
 import { SignalRService } from './features/notification/services/signalr.service';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
+import { MessageService } from 'primeng/api';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideAnimationsAsync(),
-
+    providePrimeNG(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(withInterceptorsFromDi()),
@@ -60,5 +65,6 @@ export const appConfig: ApplicationConfig = {
     ClassService,
     DashboardService,
     SignalRService,
+    MessageService,
   ],
 };

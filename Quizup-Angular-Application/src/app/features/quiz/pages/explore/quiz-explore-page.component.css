@@ -2,6 +2,7 @@ h2 {
   font-size: 1.5rem;
   font-weight: 700;
   text-align: center;
+  color: var(--text-primary);
 }
 
 .header {
@@ -13,29 +14,38 @@ h2 {
   margin-bottom: 1rem;
   gap: 1rem;
 }
-#add-button {
-  background-color: #2d2431;
-  color: white;
-}
 
+#add-button {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+}
 
 button {
   padding: 0.4rem 0.9rem;
-  border: 1px solid #c6c4ca;
-  color: #2c3229;
+  border: 1px solid var(--btn-secondary-border);
+  color: var(--btn-secondary-text);
+  background-color: var(--btn-secondary-bg);
   border-radius: 4px;
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: #333;
 }
 
 button:first-child {
   margin-right: 0.5rem;
 }
 
+button:hover {
+  background-color: var(--accent-primary);
+  color: var(--btn-primary-text);
+}
+
 .btn-primary {
-  background-color: #4a90e2;
-  color: white;
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-secondary);
 }

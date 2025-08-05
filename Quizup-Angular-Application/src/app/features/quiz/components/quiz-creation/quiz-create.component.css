@@ -1,12 +1,13 @@
 .quiz-create-container {
   max-width: 1200px;
   margin: 2rem auto;
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(60, 30, 90, 0.08);
+  box-shadow: 0 4px 24px var(--shadow-light);
   padding: 2.5rem 2rem;
   display: flex;
   gap: 2rem;
+  border: 1px solid var(--border-secondary);
 }
 
 form {
@@ -14,7 +15,6 @@ form {
   flex-direction: column;
   gap: 1.5rem;
 }
-
 
 .form-group {
   display: flex;
@@ -26,10 +26,20 @@ input,
 textarea,
 select {
   padding: 0.7rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-primary);
   border-radius: 6px;
   font-size: 1rem;
   width: 100%;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(45, 36, 49, 0.1);
 }
 
 .options-list input {
@@ -44,9 +54,10 @@ select {
 .questions-list,
 .selected-questions {
   flex: 1;
-  background: #f8f9fc;
+  background: var(--bg-tertiary);
   border-radius: 8px;
   padding: 1rem;
+  border: 1px solid var(--border-secondary);
 }
 
 .questions-list ul,
@@ -57,31 +68,33 @@ select {
 
 .questions-list li,
 .selected-questions li {
-  background: #fff;
+  background: var(--bg-card);
   margin-bottom: 0.7rem;
   padding: 0.7rem 1rem;
   border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.06);
+  box-shadow: 0 2px 8px var(--shadow-light);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  color: var(--text-primary);
 }
 
 .questions-list button,
 .selected-questions button {
-  background: #7c3aed;
-  color: #fff;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
   border: none;
   border-radius: 4px;
   padding: 0.3rem 0.8rem;
   cursor: pointer;
   font-size: 0.95rem;
   margin-left: 1rem;
+  transition: all 0.3s ease;
 }
 
 .questions-list button:hover,
 .selected-questions button:hover {
-  background: #5b21b6;
+  background: var(--accent-secondary);
 }
 
 .options-list {
@@ -94,16 +107,22 @@ button[type="submit"] {
   padding: 0.9rem 2.2rem;
   font-size: 1.1rem;
   border-radius: 8px;
-   background: #5b21b6;
-  color: #fff;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
   border: none;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.09);
-  transition: background 0.2s, color 0.2s;
+  box-shadow: 0 2px 8px var(--shadow-light);
+  transition: all 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background: var(--accent-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-medium);
 }
 
 .correct-answer {
-  background-color: #d1fae5;
-  border-left: 4px solid #059669;
+  background-color: var(--status-active-bg);
+  border-left: 4px solid var(--accent-success);
 }

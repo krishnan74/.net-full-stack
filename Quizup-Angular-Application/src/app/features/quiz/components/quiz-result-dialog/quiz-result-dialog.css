@@ -4,7 +4,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(60, 30, 90, 0.25);
+  background: rgba(0, 0, 0, 0.5);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -12,13 +12,15 @@
 }
 
 .result-dialog {
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(60, 30, 90, 0.18);
+  box-shadow: 0 8px 32px var(--shadow-heavy);
   padding: 2.5rem 2.5rem 2rem 2.5rem;
   min-width: 340px;
   text-align: center;
   animation: pop-in 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--border-secondary);
+  color: var(--text-primary);
 }
 
 @keyframes pop-in {
@@ -41,13 +43,13 @@ button {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: #fff;
+  color: var(--btn-primary-text);
   margin-top: 1rem;
   font-family: "Poppins";
 }
 
 .result-dialog h2 {
-  color: #7c3aed;
+  color: var(--accent-primary);
   font-size: 2rem;
   margin-bottom: 1rem;
 }
@@ -55,6 +57,7 @@ button {
 .result-dialog p {
   font-size: 1.2rem;
   margin-bottom: 1.5rem;
+  color: var(--text-primary);
 }
 
 .result-dialog-actions {
@@ -64,10 +67,11 @@ button {
 }
 
 .btn-review {
-  background: #ff647c;
+  background: var(--accent-warning);
 }
+
 .btn-go-back {
-  background: #3b82f6;
+  background: var(--accent-info);
 }
 
 .btn-review:hover,

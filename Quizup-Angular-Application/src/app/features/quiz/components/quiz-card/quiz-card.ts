@@ -6,6 +6,7 @@ import { StudentService } from '../../../student/services/student.service';
 import { selectUser } from '../../../../store/auth/state/auth.selectors';
 import { User } from '../../../../store/auth/auth.model';
 import { Store } from '@ngrx/store';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-quiz-card',
@@ -18,7 +19,11 @@ export class QuizCard {
   @Input() showAttempt: boolean = true;
   @Input() userId: number | null = null;
 
-  constructor(private router: Router, private studentService: StudentService) {}
+  constructor(
+    private router: Router,
+    private studentService: StudentService,
+    private toastService: ToastService
+  ) {}
 
   viewResults() {
     if (this.showAttempt) {
@@ -33,6 +38,10 @@ export class QuizCard {
       this.studentService.attemptQuiz(this.userId!, this.quiz?.id!).subscribe({
         next: (response) => {
           console.log('Quiz attempt started:', response);
+          this.toastService.showSuccess(
+            'Quiz Started',
+            `Starting quiz: ${this.quiz?.title}`
+          );
           this.router.navigate([
             '/quiz/',
             this.quiz?.id,
@@ -42,10 +51,12 @@ export class QuizCard {
         },
         error: (error) => {
           console.error('Error starting quiz attempt:', error);
+          this.toastService.showError('Start Quiz', error);
         },
       });
     } else {
       console.error('Quiz data is not available');
+      this.toastService.showError('Quiz Error', 'Quiz data is not available');
     }
   }
 }

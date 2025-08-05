@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { UpdateClassDialogComponent } from '../dialogs/update-class-dialog/update-class-dialog.component';
 import { ConfirmDialogComponent } from '../dialogs/confirm-dialog/confirm-dialog.component';
 import { BreadcrumbsComponent } from '../../../shared/components/breadcrumbs/breadcrumbs.component';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-classes-list',
@@ -19,16 +20,26 @@ import { BreadcrumbsComponent } from '../../../shared/components/breadcrumbs/bre
 export class ClassesListComponent implements OnInit {
   classes: ClassModel[] = [];
 
-  constructor(private classService: ClassService, private dialog: MatDialog) {}
+  constructor(
+    private classService: ClassService,
+    private dialog: MatDialog,
+    private toastService: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.loadClasses();
   }
 
   loadClasses(): void {
-    this.classService.getAllClasses().subscribe((data) => {
-      this.classes = data.data;
-      console.log('Classes loaded:', this.classes);
+    this.classService.getAllClasses().subscribe({
+      next: (data) => {
+        this.classes = data.data;
+        console.log('Classes loaded:', this.classes);
+      },
+      error: (error) => {
+        console.error('Error loading classes:', error);
+        this.toastService.showError('Loading Classes', error);
+      },
     });
   }
 
@@ -38,6 +49,11 @@ export class ClassesListComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         console.log('Class added/updated:', result);
+        this.loadClasses();
+        this.toastService.showSuccess(
+          'Class Added',
+          `Class "${result.name}" added successfully`
+        );
       }
     });
   }
@@ -50,6 +66,10 @@ export class ClassesListComponent implements OnInit {
       if (result) {
         console.log('Class updated:', result);
         this.loadClasses();
+        this.toastService.showSuccess(
+          'Class Updated',
+          `Class "${result.name}" updated successfully`
+        );
       }
     });
   }
@@ -61,8 +81,18 @@ export class ClassesListComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         console.log('Deleting class with ID:', classId);
-        this.classService.deleteClass(classId).subscribe(() => {
-          this.loadClasses();
+        this.classService.deleteClass(classId).subscribe({
+          next: () => {
+            this.loadClasses();
+            this.toastService.showSuccess(
+              'Class Deleted',
+              'Class deleted successfully'
+            );
+          },
+          error: (error) => {
+            console.error('Error deleting class:', error);
+            this.toastService.showError('Delete Class', error);
+          },
         });
       }
     });

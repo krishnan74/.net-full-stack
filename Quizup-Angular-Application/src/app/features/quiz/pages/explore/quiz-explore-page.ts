@@ -6,6 +6,7 @@ import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { selectUser } from '../../../../store/auth/state/auth.selectors';
 import { User } from '../../../../store/auth/auth.model';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-quiz-explore-page',
@@ -17,9 +18,21 @@ export class QuizExplorePage {
   user$ = this.store.select(selectUser);
   user: User | null = null;
 
-  constructor(private store: Store) {
-    this.user$.subscribe((user) => {
-      this.user = user;
+  constructor(private store: Store, private toastService: ToastService) {
+    this.user$.subscribe({
+      next: (user) => {
+        this.user = user;
+        if (user) {
+          this.toastService.showInfo(
+            'Welcome',
+            `Welcome to Quiz Explorer, ${user.username}!`
+          );
+        }
+      },
+      error: (error) => {
+        console.error('Error loading user:', error);
+        this.toastService.showError('Loading User', error);
+      },
     });
   }
 }

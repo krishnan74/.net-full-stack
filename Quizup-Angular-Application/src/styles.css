@@ -3,18 +3,158 @@
 @import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;800;900&display=swap);
 @import url(https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;800;900&display=swap);
 
-body {
-  /* font-family: 'Inter', sans-serif; */
-  font-family: "Poppins", sans-serif;
+/* CSS Custom Properties for Theming */
+:root {
+  /* Light Theme Colors */
+  --bg-primary: #eae9ee;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f8f9fc;
+  --bg-card: #ffffff;
+  --bg-overlay: rgba(255, 255, 255, 0.801);
+
+  --text-primary: #2e2932;
+  --text-secondary: #333333;
+  --text-tertiary: #6b7280;
+  --text-muted: #111827;
+
+  --border-primary: #c6c4ca;
+  --border-secondary: #e5e7eb;
+  --border-tertiary: #dee2e6;
+
+  --accent-primary: #2d2431;
+  --accent-secondary: #2e2932;
+  --accent-success: #0e7c3a;
+  --accent-error: #b30000;
+  --accent-warning: #ff647c;
+  --accent-info: #3b82f6;
+
+  /* Gradient Colors */
+  --gradient-primary: linear-gradient(
+    135deg,
+    #fc99f580 0%,
+    #fca8a762 60%,
+    #f2be907a 100%
+  );
+  --gradient-secondary: linear-gradient(
+    135deg,
+    #c0bdc02f 0%,
+    #fca8a738 60%,
+    #f2be9034 100%
+  );
+  --gradient-radial: radial-gradient(
+    50% 50% at 50% 50%,
+    #fc99f5 0%,
+    #ff98e6 15%,
+    #ff99d8 30%,
+    #ff9acc 45%,
+    #ff9dc0 60%,
+    #fca0b7 75%,
+    #fca8a7 90%,
+    #f2be90 100%
+  );
+
+  /* Shadow Colors */
+  --shadow-light: rgba(0, 0, 0, 0.06);
+  --shadow-medium: rgba(0, 0, 0, 0.15);
+  --shadow-heavy: rgba(0, 0, 0, 0.1);
+
+  /* Button Colors */
+  --btn-primary-bg: #2e2932;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: transparent;
+  --btn-secondary-text: #2e2932;
+  --btn-secondary-border: #c6c4ca;
+
+  /* Status Colors */
+  --status-active-bg: #eaf7ed;
+  --status-active-text: #0e7c3a;
+  --status-inactive-bg: #fdecea;
+  --status-inactive-text: #b30000;
+}
+
+/* Dark Theme Colors */
+.dark {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #3a3a3a;
+  --bg-card: #2d2d2d;
+  --bg-overlay: rgba(45, 45, 45, 0.801);
+
+  --text-primary: #ffffff;
+  --text-secondary: #e0e0e0;
+  --text-tertiary: #a0a0a0;
+  --text-muted: #cccccc;
+
+  --border-primary: #4a4a4a;
+  --border-secondary: #3a3a3a;
+  --border-tertiary: #4a4a4a;
+
+  --accent-primary: #ffffff;
+  --accent-secondary: #e0e0e0;
+  --accent-success: #4ade80;
+  --accent-error: #f87171;
+  --accent-warning: #fbbf24;
+  --accent-info: #60a5fa;
+
+  /* Gradient Colors for Dark Mode */
+  --gradient-primary: linear-gradient(
+    135deg,
+    rgba(252, 153, 245, 0.2) 0%,
+    rgba(252, 168, 167, 0.15) 60%,
+    rgba(242, 190, 144, 0.2) 100%
+  );
+  --gradient-secondary: linear-gradient(
+    135deg,
+    rgba(192, 189, 192, 0.1) 0%,
+    rgba(252, 168, 167, 0.1) 60%,
+    rgba(242, 190, 144, 0.1) 100%
+  );
+  --gradient-radial: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(252, 153, 245, 0.3) 0%,
+    rgba(255, 152, 230, 0.2) 15%,
+    rgba(255, 153, 216, 0.2) 30%,
+    rgba(255, 154, 204, 0.2) 45%,
+    rgba(255, 157, 192, 0.2) 60%,
+    rgba(252, 160, 183, 0.2) 75%,
+    rgba(252, 168, 167, 0.2) 90%,
+    rgba(242, 190, 144, 0.2) 100%
+  );
+
+  /* Shadow Colors for Dark Mode */
+  --shadow-light: rgba(0, 0, 0, 0.2);
+  --shadow-medium: rgba(0, 0, 0, 0.3);
+  --shadow-heavy: rgba(0, 0, 0, 0.4);
+
+  /* Button Colors for Dark Mode */
+  --btn-primary-bg: #ffffff;
+  --btn-primary-text: #1a1a1a;
+  --btn-secondary-bg: transparent;
+  --btn-secondary-text: #ffffff;
+  --btn-secondary-border: #4a4a4a;
+
+  /* Status Colors for Dark Mode */
+  --status-active-bg: rgba(74, 222, 128, 0.2);
+  --status-active-text: #4ade80;
+  --status-inactive-bg: rgba(248, 113, 113, 0.2);
+  --status-inactive-text: #f87171;
 }
 
 body {
+  font-family: "Poppins", sans-serif;
   padding: 30px;
-  background-color: #eae9ee;
-  color: #2e2932;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 * {
   box-sizing: border-box;
+}
+
+/* Theme Transition */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease, box-shadow 0.3s ease;
 }
