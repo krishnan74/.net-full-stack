@@ -58,10 +58,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       // Only show toast if user was null before and is now logged in
       if (user && !this.previousUser) {
         console.log('User logged in successfully:', user);
-        this.toastService.showSuccess(
-          'Login',
-          `Welcome back, ${user.username}!`
-        );
+        
 
         // Handle navigation after successful login
         this.handlePostLoginNavigation(user);
@@ -113,6 +110,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.userForm.valid) {
       console.log('Form is valid, dispatching login action');
       this.store.dispatch(login({ payload: this.userForm.value }));
+      this.toastService.showSuccess(
+          'Login',
+          `Welcome back, ${this.userForm.get('username')?.value}!`
+        );
     } else {
       console.log('Form is invalid, showing validation error');
       this.userForm.markAllAsTouched();

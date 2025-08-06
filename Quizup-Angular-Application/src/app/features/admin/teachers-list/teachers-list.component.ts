@@ -8,6 +8,7 @@ import { ConfirmDialogComponent } from '../dialogs/confirm-dialog/confirm-dialog
 import { BreadcrumbsComponent } from '../../../shared/components/breadcrumbs/breadcrumbs.component';
 import { UpdateTeacherDialogComponent } from '../dialogs/update-teacher-dialog/update-teacher-dialog.component';
 import { ToastService } from '../../../core/services/toast.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-teachers-list',
@@ -23,7 +24,8 @@ export class TeachersListComponent implements OnInit {
   constructor(
     private teacherService: TeacherService,
     private dialog: MatDialog,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -66,11 +68,7 @@ export class TeachersListComponent implements OnInit {
   }
 
   addTeacher(): void {
-    // This would typically open a dialog to add a new teacher
-    this.toastService.showInfo(
-      'Add Teacher',
-      'Add teacher functionality would be implemented here'
-    );
+    this.router.navigate(['/auth/register']);
   }
 
   updateTeacher(teacher: TeacherModel): void {

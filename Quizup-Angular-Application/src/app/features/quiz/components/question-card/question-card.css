@@ -6,8 +6,9 @@
 }
 
 .correct-answer {
-  background-color: #d1fae5;
-  border-left: 4px solid #059669 !important;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border-left: 7px solid #059669 !important;
 }
 
 .options-list li {
@@ -18,6 +19,6 @@
 
 .question-number {
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
   margin-right: 0.3rem;
 }

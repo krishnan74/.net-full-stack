@@ -71,11 +71,6 @@ export class SubjectsListComponent implements OnInit {
             'Subject Updated',
             `Subject "${result.name}" updated successfully`
           );
-        } else {
-          this.toastService.showSuccess(
-            'Subject Added',
-            `Subject "${result.name}" added successfully`
-          );
         }
       }
     });

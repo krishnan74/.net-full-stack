@@ -135,18 +135,13 @@ export class QuizCreateComponent implements OnInit {
   );
 
   addQuestion(question: QuestionModel) {
-    if (!this.selectedQuestions.find((q) => q.id === question.id)) {
+ 
       this.selectedQuestions.push(question);
       this.toastService.showInfo(
         'Question Added',
         'Question added to the quiz'
       );
-    } else {
-      this.toastService.showWarning(
-        'Question Already Added',
-        'This question is already in the quiz'
-      );
-    }
+    
   }
 
   removeQuestion(index: number) {

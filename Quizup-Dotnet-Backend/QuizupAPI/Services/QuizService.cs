@@ -66,22 +66,22 @@ namespace QuizupAPI.Services
 
                 await MapAndAddQuestionsAsync(addedQuiz.Id, quizAddRequestDTO);
 
-                var quizNotificationDTO = new QuizNotificationDTO
-                {
-                    Id = addedQuiz.Id,
-                    Title = addedQuiz.Title,
-                    Description = addedQuiz.Description,
-                    CreatedAt = DateTime.UtcNow,
-                    DueDate = addedQuiz.DueDate,
-                    TeacherName = addedQuiz.Teacher.FirstName + " " + addedQuiz.Teacher.LastName,
-                    SubjectName = addedQuiz.Subject?.Name ?? "No Subject",
-                    SubjectCode = addedQuiz.Subject?.Code ?? "No Code",
-                    ClassName = addedQuiz.Classe?.Name ?? "No Class",
-                    Type = "start"
-                };
+                // var quizNotificationDTO = new QuizNotificationDTO
+                // {
+                //     Id = addedQuiz.Id,
+                //     Title = addedQuiz.Title,
+                //     Description = addedQuiz.Description,
+                //     CreatedAt = DateTime.UtcNow,
+                //     DueDate = addedQuiz.DueDate,
+                //     TeacherName = addedQuiz.Teacher.FirstName + " " + addedQuiz.Teacher.LastName,
+                //     SubjectName = addedQuiz.Subject?.Name ?? "No Subject",
+                //     SubjectCode = addedQuiz.Subject?.Code ?? "No Code",
+                //     ClassName = addedQuiz.Classe?.Name ?? "No Class",
+                //     Type = "start"
+                // };
 
-                string classGroupName = $"class_{addedQuiz.ClassId}";
-                await _hubContext.Clients.Group(classGroupName).SendAsync("NotifyStartQuiz", quizNotificationDTO);
+                // string classGroupName = $"class_{addedQuiz.ClassId}";
+                // await _hubContext.Clients.Group(classGroupName).SendAsync("NotifyStartQuiz", quizNotificationDTO);
 
                 return addedQuiz;
             }
