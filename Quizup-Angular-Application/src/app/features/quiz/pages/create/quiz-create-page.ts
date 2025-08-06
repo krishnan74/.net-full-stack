@@ -7,6 +7,11 @@ import { QuizCreateComponent } from '../../components/quiz-creation/quiz-create.
   selector: 'app-quiz-create-page',
   templateUrl: './quiz-create-page.component.html',
   styleUrls: ['./quiz-create-page.component.css'],
-  imports: [CommonModule, QuizCreateComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    QuizCreateComponent,
+  ],
 })
 export class QuizCreatePage {}

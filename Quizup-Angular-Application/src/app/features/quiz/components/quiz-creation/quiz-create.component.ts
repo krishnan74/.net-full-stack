@@ -62,6 +62,11 @@ export class QuizCreateComponent implements OnInit {
     });
   }
 
+  // Method to get option letter (A, B, C, D)
+  getOptionLetter(index: number): string {
+    return String.fromCharCode(65 + index);
+  }
+
   // Validator to ensure due date is in the future (date and time)
   futureDateTimeValidator(control: AbstractControl) {
     if (!control.value) return null;

@@ -1,148 +1,429 @@
 <div class="quiz-create-container">
-  <div>
-    <form [formGroup]="quizForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label>Title</label>
-        <input formControlName="title" type="text" />
+  <div class="form-section">
+    <div class="form-header">
+      <h3 class="section-title">Quiz Details</h3>
+      <p class="section-subtitle">
+        Configure your quiz settings and information
+      </p>
+    </div>
+
+    <form [formGroup]="quizForm" (ngSubmit)="onSubmit()" class="quiz-form">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">
+            <span class="label-text">Title</span>
+            <span class="required">*</span>
+          </label>
+          <div class="input-wrapper">
+            <svg
+              class="input-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20Z"
+                fill="currentColor"
+              />
+            </svg>
+            <input
+              formControlName="title"
+              type="text"
+              class="form-input"
+              placeholder="Enter quiz title"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <span class="label-text">Description</span>
+            <span class="required">*</span>
+          </label>
+          <div class="input-wrapper">
+            <svg
+              class="input-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20Z"
+                fill="currentColor"
+              />
+            </svg>
+            <textarea
+              formControlName="description"
+              class="form-input"
+              placeholder="Enter quiz description"
+              rows="3"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <span class="label-text">Due Date</span>
+            <span class="required">*</span>
+          </label>
+          <div class="input-wrapper">
+            <svg
+              class="input-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V8H19V19ZM7 10H12V15H7V10Z"
+                fill="currentColor"
+              />
+            </svg>
+            <input
+              formControlName="dueDate"
+              type="datetime-local"
+              class="form-input"
+              [min]="minDueDate"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <span class="label-text">Subject</span>
+            <span class="required">*</span>
+          </label>
+          <div class="input-wrapper">
+            <svg
+              class="input-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"
+                fill="currentColor"
+              />
+            </svg>
+            <select formControlName="subjectId" class="form-input form-select">
+              <option value="">Select a subject</option>
+              <ng-container *ngIf="teacherSubjects$ | async as teacherSubjects">
+                <option *ngFor="let s of teacherSubjects" [value]="s.id">
+                  {{ s.name }}
+                </option>
+              </ng-container>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <span class="label-text">Class</span>
+            <span class="required">*</span>
+          </label>
+          <div class="input-wrapper">
+            <svg
+              class="input-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M18 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V4C20 2.9 19.1 2 18 2ZM18 20H6V4H18V20Z"
+                fill="currentColor"
+              />
+            </svg>
+            <select formControlName="classId" class="form-input form-select">
+              <option value="">Select a class</option>
+              <ng-container *ngIf="teacherClasses$ | async as teacherClasses">
+                <option *ngFor="let c of teacherClasses" [value]="c.id">
+                  {{ c.name }}
+                </option>
+              </ng-container>
+            </select>
+          </div>
+        </div>
       </div>
-      <div class="form-group">
-        <label>Description</label>
-        <textarea formControlName="description"></textarea>
-      </div>
-      <div class="form-group">
-        <label>Due Date</label>
-        <input
-          formControlName="dueDate"
-          type="datetime-local"
-          [min]="minDueDate"
-        />
-      </div>
-      <div class="form-group">
-        <label>Subject</label>
-        <ng-container *ngIf="teacherSubjects$ | async as teacherSubjects">
-          <select formControlName="subjectId">
-            <option *ngFor="let s of teacherSubjects" [value]="s.id">
-              {{ s.name }}
-            </option>
-          </select>
-        </ng-container>
-      </div>
-      <div class="form-group">
-        <label>Class</label>
-        <ng-container *ngIf="teacherClasses$ | async as teacherClasses">
-          <select formControlName="classId">
-            <option *ngFor="let c of teacherClasses" [value]="c.id">
-              {{ c.name }}
-            </option>
-          </select>
-        </ng-container>
-      </div>
-      <!-- Selected Questions -->
+
+      <!-- Selected Questions Section -->
       <div class="questions-section">
+        <div class="section-header">
+          <h3 class="section-title">Selected Questions</h3>
+          <span class="question-count"
+            >{{ selectedQuestions.length }} question{{
+              selectedQuestions.length !== 1 ? "s" : ""
+            }}</span
+          >
+        </div>
+
         <div
-          class="selected-questions"
+          class="selected-questions-container"
           (dragover)="$event.preventDefault()"
           (drop)="onDrop($event)"
         >
-          <h3>Selected Questions</h3>
-          <ul>
-            <li *ngFor="let q of selectedQuestions; let i = index">
-              {{ q.text }}
-              <button type="button" (click)="removeQuestion(i)">Remove</button>
-            </li>
-          </ul>
+          <div *ngIf="selectedQuestions.length === 0" class="empty-questions">
+            <div class="empty-icon">
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9 11H7V13H9V11ZM13 11H11V13H13V11ZM17 11H15V13H17V11ZM19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+            <h4>No questions selected</h4>
+            <p>
+              Drag questions from the right panel or search for existing
+              questions
+            </p>
+          </div>
+
+          <div
+            *ngFor="let q of selectedQuestions; let i = index"
+            class="selected-question-item"
+          >
+            <div class="question-content">
+              <span class="question-number">{{ i + 1 }}</span>
+              <span class="question-text">{{ q.text }}</span>
+            </div>
+            <button
+              type="button"
+              class="remove-btn"
+              (click)="removeQuestion(i)"
+              title="Remove Question"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM8 9H16V19H8V9ZM15.5 4L14.5 3H9.5L8.5 4H5V6H19V4H15.5Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
-      <button type="submit" [disabled]="selectedQuestions.length === 0">
-        Create Quiz
-      </button>
+
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="selectedQuestions.length === 0 || quizForm.invalid"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"
+              fill="currentColor"
+            />
+          </svg>
+          Create Quiz
+        </button>
+      </div>
     </form>
   </div>
-  <div class="questions-list">
-    <h3>Available Questions</h3>
-    <!-- Search Bar -->
-    <input
-      type="text"
-      placeholder="Search questions..."
-      [value]="questionSearch"
-      (input)="questionSearch = $any($event.target).value; searchQuestions()"
-    />
-    <!-- Empty Question Section -->
-    <div class="empty-question" *ngIf="questionSearch.trim() !== ''">
-      <h4>Create a New Question</h4>
-      <div>
-        <p>{{ questionSearch }}</p>
-        <ul class="options-list">
-          <li>
+
+  <div class="questions-section">
+    <div class="section-header">
+      <h3 class="section-title">Available Questions</h3>
+      <div class="search-container">
+        <div class="search-input-wrapper">
+          <svg
+            class="search-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3S3 5.91 3 9.5S5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5S14 7.01 14 9.5S11.99 14 9.5 14Z"
+              fill="currentColor"
+            />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search questions..."
+            class="search-input"
+            [value]="questionSearch"
+            (input)="
+              questionSearch = $any($event.target).value; searchQuestions()
+            "
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Create New Question Section -->
+    <div class="create-question-section" *ngIf="questionSearch.trim() !== ''">
+      <div class="create-question-header">
+        <h4>Create a New Question</h4>
+        <p class="question-preview">{{ questionSearch }}</p>
+      </div>
+
+      <div class="options-container">
+        <div class="options-grid">
+          <div class="option-item">
             <input
               type="radio"
-              name="correctAnswer"
+              [name]="'correctAnswer'"
               [value]="newQuestionOptions[0]"
               [(ngModel)]="newQuestionCorrectAnswer"
+              [id]="'option' + 0"
+              class="option-radio"
             />
+            <label [for]="'option' + 0" class="option-label">
+              <span class="option-letter">{{ getOptionLetter(0) }}</span>
+            </label>
+
             <input
               type="text"
-              name="option{{ 0 }}"
               [(ngModel)]="newQuestionOptions[0]"
-              placeholder="Enter option"
+              [placeholder]="'Option ' + getOptionLetter(0)"
+              class="option-input"
             />
+          </div>
+
+          <div class="option-item">
             <input
               type="radio"
-              name="correctAnswer"
+              [name]="'correctAnswer'"
               [value]="newQuestionOptions[1]"
               [(ngModel)]="newQuestionCorrectAnswer"
+              [id]="'option' + 1"
+              class="option-radio"
             />
+            <label [for]="'option' + 1" class="option-label">
+              <span class="option-letter">{{ getOptionLetter(1) }}</span>
+            </label>
+
             <input
               type="text"
-              name="option{{ 1 }}"
               [(ngModel)]="newQuestionOptions[1]"
-              placeholder="Enter option"
+              [placeholder]="'Option ' + getOptionLetter(1)"
+              class="option-input"
             />
+          </div>
+
+          <div class="option-item">
             <input
               type="radio"
-              name="correctAnswer"
+              [name]="'correctAnswer'"
               [value]="newQuestionOptions[2]"
               [(ngModel)]="newQuestionCorrectAnswer"
+              [id]="'option' + 2"
+              class="option-radio"
             />
+            <label [for]="'option' + 2" class="option-label">
+              <span class="option-letter">{{ getOptionLetter(2) }}</span>
+            </label>
+
             <input
               type="text"
-              name="option{{ 2 }}"
               [(ngModel)]="newQuestionOptions[2]"
-              placeholder="Enter option"
+              [placeholder]="'Option ' + getOptionLetter(2)"
+              class="option-input"
             />
+          </div>
+
+          <div class="option-item">
             <input
               type="radio"
-              name="correctAnswer"
+              [name]="'correctAnswer'"
               [value]="newQuestionOptions[3]"
               [(ngModel)]="newQuestionCorrectAnswer"
+              [id]="'option' + 3"
+              class="option-radio"
             />
+            <label [for]="'option' + 3" class="option-label">
+              <span class="option-letter">{{ getOptionLetter(3) }}</span>
+            </label>
+
             <input
               type="text"
-              name="option{{ 3 }}"
               [(ngModel)]="newQuestionOptions[3]"
-              placeholder="Enter option"
+              [placeholder]="'Option ' + getOptionLetter(3)"
+              class="option-input"
             />
-          </li>
-        </ul>
+          </div>
+        </div>
       </div>
+
       <button
         type="button"
+        class="create-question-btn"
         (click)="createNewQuestion()"
         [disabled]="isCreateButtonDisabled()"
       >
-        Create
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+            fill="currentColor"
+          />
+        </svg>
+        Create Question
       </button>
     </div>
+
     <!-- Existing Questions -->
-    <ul>
-      <li
+    <div class="questions-list">
+      <div
         *ngFor="let q of filteredQuestions"
+        class="question-item"
         draggable="true"
         (dragstart)="onDragStart($event, q)"
       >
         <app-question-card [question]="q"></app-question-card>
-        <button type="button" (click)="addQuestion(q)">Add</button>
-      </li>
-    </ul>
+        <button
+          type="button"
+          class="add-question-btn"
+          (click)="addQuestion(q)"
+          title="Add Question"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
