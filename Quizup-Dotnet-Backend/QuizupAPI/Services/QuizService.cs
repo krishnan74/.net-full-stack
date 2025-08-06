@@ -2,6 +2,7 @@ using QuizupAPI.Interfaces;
 using QuizupAPI.Models;
 using QuizupAPI.Repositories;
 using QuizupAPI.Models.DTOs.Quiz;
+using QuizupAPI.Models.DTOs.Notifications;
 using QuizupAPI.Models.DTOs.Question;
 using QuizupAPI.Models.SearchModels;
 using QuizupAPI.Hubs;
@@ -19,6 +20,7 @@ namespace QuizupAPI.Services
         private readonly IRepository<long, QuizQuestion> _quizQuestionRepository;
         private readonly IRepository<long, QuizSubmission> _quizSubmissionRepository;
         private readonly IRepository<long, Teacher> _teacherRepository;
+        private readonly IHubContext<QuizNotificationHub> _hubContext;
         private readonly IRepository<long, Student> _studentRepository;
         private readonly IRepository<long, Classe> _classRepository;
         public QuizMapper quizMapper;
@@ -27,6 +29,7 @@ namespace QuizupAPI.Services
         public QuizService(IRepository<long, Quiz> quizRepository,
                             IRepository<long, Question> questionRepository,
                             IRepository<long, QuizQuestion> quizQuestionRepository,
+                            IHubContext<QuizNotificationHub> hubContext,
                             IRepository<long, QuizSubmission> quizSubmissionRepository,
                             IRepository<long, Teacher> teacherRepository, 
                             IRepository<long, Student> studentRepository, 
@@ -41,6 +44,7 @@ namespace QuizupAPI.Services
             _studentRepository = studentRepository;
             _classRepository = classRepository;
             quizMapper = new QuizMapper();
+               _hubContext = hubContext;
             questionMapper = new QuestionMapper();
         }
         public async Task<Quiz> AddQuizAsync(QuizAddRequestDTO quizAddRequestDTO)
@@ -61,6 +65,23 @@ namespace QuizupAPI.Services
                     throw new Exception("Failed to add quiz");
 
                 await MapAndAddQuestionsAsync(addedQuiz.Id, quizAddRequestDTO);
+
+                var quizNotificationDTO = new QuizNotificationDTO
+                {
+                    Id = addedQuiz.Id,
+                    Title = addedQuiz.Title,
+                    Description = addedQuiz.Description,
+                    CreatedAt = DateTime.UtcNow,
+                    DueDate = addedQuiz.DueDate,
+                    TeacherName = addedQuiz.Teacher.FirstName + " " + addedQuiz.Teacher.LastName,
+                    SubjectName = addedQuiz.Subject?.Name ?? "No Subject",
+                    SubjectCode = addedQuiz.Subject?.Code ?? "No Code",
+                    ClassName = addedQuiz.Classe?.Name ?? "No Class",
+                    Type = "start"
+                };
+
+                string classGroupName = $"class_{addedQuiz.ClassId}";
+                await _hubContext.Clients.Group(classGroupName).SendAsync("NotifyStartQuiz", quizNotificationDTO);
 
                 return addedQuiz;
             }

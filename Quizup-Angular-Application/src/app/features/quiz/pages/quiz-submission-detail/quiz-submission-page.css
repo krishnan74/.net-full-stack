@@ -93,7 +93,7 @@ h2 {
 }
 
 .selected-answer {
-  border: 1px solid var(--border-primary);
+  border: 1px solid blue;
 }
 
 .is-correct {

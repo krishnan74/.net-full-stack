@@ -15,6 +15,7 @@ namespace QuizupAPI.Misc.Mappers
             quiz.ClassId = addRequestDto.ClassId;
             quiz.SubjectId = addRequestDto.SubjectId;
             quiz.Tags = addRequestDto.Tags;
+            quiz.IsActive = true;
 
             return quiz;
         }
