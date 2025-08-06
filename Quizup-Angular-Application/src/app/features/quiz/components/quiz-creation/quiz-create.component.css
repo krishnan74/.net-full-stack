@@ -601,3 +601,18 @@ textarea.form-input {
 .dark .question-item:hover {
   background: var(--bg-card);
 }
+
+/* No Questions Message */
+.no-questions {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-tertiary);
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 2px dashed var(--border-primary);
+}
+
+.no-questions p {
+  margin: 0;
+  font-size: 0.875rem;
+}

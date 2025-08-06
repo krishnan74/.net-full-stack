@@ -397,13 +397,19 @@
 
     <!-- Existing Questions -->
     <div class="questions-list">
+      <div *ngIf="filteredQuestions.length === 0" class="no-questions">
+        <p>
+          No questions available. Create a new question or select a different
+          class/subject.
+        </p>
+      </div>
       <div
-        *ngFor="let q of filteredQuestions"
+        *ngFor="let q of filteredQuestions; let i = index"
         class="question-item"
         draggable="true"
         (dragstart)="onDragStart($event, q)"
       >
-        <app-question-card [question]="q"></app-question-card>
+        <app-question-card [question]="q" [index]="i"></app-question-card>
         <button
           type="button"
           class="add-question-btn"

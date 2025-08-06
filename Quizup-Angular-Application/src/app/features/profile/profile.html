@@ -1,71 +1,291 @@
-<h2 class="profile-title">Profile</h2>
-
-<ng-container *ngIf="user$ | async as user">
-  <div class="welcome-card">
-    <h3>Welcome, {{ user.username }}!</h3>
+<div class="profile-page">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1 class="page-title">Profile</h1>
+        <p class="page-subtitle">
+          Manage your account settings and preferences
+        </p>
+      </div>
+      <div class="header-actions">
+        <div class="header-stats">
+          <div class="stat-item">
+            <div class="stat-icon">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Student Profile Summary -->
-  <ng-container *ngIf="user.role === 'Student'">
-    <ng-container *ngIf="studentSubjects$ | async as studentSubjects">
-      <div class="summary-section">
-        <h3 class="section-title">Subjects</h3>
-        <div class="summary-grid">
-          <div class="summary-card" *ngFor="let subject of studentSubjects">
-            <b>Subject:</b> {{ subject.name }}
+  <div class="content-wrapper">
+    <ng-container *ngIf="user$ | async as user">
+      <div class="profile-section">
+        <div class="profile-header">
+          <div class="profile-avatar">
+            <svg
+              width="64"
+              height="64"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+          <div class="profile-info">
+            <h2 class="profile-name">{{ user.username }}</h2>
+            <p class="profile-role">{{ user.role }}</p>
           </div>
         </div>
       </div>
-    </ng-container>
-  </ng-container>
 
-  <!-- Teacher Profile Summary -->
-  <ng-container *ngIf="user.role === 'Teacher'">
-    <ng-container *ngIf="teacherSubjects$ | async as teacherSubjects">
-      <div class="summary-section">
-        <h3 class="section-title">Subjects</h3>
-        <div class="summary-grid">
-          <div class="summary-card" *ngFor="let subject of teacherSubjects">
-            <b>Subject:</b> {{ subject.name }}
-          </div>
-        </div>
-      </div>
-    </ng-container>
-    <ng-container *ngIf="teacherClasses$ | async as teacherClasses">
-      <div class="summary-section">
-        <h3 class="section-title">Classes</h3>
-        <div class="summary-grid">
-          <div class="summary-card" *ngFor="let classe of teacherClasses">
-            <b>Class:</b> {{ classe.name }}
-          </div>
-        </div>
-      </div>
-    </ng-container>
-  </ng-container>
+      <!-- Student Profile Summary -->
+      <ng-container *ngIf="user.role === 'Student'">
+        <ng-container *ngIf="studentSubjects$ | async as studentSubjects">
+          <div class="summary-section">
+            <div class="section-header">
+              <h3 class="section-title">Enrolled Subjects</h3>
+              <p class="section-subtitle">
+                Subjects you are currently studying
+              </p>
+            </div>
 
-  <!-- Change Password Section -->
-  <div class="summary-section">
-    <h3 class="section-title">Change Password</h3>
-    <form
-      [formGroup]="passwordForm"
-      (ngSubmit)="changePassword()"
-      class="password-form"
-    >
-      <label>
-        Current Password:
-        <input type="password" formControlName="currentPassword" required />
-      </label>
-      <label>
-        New Password:
-        <input type="password" formControlName="newPassword" required />
-      </label>
-      <label>
-        Confirm New Password:
-        <input type="password" formControlName="confirmNewPassword" required />
-      </label>
-      <button type="submit" [disabled]="passwordForm.invalid">
-        Change Password
-      </button>
-    </form>
+            <div class="subjects-grid">
+              <div class="subject-card" *ngFor="let subject of studentSubjects">
+                <div class="subject-icon">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </div>
+                <div class="subject-content">
+                  <span class="subject-name">{{ subject.name }}</span>
+                  <span class="subject-code">{{ subject.code }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <!-- Teacher Profile Summary -->
+      <ng-container *ngIf="user.role === 'Teacher'">
+        <ng-container *ngIf="teacherSubjects$ | async as teacherSubjects">
+          <div class="summary-section">
+            <div class="section-header">
+              <h3 class="section-title">Teaching Subjects</h3>
+              <p class="section-subtitle">
+                Subjects you are currently teaching
+              </p>
+            </div>
+
+            <div class="subjects-grid">
+              <div class="subject-card" *ngFor="let subject of teacherSubjects">
+                <div class="subject-icon">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </div>
+                <div class="subject-content">
+                  <span class="subject-name">{{ subject.name }}</span>
+                  <span class="subject-code">{{ subject.code }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="teacherClasses$ | async as teacherClasses">
+          <div class="summary-section">
+            <div class="section-header">
+              <h3 class="section-title">Assigned Classes</h3>
+              <p class="section-subtitle">Classes you are currently teaching</p>
+            </div>
+
+            <div class="classes-grid">
+              <div class="class-card" *ngFor="let classe of teacherClasses">
+                <div class="class-icon">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M18 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V4C20 2.9 19.1 2 18 2ZM18 20H6V4H18V20Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </div>
+                <div class="class-content">
+                  <span class="class-name">{{ classe.name }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <!-- Change Password Section -->
+      <div class="summary-section">
+        <div class="section-header">
+          <h3 class="section-title">Security Settings</h3>
+          <p class="section-subtitle">
+            Update your password to keep your account secure
+          </p>
+        </div>
+
+        <div class="password-section">
+          <form
+            [formGroup]="passwordForm"
+            (ngSubmit)="changePassword()"
+            class="password-form"
+          >
+            <div class="form-group">
+              <label class="form-label">
+                <span class="label-text">Current Password</span>
+                <span class="required">*</span>
+              </label>
+              <div class="input-wrapper">
+                <svg
+                  class="input-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M18 8H17V6C17 3.24 14.76 1 12 1C9.24 1 7 3.24 7 6V8H6C4.9 8 4 8.9 4 10V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V10C20 8.9 19.1 8 18 8ZM12 17C10.9 17 10 16.1 10 15C10 13.9 10.9 13 12 13C13.1 13 14 13.9 14 15C14 16.1 13.1 17 12 17ZM15.1 8H8.9V6C8.9 4.29 10.29 2.9 12 2.9C13.71 2.9 15.1 4.29 15.1 6V8Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                <input
+                  type="password"
+                  formControlName="currentPassword"
+                  class="form-input"
+                  placeholder="Enter your current password"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <span class="label-text">New Password</span>
+                <span class="required">*</span>
+              </label>
+              <div class="input-wrapper">
+                <svg
+                  class="input-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M18 8H17V6C17 3.24 14.76 1 12 1C9.24 1 7 3.24 7 6V8H6C4.9 8 4 8.9 4 10V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V10C20 8.9 19.1 8 18 8ZM12 17C10.9 17 10 16.1 10 15C10 13.9 10.9 13 12 13C13.1 13 14 13.9 14 15C14 16.1 13.1 17 12 17ZM15.1 8H8.9V6C8.9 4.29 10.29 2.9 12 2.9C13.71 2.9 15.1 4.29 15.1 6V8Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                <input
+                  type="password"
+                  formControlName="newPassword"
+                  class="form-input"
+                  placeholder="Enter your new password"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <span class="label-text">Confirm New Password</span>
+                <span class="required">*</span>
+              </label>
+              <div class="input-wrapper">
+                <svg
+                  class="input-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M18 8H17V6C17 3.24 14.76 1 12 1C9.24 1 7 3.24 7 6V8H6C4.9 8 4 8.9 4 10V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V10C20 8.9 19.1 8 18 8ZM12 17C10.9 17 10 16.1 10 15C10 13.9 10.9 13 12 13C13.1 13 14 13.9 14 15C14 16.1 13.1 17 12 17ZM15.1 8H8.9V6C8.9 4.29 10.29 2.9 12 2.9C13.71 2.9 15.1 4.29 15.1 6V8Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                <input
+                  type="password"
+                  formControlName="confirmNewPassword"
+                  class="form-input"
+                  placeholder="Confirm your new password"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button
+                type="submit"
+                class="submit-btn"
+                [disabled]="passwordForm.invalid"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                Change Password
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </ng-container>
   </div>
-</ng-container>
+</div>

@@ -1,245 +1,802 @@
-<h2 class="dashboard-title">Dashboard</h2>
-
-<ng-container *ngIf="user$ | async as user" class="dashboard-container">
-  <div class="welcome-card">
-    <h3>Welcome, {{ user.username }}!</h3>
+<div class="dashboard-page">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle">Welcome to your personalized learning hub</p>
+      </div>
+      <div class="header-actions">
+        <div class="header-stats">
+          <div class="stat-item">
+            <div class="stat-icon">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+            <div class="stat-content">
+              <span class="stat-number"
+                >{{ (user$ | async)?.role === 'Teacher' ? (teacherSummary$ |
+                async)?.totalActiveQuizzes : (studentSummary$ |
+                async)?.totalQuizzesAvailable }}</span
+              >
+              <span class="stat-label">Active Quizzes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Student Summary -->
-  <ng-container *ngIf="user.role === 'Student'">
-    <ng-container *ngIf="studentSummary$ | async as studentSummary">
-      <div class="summary-section">
-        <h3 class="section-title">Student Summary</h3>
-        <div class="summary-container">
-          <div class="summary-stats-grid">
-            <div class="summary-card">
-              <b>Name:</b> {{ studentSummary.studentName }}
+  <div class="content-wrapper">
+    <ng-container *ngIf="user$ | async as user" class="dashboard-container">
+      <div class="welcome-section">
+        <div class="welcome-card">
+          <div class="welcome-content">
+            <div class="welcome-icon">
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
+                  fill="currentColor"
+                />
+              </svg>
             </div>
-            <div class="summary-card">
-              <b>Email:</b> {{ studentSummary.studentEmail }}
-            </div>
-            <div class="summary-card">
-              <b>Class:</b> {{ studentSummary.studentClass }}
-            </div>
-            <div class="summary-card">
-              <b>Total Quizzes Available:</b> {{
-              studentSummary.totalQuizzesAvailable }}
-            </div>
-            <div class="summary-card">
-              <b>Total Quizzes Started:</b> {{
-              studentSummary.totalQuizzesStarted }}
-            </div>
-            <div class="summary-card">
-              <b>Total Quizzes Completed:</b> {{
-              studentSummary.totalQuizzesCompleted }}
-            </div>
-            <div class="summary-card">
-              <b>Total Quizzes In Progress:</b> {{
-              studentSummary.totalQuizzesInProgress }}
-            </div>
-            <div class="summary-card">
-              <b>Total Quizzes Saved:</b> {{ studentSummary.totalQuizzesSaved }}
-            </div>
-            <div class="summary-card">
-              <b>Average Score:</b> {{ studentSummary.averageScore }}
-            </div>
-            <div class="summary-card">
-              <b>Highest Score:</b> {{ studentSummary.highestScore }}
-            </div>
-            <div class="summary-card">
-              <b>Lowest Score:</b> {{ studentSummary.lowestScore }}
-            </div>
-            <div class="summary-card">
-              <b>Total Questions Attempted:</b> {{
-              studentSummary.totalQuestionsAttempted }}
-            </div>
-            <div class="summary-card">
-              <b>Total Correct Answers:</b> {{
-              studentSummary.totalCorrectAnswers }}
-            </div>
-            <div class="summary-card">
-              <b>Accuracy Percentage:</b> {{ studentSummary.accuracyPercentage
-              }}%
-            </div>
-            <div class="summary-card">
-              <b>Total Time Spent (min):</b> {{
-              studentSummary.totalTimeSpentMinutes }}
+            <div class="welcome-text">
+              <h3 class="welcome-title">Welcome back, {{ user.username }}!</h3>
+              <p class="welcome-subtitle">
+                Ready to continue your learning journey?
+              </p>
             </div>
           </div>
-          <!-- Pie Chart -->
-          <div class="chart-container">
-            <div class="chart-section">
-              <h4>Quiz Status Breakdown</h4>
-              <canvas
-                baseChart
-                [data]="pieCharData"
-                [type]="'pie'"
-                [options]="pieOptions"
-              ></canvas>
-            </div>
-            <!-- Line Chart -->
-            <div class="chart-section">
-              <h4>Performance Trend</h4>
-              <canvas
-                baseChart
-                [data]="lineChartData"
-                [type]="'line'"
-                [options]="lineOptions"
-              ></canvas>
-            </div>
-          </div>
-        </div>
-
-        <!-- Recent Activity -->
-        <div class="summary-section">
-          <h4 class="section-title">Recent Activity</h4>
-          <table *ngIf="studentSummary.recentActivity?.length">
-            <thead>
-              <tr>
-                <th>Quiz</th>
-                <th>Status</th>
-                <th>Score</th>
-                <th>Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let activity of studentSummary.recentActivity">
-                <td>{{ activity.quiz_title }}</td>
-                <td>{{ activity.status }}</td>
-                <td>{{ activity.score }}</td>
-                <td>{{ activity.submission_date | date:'mediumDate' }}</td>
-                <td class="actions">
-                  <button
-                    (click)="viewSubmissionDetails(activity.quiz_id, activity.submission_id)"
-                  >
-                    View
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
         </div>
       </div>
-    </ng-container>
-  </ng-container>
 
-  <!-- Teacher Summary -->
-  <ng-container *ngIf="user.role === 'Teacher'">
-    <ng-container *ngIf="teacherSummary$ | async as teacherSummary">
-      <div class="summary-section">
-        <h3 class="section-title">Teacher Summary</h3>
+      <!-- Student Summary -->
+      <ng-container *ngIf="user.role === 'Student'">
+        <ng-container *ngIf="studentSummary$ | async as studentSummary">
+          <div class="summary-section">
+            <div class="section-header">
+              <h3 class="section-title">Student Summary</h3>
+              <p class="section-subtitle">
+                Your learning progress and achievements
+              </p>
+            </div>
 
-        <div class="summary-container">
-          <div class="summary-stats-grid">
-            <div class="summary-card">
-              <b>Name:</b> {{ teacherSummary.teacherName }}
+            <div class="summary-container">
+              <div class="summary-stats-grid">
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Name</span>
+                    <span class="card-value"
+                      >{{ studentSummary.studentName }}</span
+                    >
+                  </div>
+                </div>
+
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Email</span>
+                    <span class="card-value" style="word-break: break-word"
+                      >{{ studentSummary.studentEmail }}</span
+                    >
+                  </div>
+                </div>
+
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V4C20 2.9 19.1 2 18 2ZM18 20H6V4H18V20Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Class</span>
+                    <span class="card-value"
+                      >{{ studentSummary.studentClass }}</span
+                    >
+                  </div>
+                </div>
+
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9 11H7V13H9V11ZM13 11H11V13H13V11ZM17 11H15V13H17V11ZM19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Available Quizzes</span>
+                    <span class="card-value"
+                      >{{ studentSummary.totalQuizzesAvailable }}</span
+                    >
+                  </div>
+                </div>
+
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Completed Quizzes</span>
+                    <span class="card-value"
+                      >{{ studentSummary.totalQuizzesCompleted }}</span
+                    >
+                  </div>
+                </div>
+
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Average Score</span>
+                    <span class="card-value"
+                      >{{ studentSummary.averageScore }}</span
+                    >
+                  </div>
+                </div>
+
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Accuracy</span>
+                    <span class="card-value"
+                      >{{ studentSummary.accuracyPercentage }}%</span
+                    >
+                  </div>
+                </div>
+
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM9 17H7V10H9V17ZM13 17H11V7H13V17ZM17 17H15V13H17V17Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Highest Score</span>
+                    <span class="card-value"
+                      >{{ studentSummary.highestScore }}</span
+                    >
+                  </div>
+                </div>
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM9 17H7V14H9V17ZM13 17H11V10H13V17ZM17 17H15V7H17V17Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Lowest Score</span>
+                    <span class="card-value"
+                      >{{ studentSummary.lowestScore }}</span
+                    >
+                  </div>
+                </div>
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19ZM7 10H9V17H7V10ZM11 7H13V17H11V7ZM15 13H17V17H15V13Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Questions Attempted</span>
+                    <span class="card-value"
+                      >{{ studentSummary.totalQuestionsAttempted }}</span
+                    >
+                  </div>
+                </div>
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Correct Answers</span>
+                    <span class="card-value"
+                      >{{ studentSummary.totalCorrectAnswers }}</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Charts Section -->
+              <div class="charts-section">
+                <div class="chart-container">
+                  <div class="chart-section">
+                    <div class="chart-header">
+                      <h4>Quiz Status Breakdown</h4>
+                      <p>Distribution of your quiz activities</p>
+                    </div>
+                    <canvas
+                      baseChart
+                      [data]="pieCharData"
+                      [type]="'pie'"
+                      [options]="pieOptions"
+                    ></canvas>
+                  </div>
+
+                  <div class="chart-section">
+                    <div class="chart-header">
+                      <h4>Performance Trend</h4>
+                      <p>Your progress over time</p>
+                    </div>
+                    <canvas
+                      baseChart
+                      [data]="lineChartData"
+                      [type]="'line'"
+                      [options]="lineOptions"
+                    ></canvas>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="summary-card">
-              <b>Email:</b> {{ teacherSummary.teacherEmail }}
-            </div>
-            <div class="summary-card">
-              <b>Subjects:</b> {{ teacherSummary.teacherSubjects }}
-            </div>
-            <div class="summary-card">
-              <b>Total Quizzes Created:</b> {{
-              teacherSummary.totalQuizzesCreated }}
-            </div>
-            <div class="summary-card">
-              <b>Total Active Quizzes:</b> {{ teacherSummary.totalActiveQuizzes
-              }}
-            </div>
-            <div class="summary-card">
-              <b>Total Inactive Quizzes:</b> {{
-              teacherSummary.totalInactiveQuizzes }}
-            </div>
-            <div class="summary-card">
-              <b>Total Questions Created:</b> {{
-              teacherSummary.totalQuestionsCreated }}
-            </div>
-            <div class="summary-card">
-              <b>Total Student Submissions:</b> {{
-              teacherSummary.totalStudentSubmissions }}
-            </div>
-            <div class="summary-card">
-              <b>Total Students Participated:</b> {{
-              teacherSummary.totalStudentsParticipated }}
-            </div>
-            <div class="summary-card">
-              <b>Average Completion Rate:</b> {{
-              teacherSummary.averageCompletionRate }}%
-            </div>
-            <div class="summary-card">
-              <b>Average Student Score:</b> {{
-              teacherSummary.averageStudentScore }}
-            </div>
-            <div class="summary-card">
-              <b>Highest Quiz Score:</b> {{ teacherSummary.highestQuizScore }}
-            </div>
-            <div class="summary-card">
-              <b>Lowest Quiz Score:</b> {{ teacherSummary.lowestQuizScore }}
-            </div>
-            <div class="summary-card">
-              <b>Total Questions Answered:</b> {{
-              teacherSummary.totalQuestionsAnswered }}
-            </div>
-            <div class="summary-card">
-              <b>Total Correct Answers:</b> {{
-              teacherSummary.totalCorrectAnswers }}
+
+            <!-- Recent Activity -->
+            <div class="activity-section">
+              <div class="section-header">
+                <h4 class="section-title">Recent Activity</h4>
+                <p class="section-subtitle">
+                  Your latest quiz attempts and submissions
+                </p>
+              </div>
+
+              <div class="activity-table-container">
+                <table
+                  *ngIf="studentSummary.recentActivity?.length"
+                  class="activity-table"
+                >
+                  <thead>
+                    <tr>
+                      <th>Quiz</th>
+                      <th>Status</th>
+                      <th>Score</th>
+                      <th>Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let activity of studentSummary.recentActivity">
+                      <td>
+                        <div class="quiz-info">
+                          <span class="quiz-title"
+                            >{{ activity.quiz_title }}</span
+                          >
+                        </div>
+                      </td>
+                      <td>
+                        <span
+                          class="status-badge"
+                          [class]="'status-' + activity.status.toLowerCase()"
+                        >
+                          {{ activity.status }}
+                        </span>
+                      </td>
+                      <td>
+                        <span class="score-value">{{ activity.score }}</span>
+                      </td>
+                      <td>
+                        <span class="date-value"
+                          >{{ activity.submission_date | date:'mediumDate'
+                          }}</span
+                        >
+                      </td>
+                      <td class="actions">
+                        <button
+                          class="action-btn view-btn"
+                          (click)="viewSubmissionDetails(activity.quiz_id, activity.submission_id)"
+                        >
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div
+                  *ngIf="!studentSummary.recentActivity?.length"
+                  class="empty-activity"
+                >
+                  <div class="empty-icon">
+                    <svg
+                      width="48"
+                      height="48"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9 11H7V13H9V11ZM13 11H11V13H13V11ZM17 11H15V13H17V11ZM19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <h4>No recent activity</h4>
+                  <p>Start taking quizzes to see your activity here</p>
+                </div>
+              </div>
             </div>
           </div>
-          <!-- Pie Chart -->
-          <div class="chart-container">
-            <div class="chart-section">
-              <h4>Quiz Status Distribution</h4>
-              <canvas
-                baseChart
-                [data]="pieCharData"
-                [type]="'pie'"
-                [options]="pieOptions"
-              ></canvas>
+        </ng-container>
+      </ng-container>
+
+      <!-- Teacher Summary -->
+      <ng-container *ngIf="user.role === 'Teacher'">
+        <ng-container *ngIf="teacherSummary$ | async as teacherSummary">
+          <div class="summary-section">
+            <div class="section-header">
+              <h3 class="section-title">Teacher Summary</h3>
+              <p class="section-subtitle">
+                Your teaching dashboard and insights
+              </p>
             </div>
-            <!-- Line Chart -->
-            <div class="chart-section">
-              <h4>Quiz Performance Trend</h4>
-              <canvas
-                baseChart
-                [data]="lineChartData"
-                [type]="'line'"
-                [options]="lineOptions"
-              ></canvas>
+
+            <div class="summary-container">
+              <div class="summary-stats-grid">
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Name</span>
+                    <span class="card-value"
+                      >{{ teacherSummary.teacherName }}</span
+                    >
+                  </div>
+                </div>
+
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Email</span>
+                    <span class="card-value" style="word-break: break-word"
+                      >{{ teacherSummary.teacherEmail }}</span
+                    >
+                  </div>
+                </div>
+
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Subjects</span>
+
+                    <div
+                      *ngFor="let subject of teacherSummary.teacherSubjects"
+                      class="card-value"
+                      style="word-break: break-word"
+                    >
+                      {{ subject }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9 11H7V13H9V11ZM13 11H11V13H13V11ZM17 11H15V13H17V11ZM19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Quizzes Created</span>
+                    <span class="card-value"
+                      >{{ teacherSummary.totalQuizzesCreated }}</span
+                    >
+                  </div>
+                </div>
+
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Active Quizzes</span>
+                    <span class="card-value"
+                      >{{ teacherSummary.totalActiveQuizzes }}</span
+                    >
+                  </div>
+                </div>
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Total Questions Created</span>
+                    <span class="card-value"
+                      >{{ teacherSummary.totalQuestionsCreated }}</span
+                    >
+                  </div>
+                </div>
+
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM9 17H7V10H9V17ZM13 17H11V7H13V17ZM17 17H15V13H17V17Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Total Student Submissions</span>
+                    <span class="card-value"
+                      >{{ teacherSummary.totalStudentSubmissions }}</span
+                    >
+                  </div>
+                </div>
+
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Students Participated</span>
+                    <span class="card-value"
+                      >{{ teacherSummary.totalStudentsParticipated }}</span
+                    >
+                  </div>
+                </div>
+
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Completion Rate</span>
+                    <span class="card-value"
+                      >{{ teacherSummary.averageCompletionRate }}%</span
+                    >
+                  </div>
+                </div>
+
+                <div class="summary-card">
+                  <div class="card-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-label">Avg Student Score</span>
+                    <span class="card-value"
+                      >{{ teacherSummary.averageStudentScore }}</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Charts Section -->
+              <div class="charts-section">
+                <div class="chart-container">
+                  <div class="chart-section">
+                    <div class="chart-header">
+                      <h4>Quiz Status Distribution</h4>
+                      <p>Overview of your quiz activities</p>
+                    </div>
+                    <canvas
+                      baseChart
+                      [data]="pieCharData"
+                      [type]="'pie'"
+                      [options]="pieOptions"
+                    ></canvas>
+                  </div>
+
+                  <div class="chart-section">
+                    <div class="chart-header">
+                      <h4>Quiz Performance Trend</h4>
+                      <p>Student performance over time</p>
+                    </div>
+                    <canvas
+                      baseChart
+                      [data]="lineChartData"
+                      [type]="'line'"
+                      [options]="lineOptions"
+                    ></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Quiz Stats -->
+            <div
+              class="activity-section"
+              *ngIf="teacherSummary.recentQuizStats?.length"
+            >
+              <div class="section-header">
+                <h4 class="section-title">Recent Quiz Stats</h4>
+                <p class="section-subtitle">
+                  Performance overview of your recent quizzes
+                </p>
+              </div>
+
+              <div class="activity-table-container">
+                <table class="activity-table">
+                  <thead>
+                    <tr>
+                      <th>Quiz Title</th>
+                      <th>Avg Score</th>
+                      <th>Completion Rate</th>
+                      <th>Attempts</th>
+                      <th>Last Attempted</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let quiz of teacherSummary.recentQuizStats">
+                      <td>
+                        <div class="quiz-info">
+                          <span class="quiz-title">{{ quiz.quizTitle }}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <span class="score-value">{{ quiz.avgScore }}</span>
+                      </td>
+                      <td>
+                        <span class="completion-rate"
+                          >{{ quiz.completionRate }}%</span
+                        >
+                      </td>
+                      <td>
+                        <span class="attempts-value"
+                          >{{ quiz.totalAttempts }}</span
+                        >
+                      </td>
+                      <td>
+                        <span class="date-value"
+                          >{{ quiz.lastAttempted | date: 'mediumDate' }}</span
+                        >
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
-
-        <!-- Optional Recent Activity -->
-        <div
-          class="summary-section"
-          *ngIf="teacherSummary.recentQuizStats?.length"
-        >
-          <h4 class="section-title">Recent Quiz Stats</h4>
-          <table>
-            <thead>
-              <tr>
-                <th>Quiz Title</th>
-                <th>Avg Score</th>
-                <th>Completion Rate (%)</th>
-                <th>Attempts</th>
-                <th>Last Attempted</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let quiz of teacherSummary.recentQuizStats">
-                <td>{{ quiz.quizTitle }}</td>
-                <td>{{ quiz.avgScore }}</td>
-                <td>{{ quiz.completionRate }}</td>
-                <td>{{ quiz.totalAttempts }}</td>
-                <td>{{ quiz.lastAttempted | date: 'mediumDate' }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+        </ng-container>
+      </ng-container>
     </ng-container>
-  </ng-container>
-</ng-container>
+  </div>
+</div>

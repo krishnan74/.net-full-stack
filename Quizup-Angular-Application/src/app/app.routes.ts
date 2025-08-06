@@ -19,33 +19,56 @@ import { QuizExplorePage } from './features/quiz/pages/explore/quiz-explore-page
 import { QuizSubmissionPage } from './features/quiz/pages/quiz-submission-detail/quiz-submission-page';
 import { QuizDetailPage } from './features/quiz/pages/quiz-detail/quiz-detail-page';
 import { QuizSubmissionsPage } from './features/quiz/pages/quiz-submissions/quiz-submissions-page';
+import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
     component: Landing,
+    data: { requiresAuth: false },
   },
   {
     path: 'quiz',
     component: QuizComponent,
+    canActivate: [AuthGuard],
+    data: { requiresAuth: true },
     children: [
-      { path: ':quizId/attempt/:submissionId', component: QuizAttemptPage },
-      { path: 'create', component: QuizCreatePage },
-      { path: 'explore', component: QuizExplorePage },
+      {
+        path: ':quizId/attempt/:submissionId',
+        component: QuizAttemptPage,
+        data: { requiresAuth: true, allowedRoles: ['Student'] },
+      },
+      {
+        path: 'create',
+        component: QuizCreatePage,
+        data: { requiresAuth: true, allowedRoles: ['Teacher'] },
+      },
+      {
+        path: 'explore',
+        component: QuizExplorePage,
+        data: { requiresAuth: true },
+      },
       {
         path: ':quizId/submission/:submissionId',
         component: QuizSubmissionPage,
+        data: { requiresAuth: true },
       },
       {
         path: ':quizId/submissions',
         component: QuizSubmissionsPage,
+        data: { requiresAuth: true, allowedRoles: ['Teacher'] },
       },
-      { path: ':quizId', component: QuizDetailPage },
+      {
+        path: ':quizId',
+        component: QuizDetailPage,
+        data: { requiresAuth: true, allowedRoles: ['Teacher'] },
+      },
     ],
   },
   {
     path: 'auth',
     component: AuthComponent,
+    data: { requiresAuth: false },
     children: [
       { path: 'login', component: LoginComponent },
       {
@@ -54,11 +77,28 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: 'profile', component: ProfileComponent },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'notifications', component: NotificationComponent },
+  {
+    path: 'profile',
+    component: ProfileComponent,
+    canActivate: [AuthGuard],
+    data: { requiresAuth: true },
+  },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [AuthGuard],
+    data: { requiresAuth: true },
+  },
+  {
+    path: 'notifications',
+    component: NotificationComponent,
+    canActivate: [AuthGuard],
+    data: { requiresAuth: true, allowedRoles: ['Student'] },
+  },
   {
     path: 'admin',
+    canActivate: [AuthGuard],
+    data: { requiresAuth: true, allowedRoles: ['Admin'] },
     children: [
       { path: '', component: AdminDashboardComponent },
       { path: 'students', component: StudentsListComponent },

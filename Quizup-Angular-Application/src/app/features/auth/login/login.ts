@@ -20,6 +20,7 @@ import {
 } from '../../../store/auth/state/auth.selectors';
 import { Subscription, filter } from 'rxjs';
 import { ToastService } from '../../../core/services/toast.service';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -39,7 +40,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private store: Store,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.userForm = this.fb.group({
       username: ['', [Validators.required, Validators.email]],
@@ -59,9 +62,13 @@ export class LoginComponent implements OnInit, OnDestroy {
           'Login',
           `Welcome back, ${user.username}!`
         );
+
+        // Handle navigation after successful login
+        this.handlePostLoginNavigation(user);
       }
 
       this.previousUser = user;
+      console.log('Previous user:', this.previousUser);
     });
 
     // Subscribe to error changes
@@ -81,6 +88,23 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
     if (this.errorSubscription) {
       this.errorSubscription.unsubscribe();
+    }
+  }
+
+  private handlePostLoginNavigation(user: any) {
+    // Check for return URL in query parameters
+    const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+
+    if (returnUrl) {
+      // Navigate to the return URL
+      this.router.navigateByUrl(returnUrl);
+    } else {
+      // Default navigation based on user role
+      if (user?.role === 'Admin') {
+        this.router.navigate(['/admin']);
+      } else {
+        this.router.navigate(['/dashboard']);
+      }
     }
   }
 

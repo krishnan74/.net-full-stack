@@ -60,6 +60,7 @@ export class Navbar {
       'Logout',
       'You have been successfully logged out.'
     );
+    this.router.navigate(['/auth/login']);
   }
 
   toggleTheme() {

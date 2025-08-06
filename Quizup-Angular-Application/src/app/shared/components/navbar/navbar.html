@@ -5,12 +5,16 @@
   </div>
 
   <div class="flex">
+
+    @if(user) {
     <div class="links-div mr-2">
+
+      @if( user?.role !== 'Admin') {
+
       <li>
         <a routerLink="/quiz/explore">Quizzes</a>
       </li>
-
-      @if( user?.role === 'Student' ) {
+      } @if( user?.role === 'Student' ) {
       <li>
         <a routerLink="/notifications">Notifications</a>
       </li>
@@ -28,7 +32,7 @@
       </li>
       }
     </div>
-
+    }
     <div class="flex gap-2 items-center">
       <!-- Theme Toggle Button -->
       <button
